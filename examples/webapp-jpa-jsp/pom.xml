@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cb.geemvc.examples</groupId>
+	<artifactId>geeticket-webapp-jpa-jsp</artifactId>
+	<version>0.9.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>Geemvc Example Webapp</name>
+    <description>Geemvc jpa and jsp example war.</description>
+	
+	<parent>
+		<groupId>com.commerceboard</groupId>
+		<artifactId>geemvc-parent</artifactId>
+		<version>0.9.1-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
+	</parent>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.3.9.v20160517</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webAppConfig>
+						<contextPath>/</contextPath>
+					</webAppConfig>
+<!--
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>7070</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+					</connectors>
+-->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.commerceboard</groupId>
+			<artifactId>geemvc</artifactId>
+			<version>0.9.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -1,0 +1,84 @@
+/* ------------------------------------------------------------------------------------------------------ */
+/* Mobile Devices, Default                                                                                */
+/* ------------------------------------------------------------------------------------------------------ */
+
+.bug-tracker-container .ticket-info {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    padding: 10px 10px;
+}
+
+.ticket-info .type {
+    font-weight: bold;
+    color: red;
+}
+
+.ticket-info .status {
+    font-style: italic;
+}
+
+.ticket-info .priority {
+    font-weight: bold;
+    color: red;
+}
+
+.ticket-info .assignee {
+    font-weight: bold;
+}
+
+.ticket-info .reporter {
+    font-style: italic;
+}
+
+.ticket-info-label {
+    font-weight: bold;
+}
+
+.bug-tracker-container .ticket-comment-header {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+    padding: 10px 10px;
+}
+
+.ticket-comments-header > span {
+    font-weight: bold;
+}
+
+.bug-tracker-container .comment {
+    padding-bottom: 20px;
+}
+
+.comment .header {
+    color: #8e8e8e;
+}
+
+.comment .content {
+
+}
+
+#addCommentModal textarea {
+    resize: vertical;
+}
+
+
+/* ------------------------------------------------------------------------------------------------------ */
+/* Medium Devices, Desktops                                                                               */
+/* ------------------------------------------------------------------------------------------------------ */
+
+@media only screen and (min-width: 998px) {
+
+
+}
+
+/* ------------------------------------------------------------------------------------------------------ */
+/* Large Desktops                                                                               		  */
+/* ------------------------------------------------------------------------------------------------------ */
+
+@media only screen and (min-width: 1130px) {
+
+    .col-centered {
+        text-align: center;
+    }
+
+}

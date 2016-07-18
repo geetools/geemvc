@@ -1,0 +1,3 @@
+<div>
+	Default bug tracker footer ...
+</div>

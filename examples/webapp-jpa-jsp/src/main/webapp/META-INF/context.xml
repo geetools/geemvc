@@ -1,0 +1,5 @@
+<Context path="">
+	<Resource name="jdbc/geeticketDS" driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		maxActive="8" maxIdle="4" type="javax.sql.DataSource"
+		url="jdbc:derby:memory:geeticket;create=true" />
+</Context>
