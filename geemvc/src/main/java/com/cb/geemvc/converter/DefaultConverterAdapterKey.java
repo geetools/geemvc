@@ -22,7 +22,7 @@ public class DefaultConverterAdapterKey implements ConverterAdapterKey {
     protected List<Class<?>> genericTypes = null;
     protected Class<?> type = null;
     protected int weight = 0;
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     @Override
     public ConverterAdapterKey build(Class<?> type, List<Class<?>> genericTypes) {

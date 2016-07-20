@@ -25,11 +25,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 public class Dispatcher implements ReadListener, WriteListener {
-    private final byte[] buffer = new byte[1024];
-    private final AsyncContext asyncContext;
-    private final ServletInputStream input;
-    private final ServletOutputStream output;
-    private boolean complete;
+    protected final byte[] buffer = new byte[1024];
+    protected final AsyncContext asyncContext;
+    protected final ServletInputStream input;
+    protected final ServletOutputStream output;
+    protected boolean complete;
 
     public Dispatcher(AsyncContext asyncContext) throws IOException {
         this.asyncContext = asyncContext;

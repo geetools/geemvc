@@ -17,7 +17,7 @@
 package com.cb.geemvc.mock.type;
 
 public class ValueOfType {
-    private String value = null;
+    protected String value = null;
 
     public static ValueOfType valueOf(String s) {
         ValueOfType v = new ValueOfType();

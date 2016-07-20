@@ -16,6 +16,9 @@
 
 package com.cb.geemvc.cache;
 
+import java.util.concurrent.Callable;
+import java.util.function.Function;
+
 public interface Cache {
     void put(Object key, Object value);
 
@@ -27,7 +30,15 @@ public interface Cache {
 
     Object get(Object key);
 
+//    Object get(Object key, Function function);
+
+    Object get(Object key, Callable function);
+
     Object get(Object cacheKey, Object key);
+
+//    Object get(Object cacheKey, Object key, Function function);
+
+    Object get(Object cacheKey, Object key, Callable function);
 
     boolean containsKey(Object key);
 

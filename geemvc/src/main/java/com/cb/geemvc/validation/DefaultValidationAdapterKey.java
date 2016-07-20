@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 
 public class DefaultValidationAdapterKey implements ValidationAdapterKey {
     protected Class<? extends Annotation> validationAnnotation = null;
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     public ValidationAdapterKey build(Class<? extends Annotation> validationAnnotation) {
         if (!isInitialized) {

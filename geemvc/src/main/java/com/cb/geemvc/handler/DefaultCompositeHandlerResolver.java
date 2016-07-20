@@ -17,6 +17,8 @@
 package com.cb.geemvc.handler;
 
 import com.cb.geemvc.RequestContext;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -33,6 +35,9 @@ public class DefaultCompositeHandlerResolver implements CompositeHandlerResolver
 
     protected final ReflectionProvider reflectionProvider;
 
+    @Logger
+    protected Log log;
+
     @Inject
     protected Injector injector;
 
@@ -47,8 +52,17 @@ public class DefaultCompositeHandlerResolver implements CompositeHandlerResolver
         List<RequestHandler> requestHandlers = new ArrayList<>();
 
         for (HandlerResolver handlerResolver : handlerResolvers) {
-            requestHandlers.addAll(handlerResolver.resolve(requestURI));
+            log.trace("Looking for request handlers using path '{}' and handler resolver '{}'.", () -> requestURI, () -> handlerResolver.getClass().getName());
+
+            final List<RequestHandler> reqHandlers = handlerResolver.resolve(requestURI);
+
+            if (reqHandlers != null && !reqHandlers.isEmpty())
+                requestHandlers.addAll(reqHandlers);
+
+            log.trace("Found {} request handlers using path '{}' and handler resolver '{}'.", () -> reqHandlers == null ? 0 : reqHandlers.size(), () -> requestURI, () -> handlerResolver.getClass().getName());
         }
+
+        log.trace("Found request handlers {} for path '{}'.", () -> requestHandlers, () -> requestURI);
 
         return requestHandlers;
     }
@@ -58,24 +72,44 @@ public class DefaultCompositeHandlerResolver implements CompositeHandlerResolver
         List<RequestHandler> requestHandlers = new ArrayList<>();
 
         for (HandlerResolver handlerResolver : handlerResolvers) {
+            log.trace("Looking for request handlers using path '{} {}' and handler resolver '{}'.", () -> httpMethod, () -> requestURI, () -> handlerResolver.getClass().getName());
+
             List<RequestHandler> reqHandlers = handlerResolver.resolve(requestURI, httpMethod);
 
             if (reqHandlers != null && !reqHandlers.isEmpty())
                 requestHandlers.addAll(reqHandlers);
+
+            log.trace("Found {} request handlers using path '{} {}' and handler resolver '{}'.", () -> reqHandlers == null ? 0 : reqHandlers.size(), () -> httpMethod, () -> requestURI, () -> handlerResolver.getClass().getName());
         }
+
+        log.trace("Found request handlers {} for path '{}'.", () -> requestHandlers, () -> requestURI);
 
         return requestHandlers;
     }
 
     @Override
-    public RequestHandler resolve(RequestContext requestCtx, Collection<Class<?>> controllers) {
+    public RequestHandler resolve(RequestContext requestCtx, Collection<Class<?>> controllerClasses) {
         List<RequestHandler> requestHandlers = new ArrayList<>();
 
         for (HandlerResolver handlerResolver : handlerResolvers) {
-            RequestHandler requestHandler = handlerResolver.resolve(requestCtx, controllers);
+            log.trace("Looking for request handlers in controller classes {} using handler resolver '{}'.", () -> controllerClasses, () -> handlerResolver.getClass().getName());
 
-            if (requestHandler != null)
+            RequestHandler requestHandler = handlerResolver.resolve(requestCtx, controllerClasses);
+
+            if (requestHandler != null) {
+                log.trace("Found request handler '{}' using handler resolver '{}'.", () -> requestHandler, () -> handlerResolver.getClass().getName());
                 requestHandlers.add(requestHandler);
+            } else {
+                log.trace("No request handler found using handler resolver '{}'.", () -> handlerResolver.getClass().getName());
+            }
+        }
+
+        if (requestHandlers.size() == 1) {
+            log.info("Found 1 request handler ({}) for the path '{}'.", () -> requestHandlers.get(0), () -> requestCtx.getPath());
+        } else if (requestHandlers.isEmpty()) {
+            log.warn("No request handler found for path '{}'.", () -> requestCtx.getPath());
+        } else if (requestHandlers.size() > 0) {
+            log.info("More than 1 request handlers found for the path '{}'. Using the first one of {}.", () -> requestCtx.getPath(), () -> requestHandlers);
         }
 
         return requestHandlers.isEmpty() ? null : requestHandlers.get(0);

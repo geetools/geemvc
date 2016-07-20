@@ -16,17 +16,20 @@
 
 package com.cb.geemvc.i18n.message;
 
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.Str;
+import com.cb.geemvc.cache.Cache;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.google.common.base.CaseFormat;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Set;
 
 @Singleton
 public class DefaultCompositeMessageResolver implements CompositeMessageResolver {
@@ -40,6 +43,14 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
     @Inject
     protected Injector injector;
+
+    @Inject
+    protected Cache cache;
+
+    @Logger
+    protected Log log;
+
+    protected static final String RESOLVED_MESSAGE_CACHE_KEY = "geemvc/resolvedMessage/%s@%s";
 
     @Inject
     public DefaultCompositeMessageResolver(ReflectionProvider reflectionProvider) {
@@ -59,56 +70,70 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
     @Override
     public String resolve(String messageKey, Locale locale, RequestContext requestCtx, boolean failQuietly) {
-        Set<String> resolveAttempts = new LinkedHashSet<>();
 
-        Locale currentLocale = requestCtx.currentLocale();
-        Locale langAndCountryLocale = new Locale(currentLocale.getLanguage(), currentLocale.getCountry());
-        Locale langLocale = new Locale(currentLocale.getLanguage());
+        log.trace("Attempting to resolve message '{}' using locale '{}'.", () -> messageKey, () -> locale);
 
-        Class<?> controllerClass = requestCtx.requestHandler().controllerClass();
+        String cacheKey = String.format(RESOLVED_MESSAGE_CACHE_KEY, messageKey, locale.toString());
 
-        Set<String> attemptBundleBaseNames = new LinkedHashSet<>();
-        attemptBundleBaseNames.add(controllerBundle(requestCtx));
-        attemptBundleBaseNames.add(defaultBundle());
+        return (String) cache.get(DefaultCompositeMessageResolver.class, cacheKey, () -> {
+            Set<String> resolveAttempts = new LinkedHashSet<>();
 
-        Set<Locale> attemptLocales = new LinkedHashSet<>();
+            Locale currentLocale = requestCtx.currentLocale();
+            Locale langAndCountryLocale = new Locale(currentLocale.getLanguage(), currentLocale.getCountry());
+            Locale langLocale = new Locale(currentLocale.getLanguage());
 
-        if (locale == null) {
-            attemptLocales.add(langAndCountryLocale);
-            attemptLocales.add(langLocale);
-            attemptLocales.add(Locale.ROOT);
-        } else {
-            attemptLocales.add(locale);
-        }
+            Class<?> controllerClass = requestCtx.requestHandler().controllerClass();
 
-        Set<String> attemptContextPrefixes = new LinkedHashSet<>();
-        attemptContextPrefixes.add(controllerClass.getName() + Str.DOT);
-        attemptContextPrefixes.add(controllerClass.getSimpleName() + Str.DOT);
-        attemptContextPrefixes.add(Str.EMPTY);
+            Set<String> attemptBundleBaseNames = new LinkedHashSet<>();
+            attemptBundleBaseNames.add(controllerBundle(requestCtx));
+            attemptBundleBaseNames.add(defaultBundle());
 
-        for (MessageResolver messageResolver : messageResolvers) {
-            for (String baseName : attemptBundleBaseNames) {
-                for (Locale attemptLocale : attemptLocales) {
-                    for (String ctxPrefix : attemptContextPrefixes) {
-                        resolveAttempts.add(toString(baseName, attemptLocale, ctxPrefix, messageKey));
+            Set<Locale> attemptLocales = new LinkedHashSet<>();
 
-                        String message = messageResolver.resolve(String.format("%s%s", ctxPrefix, messageKey), baseName, attemptLocale);
+            if (locale == null) {
+                attemptLocales.add(langAndCountryLocale);
+                attemptLocales.add(langLocale);
+                attemptLocales.add(Locale.ROOT);
+            } else {
+                attemptLocales.add(locale);
+            }
 
-                        if (message != null)
-                            return message;
+            Set<String> attemptContextPrefixes = new LinkedHashSet<>();
+            attemptContextPrefixes.add(controllerClass.getName() + Str.DOT);
+            attemptContextPrefixes.add(controllerClass.getSimpleName() + Str.DOT);
+            attemptContextPrefixes.add(Str.EMPTY);
+
+            for (MessageResolver messageResolver : messageResolvers) {
+                for (String baseName : attemptBundleBaseNames) {
+                    for (Locale attemptLocale : attemptLocales) {
+                        for (String ctxPrefix : attemptContextPrefixes) {
+                            resolveAttempts.add(toString(baseName, attemptLocale, ctxPrefix, messageKey));
+
+                            log.trace("Attempting to resolve message '{}' using baseName '{}', locale '{}' and context prefix '{}'.", () -> messageKey, () -> baseName, () -> locale, () -> ctxPrefix);
+
+                            String message = messageResolver.resolve(String.format("%s%s", ctxPrefix, messageKey), baseName, attemptLocale);
+
+                            if (message != null) {
+                                log.debug("Resolved message '{}' using key '{}', baseName '{}', locale '{}' and context prefix '{}'.", () -> message, () -> messageKey, () -> baseName, () -> locale, () -> ctxPrefix);
+
+                                return message;
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        if (!failQuietly)
-            throw new IllegalStateException("Unable to find message key '" + messageKey + "' in any of the following attempts: " + resolveAttempts);
+            if (!failQuietly)
+                throw new IllegalStateException("Unable to find message key '" + messageKey + "' in any of the following attempts: " + resolveAttempts);
 
-        else
-            return null;
+            else {
+                log.debug("Unable to resolve message using key '{}' and locale '{}'.", () -> messageKey, () -> locale);
+                return null;
+            }
+        });
     }
 
-    private String toString(String baseName, Locale locale, String ctxPrefix, String messageKey) {
+    protected String toString(String baseName, Locale locale, String ctxPrefix, String messageKey) {
         return String.format("%s%s@%s%s", baseName, Str.isEmpty(locale.toString()) ? Str.EMPTY : Str.UNDERSCORE + locale.toString(), ctxPrefix, messageKey);
     }
 

@@ -26,8 +26,14 @@ import java.util.function.Supplier;
  * Created by Michael on 15.07.2016.
  */
 public class DefaultLog implements Log {
-
     protected Logger logger = null;
+
+    protected String GEEMVC_PACKAGE_PREFIX = "com.cb.geemvc";
+    protected String GEEMVC_LOG_PREFIX = "[Geemvc] ";
+
+    protected boolean isGeemvc() {
+        return logger != null && getName().startsWith(GEEMVC_PACKAGE_PREFIX);
+    }
 
     @Override
     public Log get(Class<?> declaringClass) {
@@ -43,31 +49,31 @@ public class DefaultLog implements Log {
     @Override
     public void trace(String message, Supplier<?>... paramSuppliers) {
         if (isTraceEnabled())
-            logger.trace(message, parameters(paramSuppliers));
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, parameters(paramSuppliers));
     }
 
     @Override
     public void debug(String message, Supplier<?>... paramSuppliers) {
         if (isDebugEnabled())
-            logger.debug(message, parameters(paramSuppliers));
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, parameters(paramSuppliers));
     }
 
     @Override
     public void info(String message, Supplier<?>... paramSuppliers) {
         if (isInfoEnabled())
-            logger.info(message, parameters(paramSuppliers));
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, parameters(paramSuppliers));
     }
 
     @Override
     public void warn(String message, Supplier<?>... paramSuppliers) {
         if (isWarnEnabled())
-            logger.warn(message, parameters(paramSuppliers));
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, parameters(paramSuppliers));
     }
 
     @Override
     public void error(String message, Supplier<?>... paramSuppliers) {
         if (isErrorEnabled())
-            logger.error(message, parameters(paramSuppliers));
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, parameters(paramSuppliers));
     }
 
     protected Object[] parameters(Supplier<?>... suppliers) {
@@ -89,28 +95,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void trace(String s) {
-        logger.trace(s);
+    public void trace(String message) {
+        if (isTraceEnabled())
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void trace(String s, Object o) {
-        logger.trace(s, o);
+    public void trace(String message, Object o) {
+        if (isTraceEnabled())
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void trace(String s, Object o, Object o1) {
-        logger.trace(s, o, o1);
+    public void trace(String message, Object o, Object o1) {
+        if (isTraceEnabled())
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void trace(String s, Object... objects) {
-        logger.trace(s, objects);
+    public void trace(String message, Object... objects) {
+        if (isTraceEnabled())
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void trace(String s, Throwable throwable) {
-        logger.trace(s, throwable);
+    public void trace(String message, Throwable throwable) {
+        if (isTraceEnabled())
+            logger.trace(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -119,28 +130,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void trace(Marker marker, String s) {
-        logger.trace(marker, s);
+    public void trace(Marker marker, String message) {
+        if (isTraceEnabled(marker))
+            logger.trace(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void trace(Marker marker, String s, Object o) {
-        logger.trace(marker, s, o);
+    public void trace(Marker marker, String message, Object o) {
+        if (isTraceEnabled(marker))
+            logger.trace(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void trace(Marker marker, String s, Object o, Object o1) {
-        logger.trace(marker, s, o, o1);
+    public void trace(Marker marker, String message, Object o, Object o1) {
+        if (isTraceEnabled(marker))
+            logger.trace(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void trace(Marker marker, String s, Object... objects) {
-        logger.trace(marker, s, objects);
+    public void trace(Marker marker, String message, Object... objects) {
+        if (isTraceEnabled(marker))
+            logger.trace(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void trace(Marker marker, String s, Throwable throwable) {
-        logger.trace(marker, s, throwable);
+    public void trace(Marker marker, String message, Throwable throwable) {
+        if (isTraceEnabled(marker))
+            logger.trace(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -149,28 +165,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void debug(String s) {
-        logger.debug(s);
+    public void debug(String message) {
+        if (isDebugEnabled())
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void debug(String s, Object o) {
-        logger.debug(s, o);
+    public void debug(String message, Object o) {
+        if (isDebugEnabled())
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void debug(String s, Object o, Object o1) {
-        logger.debug(s, o, o1);
+    public void debug(String message, Object o, Object o1) {
+        if (isDebugEnabled())
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void debug(String s, Object... objects) {
-        logger.debug(s, objects);
+    public void debug(String message, Object... objects) {
+        if (isDebugEnabled())
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void debug(String s, Throwable throwable) {
-        logger.debug(s, throwable);
+    public void debug(String message, Throwable throwable) {
+        if (isDebugEnabled())
+            logger.debug(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -179,28 +200,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void debug(Marker marker, String s) {
-        logger.debug(marker, s);
+    public void debug(Marker marker, String message) {
+        if (isDebugEnabled(marker))
+            logger.debug(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void debug(Marker marker, String s, Object o) {
-        logger.debug(marker, s, o);
+    public void debug(Marker marker, String message, Object o) {
+        if (isDebugEnabled(marker))
+            logger.debug(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void debug(Marker marker, String s, Object o, Object o1) {
-        logger.debug(marker, s, o, o1);
+    public void debug(Marker marker, String message, Object o, Object o1) {
+        if (isDebugEnabled(marker))
+            logger.debug(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void debug(Marker marker, String s, Object... objects) {
-        logger.debug(marker, s, objects);
+    public void debug(Marker marker, String message, Object... objects) {
+        if (isDebugEnabled(marker))
+            logger.debug(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void debug(Marker marker, String s, Throwable throwable) {
-        logger.debug(marker, s, throwable);
+    public void debug(Marker marker, String message, Throwable throwable) {
+        if (isDebugEnabled(marker))
+            logger.debug(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -209,28 +235,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void info(String s) {
-        logger.info(s);
+    public void info(String message) {
+        if (isInfoEnabled())
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void info(String s, Object o) {
-        logger.info(s, o);
+    public void info(String message, Object o) {
+        if (isInfoEnabled())
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void info(String s, Object o, Object o1) {
-        logger.info(s, o, o1);
+    public void info(String message, Object o, Object o1) {
+        if (isInfoEnabled())
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void info(String s, Object... objects) {
-        logger.info(s, objects);
+    public void info(String message, Object... objects) {
+        if (isInfoEnabled())
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void info(String s, Throwable throwable) {
-        logger.info(s, throwable);
+    public void info(String message, Throwable throwable) {
+        if (isInfoEnabled())
+            logger.info(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -239,28 +270,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void info(Marker marker, String s) {
-        logger.info(marker, s);
+    public void info(Marker marker, String message) {
+        if (isInfoEnabled(marker))
+            logger.info(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void info(Marker marker, String s, Object o) {
-        logger.info(marker, s, o);
+    public void info(Marker marker, String message, Object o) {
+        if (isInfoEnabled(marker))
+            logger.info(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void info(Marker marker, String s, Object o, Object o1) {
-        logger.info(marker, s, o, o1);
+    public void info(Marker marker, String message, Object o, Object o1) {
+        if (isInfoEnabled(marker))
+            logger.info(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void info(Marker marker, String s, Object... objects) {
-        logger.info(marker, s, objects);
+    public void info(Marker marker, String message, Object... objects) {
+        if (isInfoEnabled(marker))
+            logger.info(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void info(Marker marker, String s, Throwable throwable) {
-        logger.info(marker, s, throwable);
+    public void info(Marker marker, String message, Throwable throwable) {
+        if (isInfoEnabled(marker))
+            logger.info(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -269,28 +305,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void warn(String s) {
-        logger.warn(s);
+    public void warn(String message) {
+        if (isWarnEnabled())
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void warn(String s, Object o) {
-        logger.warn(s, o);
+    public void warn(String message, Object o) {
+        if (isWarnEnabled())
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void warn(String s, Object... objects) {
-        logger.warn(s, objects);
+    public void warn(String message, Object... objects) {
+        if (isWarnEnabled())
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void warn(String s, Object o, Object o1) {
-        logger.warn(s, o, o1);
+    public void warn(String message, Object o, Object o1) {
+        if (isWarnEnabled())
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void warn(String s, Throwable throwable) {
-        logger.warn(s, throwable);
+    public void warn(String message, Throwable throwable) {
+        if (isWarnEnabled())
+            logger.warn(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -299,28 +340,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void warn(Marker marker, String s) {
-        logger.warn(marker, s);
+    public void warn(Marker marker, String message) {
+        if (isWarnEnabled(marker))
+            logger.warn(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void warn(Marker marker, String s, Object o) {
-        logger.warn(marker, s, o);
+    public void warn(Marker marker, String message, Object o) {
+        if (isWarnEnabled(marker))
+            logger.warn(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void warn(Marker marker, String s, Object o, Object o1) {
-        logger.warn(marker, s, o, o1);
+    public void warn(Marker marker, String message, Object o, Object o1) {
+        if (isWarnEnabled(marker))
+            logger.warn(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void warn(Marker marker, String s, Object... objects) {
-        logger.warn(marker, s, objects);
+    public void warn(Marker marker, String message, Object... objects) {
+        if (isWarnEnabled(marker))
+            logger.warn(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void warn(Marker marker, String s, Throwable throwable) {
-        logger.warn(marker, s, throwable);
+    public void warn(Marker marker, String message, Throwable throwable) {
+        if (isWarnEnabled(marker))
+            logger.warn(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -329,28 +375,33 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void error(String s) {
-        logger.error(s);
+    public void error(String message) {
+        if (isErrorEnabled())
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void error(String s, Object o) {
-        logger.error(s, o);
+    public void error(String message, Object o) {
+        if (isErrorEnabled())
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void error(String s, Object o, Object o1) {
-
+    public void error(String message, Object o, Object o1) {
+        if (isErrorEnabled())
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void error(String s, Object... objects) {
-        logger.error(s, objects);
+    public void error(String message, Object... objects) {
+        if (isErrorEnabled())
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void error(String s, Throwable throwable) {
-        logger.error(s, throwable);
+    public void error(String message, Throwable throwable) {
+        if (isErrorEnabled())
+            logger.error(isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 
     @Override
@@ -359,27 +410,32 @@ public class DefaultLog implements Log {
     }
 
     @Override
-    public void error(Marker marker, String s) {
-        logger.error(marker, s);
+    public void error(Marker marker, String message) {
+        if (isErrorEnabled(marker))
+            logger.error(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message);
     }
 
     @Override
-    public void error(Marker marker, String s, Object o) {
-        logger.error(marker, s, o);
+    public void error(Marker marker, String message, Object o) {
+        if (isErrorEnabled(marker))
+            logger.error(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o);
     }
 
     @Override
-    public void error(Marker marker, String s, Object o, Object o1) {
-        logger.error(marker, s, o, o1);
+    public void error(Marker marker, String message, Object o, Object o1) {
+        if (isErrorEnabled(marker))
+            logger.error(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, o, o1);
     }
 
     @Override
-    public void error(Marker marker, String s, Object... objects) {
-        logger.error(marker, s, objects);
+    public void error(Marker marker, String message, Object... objects) {
+        if (isErrorEnabled(marker))
+            logger.error(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, objects);
     }
 
     @Override
-    public void error(Marker marker, String s, Throwable throwable) {
-        logger.error(marker, s, throwable);
+    public void error(Marker marker, String message, Throwable throwable) {
+        if (isErrorEnabled(marker))
+            logger.error(marker, isGeemvc() ? GEEMVC_LOG_PREFIX + message : message, throwable);
     }
 }

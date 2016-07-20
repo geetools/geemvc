@@ -59,6 +59,7 @@ public class Str {
     public static final String BRACKET_OPEN_ESCAPED = "\\" + Char.BRACKET_OPEN;
     public static final String BRACKET_CLOSE = String.valueOf(Char.BRACKET_CLOSE);
     public static final String BRACKET_CLOSE_ESCAPED = "\\" + Char.BRACKET_CLOSE;
+    public static final String BRACKET_OPEN_CLOSE = "()";
     public static final String SQUARE_BRACKET_OPEN = String.valueOf(Char.SQUARE_BRACKET_OPEN);
     public static final String SQUARE_BRACKET_CLOSE = String.valueOf(Char.SQUARE_BRACKET_CLOSE);
     public static final String CURLY_BRACKET_OPEN = String.valueOf(Char.CURLY_BRACKET_OPEN);

@@ -36,25 +36,25 @@ public class DefaultPathMatcher implements PathMatcher {
     private static final long serialVersionUID = 8682403475843946688L;
 
     // Path specified in RequestMapping annotation.
-    private String mappedPath = null;
+    protected String mappedPath = null;
 
     // Mapped path converted to regular-expression.
-    private Regex pathRegex = null;
+    protected Regex pathRegex = null;
 
     // Retrieved parameter names from regex groups.
-    private List<String> parameterNames = null;
+    protected List<String> parameterNames = null;
 
     // Does the mapped-path include both the controller and the handler mapped path?
-    private boolean isCompletePath = false;
+    protected boolean isCompletePath = false;
 
-    private String[] ignorePaths = null;
+    protected String[] ignorePaths = null;
 
-    private List<String> ignoreRegexPaths = null;
+    protected List<String> ignoreRegexPaths = null;
 
-    private List<Pattern> ignorePatterns = null;
+    protected List<Pattern> ignorePatterns = null;
 
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
     @Override
     public PathMatcher build(String path) {

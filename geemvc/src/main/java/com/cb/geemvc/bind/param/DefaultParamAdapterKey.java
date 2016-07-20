@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 
 public class DefaultParamAdapterKey implements ParamAdapterKey {
     protected Class<? extends Annotation> paramAnnotation = null;
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     public ParamAdapterKey build(Class<? extends Annotation> paramAnnotation) {
         if (!isInitialized) {

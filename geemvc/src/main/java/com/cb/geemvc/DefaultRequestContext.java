@@ -54,7 +54,7 @@ public class DefaultRequestContext implements RequestContext {
     protected String contextPath = null;
     protected String pathInfo = null;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     @Override
     public RequestContext build(ServletRequest request, ServletResponse response, ServletContext servletContext) {

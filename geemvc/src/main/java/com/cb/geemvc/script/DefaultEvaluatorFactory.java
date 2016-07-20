@@ -29,12 +29,12 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class DefaultEvaluatorFactory implements EvaluatorFactory {
-    private final ReflectionProvider reflectionProvider;
+    protected final ReflectionProvider reflectionProvider;
 
     protected Map<String, Class<? extends Evaluator>> evaluators = new HashMap<>();
 
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
     @Inject
     public DefaultEvaluatorFactory(ReflectionProvider reflectionProvider) {

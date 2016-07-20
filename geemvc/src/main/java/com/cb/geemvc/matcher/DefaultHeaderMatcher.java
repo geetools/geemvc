@@ -35,14 +35,14 @@ public class DefaultHeaderMatcher implements HeaderMatcher {
     private static final long serialVersionUID = 8682403475843946688L;
 
     // Headers mapped to best matching evaluator.
-    private Map<String, Evaluator> headerEvaluators = null;
+    protected Map<String, Evaluator> headerEvaluators = null;
 
     protected Set<String> matchAny = new HashSet<>(Arrays.asList("content-type", "accept"));
 
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
-    private final EvaluatorFactory evaluatorFactory;
+    protected final EvaluatorFactory evaluatorFactory;
 
     @Inject
     protected DefaultHeaderMatcher(EvaluatorFactory evaluatorFactory) {

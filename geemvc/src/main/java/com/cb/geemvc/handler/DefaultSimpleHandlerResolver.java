@@ -24,6 +24,8 @@ import com.cb.geemvc.cache.Cache;
 import com.cb.geemvc.helper.Annotations;
 import com.cb.geemvc.helper.Controllers;
 import com.cb.geemvc.helper.MimeTypes;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.matcher.*;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.google.common.collect.Lists;
@@ -53,8 +55,11 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
     @Inject
     protected Injector injector;
 
+    @Logger
+    protected Log log;
+
     protected static final String HANDLER_CACHE_KEY = "geemvc/resolvedHandlers/%s@%s";
-    protected static final String PREFILTERED_HANDLERS_CACHE_KEY = "geemvc/prefilteredHandlers/%s@%s";
+    protected static final String PREFILTERED_HANDLERS_CACHE_KEY = "geemvc/prefilteredHandlers/%s->%s";
 
     @Inject
     public DefaultSimpleHandlerResolver(ReflectionProvider reflectionProvider, Annotations annotations, Controllers controllers, CompositeControllerResolver controllerResolver) {
@@ -73,10 +78,9 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
     @Override
     public List<RequestHandler> resolve(String requestURI, String httpMethod) {
         String cacheKey = String.format(HANDLER_CACHE_KEY, requestURI, httpMethod);
-        List<RequestHandler> foundHandlers = (List<RequestHandler>) cache.get(SimpleHandlerResolver.class, cacheKey);
 
-        if (foundHandlers == null) {
-            foundHandlers = new ArrayList<>();
+        return (List<RequestHandler>) cache.get(DefaultSimpleHandlerResolver.class, cacheKey, () -> {
+            List<RequestHandler> foundHandlers = foundHandlers = new ArrayList<>();
 
             RequestContext requestCtx = injector.getInstance(PathOnlyRequestContext.class).build(requestURI, httpMethod);
 
@@ -118,10 +122,8 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                 }
             }
 
-            cache.putIfAbsent(SimpleHandlerResolver.class, cacheKey, foundHandlers);
-        }
-
-        return foundHandlers;
+            return foundHandlers;
+        });
     }
 
     @Override
@@ -129,12 +131,15 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
         if (controllers == null)
             return null;
 
-        String cacheKey = String.format(PREFILTERED_HANDLERS_CACHE_KEY, requestCtx.getPath(), requestCtx.getMethod());
-        List<RequestHandler> preFilteredHandlers = (List<RequestHandler>) cache.get(SimpleHandlerResolver.class, cacheKey);
+        log.trace("Attempting to resolve request handler for path '{}' in controller classes {}.", () -> requestCtx.getPath(), () -> controllerClasses);
+
+        String cacheKey = String.format(PREFILTERED_HANDLERS_CACHE_KEY, requestCtx.getMethod(), requestCtx.getPath());
 
         // First we pre-filter the available request-handlers as this makes it possible to cache them by their path.
-        if (preFilteredHandlers == null) {
-            preFilteredHandlers = new ArrayList<>();
+        List<RequestHandler> preFilteredHandlers = (List<RequestHandler>) cache.get(DefaultSimpleHandlerResolver.class, cacheKey, () -> {
+            List<RequestHandler> filteredHandlers = new ArrayList<>();
+
+            log.trace("Pre-filtering handler methods by path '{}'.", () -> requestCtx.getPath());
 
             for (Class<?> controllerClass : controllerClasses) {
                 String basePath = controllers.getBasePath(controllerClass);
@@ -157,31 +162,41 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
 
                         if (pathMatches) {
                             if (isIgnore(requestMapping, requestCtx)) {
+                                log.trace("Path '{}' is in ignore list of request mapping {}->{}.", () -> requestCtx.getPath(), () -> controllerClass.getSimpleName(), () -> Arrays.toString(requestMapping.path()));
                                 continue;
                             }
                         } else {
+                            log.trace("Path '{}' does not match path in request mapping {}->{}.", () -> requestCtx.getPath(), () -> controllerClass.getSimpleName(), () -> Arrays.toString(requestMapping.path()));
                             continue;
                         }
+
+                        log.trace("Path '{}' matches path in request mapping {}->{}.", () -> requestCtx.getPath(), () -> controllerClass.getSimpleName(), () -> Arrays.toString(requestMapping.path()));
 
                         RequestHandler requestHandler = injector.getInstance(RequestHandler.class)
                                 .build(controllerClass, handlerMethod, consumes(requestMapping, requestCtx), produces(requestMapping, requestCtx))
                                 .name(requestMapping.name())
                                 .pathMatcher(pathMatcher);
 
-                        preFilteredHandlers.add(requestHandler);
+                        filteredHandlers.add(requestHandler);
                     }
                 }
             }
 
-            cache.putIfAbsent(SimpleHandlerResolver.class, cacheKey, preFilteredHandlers);
-        }
+            return filteredHandlers;
+        });
+
+        final List<RequestHandler> logPreFilteredHandlers = preFilteredHandlers;
+        log.trace("Using pre-filtered request handlers {}.", () -> logPreFilteredHandlers);
 
         // As the first filtering stage has already returned a unique result, no need to continue filtering.
         if (preFilteredHandlers.size() == 1) {
+            log.trace("As only 1 pre-filtered request handler was found, we will simply use that one ({}).", () -> logPreFilteredHandlers.get(0));
             return preFilteredHandlers.get(0);
         }
 
         List<RequestHandler> foundHandlers = new ArrayList<>();
+
+        log.trace("More than 1 pre-filtered request handlers exit ({}). Therefore now attempting to filter by request parameters, headers, consumes, produces, cookies and handles statement.", () -> logPreFilteredHandlers);
 
         // Now we go into the second filtering stage. Her we attempt to filter by parameters, headers etc.
         for (RequestHandler preFilteredHandler : preFilteredHandlers) {
@@ -206,6 +221,9 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                     && (produces == null || produces.size() == 0 || producesMatch(requestMapping, requestCtx))
                     && (cookies == null || cookies.length == 0 || cookiesMatch(requestMapping, requestCtx, cookieMatcherCtx))
                     && (handles == null || handles.trim().isEmpty() || handleScriptMatches(requestMapping, requestCtx, handlesMatcherCtx))) {
+
+                log.trace("Found request handler '{}' for matching request parameters, headers, consumes, produces, cookies and handles statement.", () -> preFilteredHandler);
+
                 RequestHandler requestHandler = injector.getInstance(RequestHandler.class)
                         .build(preFilteredHandler.controllerClass(), preFilteredHandler.handlerMethod(), consumes(requestMapping, requestCtx), produces(requestMapping, requestCtx))
                         .name(requestMapping.name())
@@ -220,12 +238,21 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
 
         // As the second filtering stage has returned a single result, no need to continue filtering.
         if (foundHandlers.size() == 1) {
-            return foundHandlers.get(0);
+            final RequestHandler foundHandler = foundHandlers.get(0);
+            log.trace("Filtering request handlers by request parameters, headers, consumes, produces, cookies and handles statement revealed only 1 handler method. Therefore using that one ({}).", () -> foundHandler);
+            return foundHandler;
         }
 
         // If however we have still not found a unique request handler, we will need to continue finding the best match.
         if (foundHandlers.size() > 1) {
+            final List<RequestHandler> logFoundHandlers = new ArrayList<>(foundHandlers);
+            log.trace("Filtering request handlers by request parameters, headers, consumes, produces, cookies and handles statement revealed more than 1 handler method. Therefore attempting to find best match out of ({}).", () -> logFoundHandlers);
+
             List<RequestHandler> requestHandlerCollector = new ArrayList<>();
+
+            logFoundHandlers.clear();
+            logFoundHandlers.addAll(foundHandlers);
+            log.trace("Attempting to find best match by http methods using request handlers {} ...", () -> logFoundHandlers);
 
             RequestHandler bestMatch = findBestMatchForHttpMethod(requestCtx, foundHandlers, requestHandlerCollector);
 
@@ -234,6 +261,10 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                     foundHandlers = new ArrayList<>(requestHandlerCollector);
                     requestHandlerCollector = new ArrayList<>();
                 }
+
+                logFoundHandlers.clear();
+                logFoundHandlers.addAll(foundHandlers);
+                log.trace("Attempting to find best match by mime-types using request handlers {} ...", () -> logFoundHandlers);
 
                 bestMatch = findBestMatchForMimeTypes(requestCtx, foundHandlers, requestHandlerCollector, true, false);
             }
@@ -245,6 +276,10 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                     requestHandlerCollector = new ArrayList<>();
                 }
 
+                logFoundHandlers.clear();
+                logFoundHandlers.addAll(foundHandlers);
+                log.trace("Attempting to find best match by path using request handlers {} ...", () -> logFoundHandlers);
+
                 bestMatch = findBestMatchByPath(requestCtx, foundHandlers, requestHandlerCollector);
             }
 
@@ -252,6 +287,10 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
             if (bestMatch == null) {
                 foundHandlers = new ArrayList<>(requestHandlerCollector);
                 requestHandlerCollector = new ArrayList<>();
+
+                logFoundHandlers.clear();
+                logFoundHandlers.addAll(foundHandlers);
+                log.trace("Attempting to find best match by parameters using request handlers {} ...", () -> logFoundHandlers);
 
                 // Evaluate parameters.
                 bestMatch = findBestMatch(requestCtx, foundHandlers, HandlerResolverStats::numResolvedParameters, HandlerResolverStats::numResolvedStaticParameters, HandlerResolverStats::numResolvedStaticNegateParameters, requestHandlerCollector);
@@ -261,6 +300,10 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                     foundHandlers = new ArrayList<>(requestHandlerCollector);
                     requestHandlerCollector = new ArrayList<>();
 
+                    logFoundHandlers.clear();
+                    logFoundHandlers.addAll(foundHandlers);
+                    log.trace("Attempting to find best match by headers using request handlers {} ...", () -> logFoundHandlers);
+
                     bestMatch = findBestMatch(requestCtx, foundHandlers, HandlerResolverStats::numResolvedHeaders, HandlerResolverStats::numResolvedStaticHeaders, HandlerResolverStats::numResolvedStaticNegateHeaders, requestHandlerCollector);
 
                     // Evaluate Cookies.
@@ -268,18 +311,32 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                         foundHandlers = new ArrayList<>(requestHandlerCollector);
                         requestHandlerCollector = new ArrayList<>();
 
+                        logFoundHandlers.clear();
+                        logFoundHandlers.addAll(foundHandlers);
+                        log.trace("Attempting to find best match by cookies using request handlers {} ...", () -> logFoundHandlers);
+
                         bestMatch = findBestMatch(requestCtx, foundHandlers, HandlerResolverStats::numResolvedCookies, HandlerResolverStats::numResolvedStaticCookies, HandlerResolverStats::numResolvedStaticNegateCookies, requestHandlerCollector);
 
                         // Evaluate path parameters.
                         if (bestMatch == null) {
+                            logFoundHandlers.clear();
+                            logFoundHandlers.addAll(foundHandlers);
+                            log.trace("Attempting to find best match by path parameters using request handlers {} ...", () -> logFoundHandlers);
+
                             bestMatch = mostMatchingPathParameters(requestCtx, foundHandlers);
 
                             if (bestMatch == null) {
-                                bestMatch = findBestMatchForMimeTypes(requestCtx, foundHandlers, requestHandlerCollector, true, true);
+                                log.trace("Attempting to see if priority has been set as still no unique request handler could be found...");
 
                                 if (anyHandlersHavePriority(requestHandlerCollector)) {
                                     sortByPriority(requestHandlerCollector);
                                     bestMatch = requestHandlerCollector.get(0);
+                                }
+
+                                if (bestMatch == null) {
+                                    log.trace("Attempting to find first best match by mime-types using request handlers {} ...", () -> logFoundHandlers);
+
+                                    bestMatch = findBestMatchForMimeTypes(requestCtx, foundHandlers, requestHandlerCollector, true, true);
                                 }
                             }
                         }
@@ -287,10 +344,18 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
                 }
             }
 
+            final RequestHandler logBestMatch = bestMatch;
+            log.trace("Returning best matching request handler '{}'.", () -> logBestMatch);
+
             return bestMatch != null ? bestMatch : null;
         } else if (foundHandlers.size() == 1) {
-            return foundHandlers.get(0);
+            final RequestHandler foundSingleRequestHandler = foundHandlers.get(0);
+            log.trace("Returning the only request handler ({}) that was found.", () -> foundSingleRequestHandler);
+
+            return foundSingleRequestHandler;
         }
+
+        log.trace("No request handler could be found.");
 
         return null;
     }

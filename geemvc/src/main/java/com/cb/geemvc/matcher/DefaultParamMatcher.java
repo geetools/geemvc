@@ -31,12 +31,12 @@ public class DefaultParamMatcher implements ParamMatcher {
     private static final long serialVersionUID = 8682403475843946688L;
 
     // Parameters mapped to best matching evaluator.
-    private Map<String, Evaluator> paramEvaluators = null;
+    protected Map<String, Evaluator> paramEvaluators = null;
 
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
-    private final EvaluatorFactory evaluatorFactory;
+    protected final EvaluatorFactory evaluatorFactory;
 
     @Inject
     protected DefaultParamMatcher(EvaluatorFactory evaluatorFactory) {

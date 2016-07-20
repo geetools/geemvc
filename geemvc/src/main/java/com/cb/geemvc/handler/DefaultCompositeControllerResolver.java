@@ -16,16 +16,18 @@
 
 package com.cb.geemvc.handler;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.cb.geemvc.RequestContext;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.matcher.PathMatcherKey;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class DefaultCompositeControllerResolver implements CompositeControllerResolver {
@@ -33,6 +35,9 @@ public class DefaultCompositeControllerResolver implements CompositeControllerRe
     protected final Set<ControllerResolver> controllerResolvers;
 
     protected final ReflectionProvider reflectionProvider;
+
+    @Logger
+    protected Log log;
 
     @Inject
     protected Injector injector;
@@ -59,10 +64,16 @@ public class DefaultCompositeControllerResolver implements CompositeControllerRe
         Map<PathMatcherKey, Class<?>> resolvedControllers = new LinkedHashMap<>();
 
         for (ControllerResolver controllerResolver : controllerResolvers) {
+            log.trace("Looking for controller classes using controller resolver '{}'.", () -> controllerResolver.getClass().getName());
+
             Map<PathMatcherKey, Class<?>> controllerClasses = controllerResolver.resolve(requestCtx);
 
             if (controllerClasses != null && !controllerClasses.isEmpty()) {
+                log.debug("Found {} controller classes using controller resolver '{}'.", () -> controllerClasses.size(), () -> controllerResolver.getClass().getName());
+
                 resolvedControllers.putAll(controllerClasses);
+            } else {
+                log.debug("Found 0 controller classes using controller resolver '{}'.", () -> controllerClasses.size(), () -> controllerResolver.getClass().getName());
             }
         }
 

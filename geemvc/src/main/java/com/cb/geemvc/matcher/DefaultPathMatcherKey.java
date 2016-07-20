@@ -22,9 +22,9 @@ import com.cb.geemvc.Str;
 
 public class DefaultPathMatcherKey implements PathMatcherKey {
     private static final long serialVersionUID = 4161340800044590031L;
-    private String key = null;
-    private PathMatcher pathMatcher = null;
-    private boolean isInitialized = false;
+    protected String key = null;
+    protected PathMatcher pathMatcher = null;
+    protected boolean isInitialized = false;
 
     @Override
     public PathMatcherKey build(Class<?> controllerClass, PathMatcher pathMatcher) {

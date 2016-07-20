@@ -19,7 +19,7 @@ package com.cb.geemvc.matcher;
 import java.util.Collection;
 
 public class DefaultMatcherContext implements MatcherContext {
-    private Collection<String> resolvedExpressions = null;
+    protected Collection<String> resolvedExpressions = null;
 
     public MatcherContext resolve(Collection<String> resolvedExpressions) {
         if (this.resolvedExpressions != null) {

@@ -148,16 +148,6 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.5</version>
 		</dependency>
- 		<dependency>
-			<groupId>org.cache2k</groupId>
-			<artifactId>cache2k-api</artifactId>
-			<version>0.26-BETA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cache2k</groupId>
-			<artifactId>cache2k-core</artifactId>
-			<version>0.26-BETA</version>
-		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -169,5 +159,4 @@
 			<version>3.18.2-GA</version>
 		</dependency>
 	</dependencies>
-
 </project>

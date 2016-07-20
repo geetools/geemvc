@@ -47,7 +47,7 @@ public class DefaultMethodParam implements MethodParam {
     protected Annotation[] annotations;
     protected Annotation paramAnnotation;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     protected final ParamAdapterFactory paramAdapterFactory;
     protected final ReflectionProvider reflectionProvider;

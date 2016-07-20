@@ -20,6 +20,8 @@ import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
 import com.cb.geemvc.helper.Paths;
 import com.cb.geemvc.intercept.annotation.Lifecycle;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.validation.Errors;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -32,6 +34,9 @@ public class DefaultInterceptors implements Interceptors {
 
     protected final InterceptorResolver interceptorResolver;
     protected final Paths paths;
+
+    @Logger
+    protected Log log;
 
     @Inject
     protected Injector injector;
@@ -55,7 +60,10 @@ public class DefaultInterceptors implements Interceptors {
 
     @Override
     public Object interceptLifecycle(Class<? extends Annotation> lifecycleAnnotation, LifecycleContext lifecycleCtx) {
+        log.trace("Looking for lifecycle interceptors at stage '{}'.", () -> lifecycleAnnotation.getSimpleName());
+
         Set<LifecycleInterceptor> lifecycleInterceptors = interceptorResolver.resolveLifecycleInterceptors(lifecycleAnnotation, lifecycleCtx.requestHandler());
+
 
         if (lifecycleInterceptors != null && !lifecycleInterceptors.isEmpty()) {
             for (LifecycleInterceptor lifecycleInterceptor : lifecycleInterceptors) {
@@ -64,7 +72,11 @@ public class DefaultInterceptors implements Interceptors {
                 if ((lifecycle.when() == When.ALWAYS || (lifecycle.when() == When.NO_ERRORS && lifecycleCtx.errors().isEmpty()) || (lifecycle.when() == When.HAS_ERRORS && !lifecycleCtx.errors().isEmpty()))
                         && (lifecycle.onView() == OnView.ALWAYS || (lifecycle.onView() == OnView.NOT_EXISTS && lifecycleCtx.view() == null) || (lifecycle.onView() == OnView.EXISTS && lifecycleCtx.view() != null))) {
 
+                    log.trace("Invoking lifecycle interceptor '{}' for stage '{}'.", () -> lifecycleInterceptor, () -> lifecycleAnnotation.getSimpleName());
+
                     Object view = lifecycleInterceptor.invoke(lifecycleCtx.lifecycle(lifecycle));
+
+                    log.trace("Lifecycle interceptor '{}' for stage '{}' returned view '{}'.", () -> lifecycleInterceptor, () -> lifecycleAnnotation.getSimpleName(), () -> view);
 
                     if (view != null)
                         return view;

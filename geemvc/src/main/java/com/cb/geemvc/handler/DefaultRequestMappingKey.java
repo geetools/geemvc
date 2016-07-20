@@ -22,9 +22,9 @@ import com.cb.geemvc.Str;
 import com.cb.geemvc.annotation.Request;
 
 public class DefaultRequestMappingKey implements RequestMappingKey {
-    private String key = null;
-    private Request requestMapping = null;
-    private boolean isInitialized = false;
+    protected String key = null;
+    protected Request requestMapping = null;
+    protected boolean isInitialized = false;
 
     public RequestMappingKey build(Class<?> controllerClass, Method method, Request requestMapping) {
         if (!isInitialized) {

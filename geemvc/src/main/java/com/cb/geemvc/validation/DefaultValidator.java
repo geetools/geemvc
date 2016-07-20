@@ -20,6 +20,8 @@ import com.cb.geemvc.Bindings;
 import com.cb.geemvc.bind.MethodParam;
 import com.cb.geemvc.handler.RequestHandler;
 import com.cb.geemvc.helper.Paths;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.cb.geemvc.validation.annotation.CheckBean;
 import com.cb.geemvc.validation.annotation.On;
@@ -39,6 +41,9 @@ public class DefaultValidator extends AbstractValidator implements Validator {
     protected final Validations validations;
     protected final ReflectionProvider reflectionProvider;
     protected final Paths paths;
+
+    @Logger
+    protected Log log;
 
     @Inject
     public DefaultValidator(Validations validations, ReflectionProvider reflectionProvider, Paths paths) {
@@ -60,7 +65,11 @@ public class DefaultValidator extends AbstractValidator implements Validator {
         validatePropertiesOfBeanParam(requestHandler, validationCtx, e);
 
         // Validate request using bean property validations of handler parameter.
-        return validateBeanParamUsingCustomValidator(requestHandler, validationCtx, e);
+        final Object view = validateBeanParamUsingCustomValidator(requestHandler, validationCtx, e);
+
+        log.debug("Validation for request handler '{}' ended with errors {}.", () -> requestHandler, () -> e);
+
+        return view;
     }
 
     protected Object validateBeanParamUsingCustomValidator(RequestHandler requestHandler, ValidationContext validationCtx, Errors e) {
@@ -81,7 +90,6 @@ public class DefaultValidator extends AbstractValidator implements Validator {
             Object value = typedValues.get(methodParam.name());
 
             if (includeInBeanValidation(methodParam.getClass())) {
-
                 On onAnnotation = validations.onAnnotation(methodParamAnnotations);
                 String[] on = onAnnotation == null ? null : onAnnotation.value();
 
@@ -91,6 +99,8 @@ public class DefaultValidator extends AbstractValidator implements Validator {
 
                 Set<Validator> beanValidators = validations.forBean(methodParam.getClass());
 
+                log.debug("Found {} bean validators for validating type '{}'.", () -> beanValidators == null ? 0 : beanValidators.size(), () -> methodParam.type().getName());
+
                 if (beanValidators != null && !beanValidators.isEmpty()) {
                     for (Validator validator : beanValidators) {
                         CheckBean checkBean = validator.getClass().getAnnotation(CheckBean.class);
@@ -98,9 +108,15 @@ public class DefaultValidator extends AbstractValidator implements Validator {
                         // if @Valid annotation exists in handler method for the current parameter and the validator has not been narrowed down
                         // to a specific path, validate bean.
                         if (annotationValidExists && checkBean.on() == null || checkBean.on().length == 0) {
+                            log.trace("Validating bean with validator '{}' and annotation {}.", () -> validator.getClass().getName(), () -> checkBean);
                             returnValue = validator.validate(requestHandler, validationCtx, e);
+                            final Object logValue = returnValue;
+                            log.debug("Validator '{}' returned view '{}' and errors {}.", () -> validator.getClass().getName(), () -> logValue, () -> e);
                         } else if (paths.isValidForRequest(checkBean.on(), requestHandler, validationCtx.requestCtx())) {
+                            log.trace("Validating bean with validator '{}' and annotation {}.", () -> validator.getClass().getName(), () -> checkBean);
                             returnValue = validator.validate(requestHandler, validationCtx, e);
+                            final Object logValue = returnValue;
+                            log.debug("Validator '{}' returned view '{}' and errors {}.", () -> validator.getClass().getName(), () -> logValue, () -> e);
                         }
                     }
                 }
@@ -121,7 +137,11 @@ public class DefaultValidator extends AbstractValidator implements Validator {
 
             if (annotationValidExists && value != null && includeInBeanValidation(value.getClass())) {
                 List<Validation> beanFieldValidations = validations.forBeanFields(value.getClass(), methodParam.name());
-                validate(beanFieldValidations, requestHandler, validationCtx, e);
+
+                if (beanFieldValidations != null && !beanFieldValidations.isEmpty()) {
+                    log.debug("Validating handler method parameter '{}' for request handler '{}'.", () -> methodParam.name(), () -> requestHandler);
+                    validate(beanFieldValidations, requestHandler, validationCtx, e);
+                }
             }
         }
     }
@@ -149,6 +169,7 @@ public class DefaultValidator extends AbstractValidator implements Validator {
                 }
 
                 if (validationAdapter.incudeInValidation(validation.annotation(), requestHandler, validationCtx)) {
+                    log.debug("Validating field '{}' annotated with {} using validation adapter '{}'.", () -> validation.name(), () -> validation.annotation(), () -> validationAdapter.getClass().getName());
                     validationAdapter.validate(validation.annotation(), validation.name(), validationCtx, e);
                 }
             }

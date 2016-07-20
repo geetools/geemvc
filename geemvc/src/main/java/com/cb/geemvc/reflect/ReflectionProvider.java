@@ -87,6 +87,8 @@ public interface ReflectionProvider {
 
     List<Class<?>> getGenericType(Class<?> type, String propertyName);
 
+    String toString(Class<?> clazz, Type parameterizedType);
+
     Set<Field> getMutableFields(Class<?> clazz);
 
     Set<Field> getFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClass);

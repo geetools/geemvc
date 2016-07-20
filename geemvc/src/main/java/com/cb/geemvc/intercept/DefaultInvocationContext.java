@@ -16,14 +16,16 @@
 
 package com.cb.geemvc.intercept;
 
+import com.cb.geemvc.RequestContext;
+import com.cb.geemvc.handler.RequestHandler;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
+import com.cb.geemvc.validation.Errors;
+
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.cb.geemvc.RequestContext;
-import com.cb.geemvc.handler.RequestHandler;
-import com.cb.geemvc.validation.Errors;
 
 public class DefaultInvocationContext implements InvocationContext {
     protected RequestHandler targetHandler;
@@ -32,6 +34,9 @@ public class DefaultInvocationContext implements InvocationContext {
     protected Iterator<AroundHandler> iterator;
     protected RequestContext requestContext;
     protected Errors errors;
+
+    @Logger
+    protected Log log;
 
     @Override
     public InvocationContext build(RequestHandler targetHandler, Map<String, Object> targetArgs, Set<AroundHandler> interceptors, RequestContext requestContext, Errors errors) {
@@ -51,8 +56,10 @@ public class DefaultInvocationContext implements InvocationContext {
         try {
             if (iterator.hasNext())
                 return invoke(iterator.next());
-            else
+            else {
+                log.trace("Invoking request handler '{}' with args {}.", () -> targetHandler, () -> targetArgs);
                 return targetHandler.invoke(targetArgs);
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -61,6 +68,8 @@ public class DefaultInvocationContext implements InvocationContext {
     }
 
     protected Object invoke(AroundHandler aroundHandler) throws Throwable {
+        log.trace("Invoking around handler '{}'.", () -> aroundHandler == null ? null : aroundHandler.getClass().getName());
+
         return aroundHandler.invokeAround(this);
     }
 

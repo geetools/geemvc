@@ -25,6 +25,8 @@ import com.cb.geemvc.intercept.Interceptors;
 import com.cb.geemvc.intercept.LifecycleContext;
 import com.cb.geemvc.intercept.annotation.PostView;
 import com.cb.geemvc.intercept.annotation.PreView;
+import com.cb.geemvc.logging.Log;
+import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.view.bean.View;
 import com.google.inject.Inject;
 
@@ -41,6 +43,9 @@ public class DefaultViewHandler implements ViewHandler {
     protected final StreamViewHandler streamViewHandler;
     protected final Requests requests;
     protected final Interceptors interceptors;
+
+    @Logger
+    protected Log log;
 
     @Inject
     protected Configuration configuration;
@@ -63,26 +68,34 @@ public class DefaultViewHandler implements ViewHandler {
             if (viewAdapter == null)
                 throw new IllegalStateException("No ViewAdapter found for the view-path '" + viewPath + "'. Please check your view-path or your configuration settings 'view-prefix' and 'view-suffix'.");
 
+            log.debug("Processing forward view '{}' with adapter '{}'.", () -> viewPath, () -> viewAdapter.getClass().getName());
+
             processIncomingFlashVars(requestCtx);
 
             // ---------- Intercept lifecycle: PreView.
             interceptors.interceptLifecycle(PreView.class, (LifecycleContext) ThreadStash.get(LifecycleContext.class));
 
+            log.trace("Preparing data before forwarding request to view servlet.");
             viewAdapter.prepare(view, requestCtx);
 
+            log.trace("Forwarding request to view servlet.");
             viewAdapter.forward(viewPath, requestCtx);
 
             // ---------- Intercept lifecycle: PostView.
             interceptors.interceptLifecycle(PostView.class, (LifecycleContext) ThreadStash.get(LifecycleContext.class));
 
         } else if (view.redirect() != null) {
+            HttpServletRequest request = (HttpServletRequest) requestCtx.getRequest();
+            final String redirectPath = requests.toRequestURL(view.redirect(), request.isSecure(), request);
+
             processOutgoingFlashVars(view, requestCtx);
 
-            HttpServletRequest request = (HttpServletRequest) requestCtx.getRequest();
+            log.debug("Sending user to redirect path '{}'.", () -> redirectPath);
             ((HttpServletResponse) requestCtx.getResponse()).sendRedirect(requests.toRequestURL(view.redirect(), request.isSecure(), request));
         }
         // Assuming stream.
         else {
+            log.debug("Streaming data to user for path '{}'.", () -> requestCtx.getPath());
             streamViewHandler.handle(view, requestCtx);
         }
     }
@@ -99,6 +112,7 @@ public class DefaultViewHandler implements ViewHandler {
 
         if (flashVars != null && !flashVars.isEmpty()) {
             for (Map.Entry<String, Object> flashVar : flashVars.entrySet()) {
+                log.debug("Recovering flash variable '{}' for path '{}'.", () -> flashVar.getKey(), () -> requestCtx.getPath());
                 request.setAttribute(flashVar.getKey(), flashVar.getValue());
             }
         }
@@ -109,6 +123,8 @@ public class DefaultViewHandler implements ViewHandler {
 
         if (flashVars == null || flashVars.size() == 0)
             return;
+
+        log.debug("Adding flash variables {} to http session for redirect '{}'.", () -> flashVars.keySet(), () -> requestCtx.getPath() + " -> " + view.redirect());
 
         HttpSession session = requestCtx.getSession(true);
         session.setAttribute(GeemvcKey.FLASH_VARS, flashVars);

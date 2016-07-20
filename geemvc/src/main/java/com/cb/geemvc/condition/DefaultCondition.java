@@ -22,14 +22,14 @@ import java.util.Set;
 public class DefaultCondition implements Condition {
     private static final long serialVersionUID = -3066810334383934452L;
 
-    private static final String EQUALS = "=";
-    private static final String NOT_EQUALS = "!=";
-    private static final String GREATER_THAN = ">";
-    private static final String LESS_THAN = "<";
-    private static final String GREATER_EQUALS_THAN = ">=";
-    private static final String LESS_EQUALS_THAN = "<=";
+    protected static final String EQUALS = "=";
+    protected static final String NOT_EQUALS = "!=";
+    protected static final String GREATER_THAN = ">";
+    protected static final String LESS_THAN = "<";
+    protected static final String GREATER_EQUALS_THAN = ">=";
+    protected static final String LESS_EQUALS_THAN = "<=";
 
-    private static Set<String> validOperators = new HashSet<>();
+    protected static Set<String> validOperators = new HashSet<>();
 
     static {
         validOperators.add(EQUALS);
@@ -40,10 +40,10 @@ public class DefaultCondition implements Condition {
         validOperators.add(LESS_EQUALS_THAN);
     }
 
-    private String operator = null;
-    private Object value = null;
+    protected String operator = null;
+    protected Object value = null;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     public Condition build(String condition) {
         if (!isInitialized) {

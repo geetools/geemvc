@@ -178,6 +178,8 @@ public class DefaultRequestRunner implements RequestRunner {
             if (lifecycleCtx.isInvokeHandler()) {
                 View handlerView = view(intercept(requestHandler, typedValues, requestCtx, errors));
 
+                log.debug("Request handler returned view '{}'.", () -> handlerView);
+
                 if (handlerView != null) {
                     lifecycleCtx.view(handlerView);
                 }
@@ -238,6 +240,8 @@ public class DefaultRequestRunner implements RequestRunner {
 
         RequestHandler requestHandler = handlerResolver.resolve(requestCtx, controllers.values());
 
+        log.debug("Found request handler '{}'.", () -> requestHandler);
+
         if (requestHandler == null) {
             StringBuilder message = new StringBuilder("Geemvc was unable to find a unique request-handler for the path '" + requestCtx.getPath() + "'.\n");
 
@@ -295,6 +299,8 @@ public class DefaultRequestRunner implements RequestRunner {
 
         String characterEncoding = configuration.characterEncodingFor(locale);
 
+        log.debug("Using locale '{}' and character encofing '{}'.", () -> locale, () -> characterEncoding);
+
         try {
             request.setCharacterEncoding(characterEncoding);
             requestCtx.currentLocale(locale);
@@ -309,10 +315,13 @@ public class DefaultRequestRunner implements RequestRunner {
         HttpServletResponse response = (HttpServletResponse) requestCtx.getResponse();
 
         if (view != null && !Str.isEmpty(view.characterEncoding())) {
+            log.debug("Using contentType '{}' from view object.", () -> view.characterEncoding());
             response.setContentType(view.characterEncoding());
         } else if (!Str.isEmpty(requestHandler.produces())) {
+            log.debug("Using contentType '{}' from mapped 'produces'.", () -> requestHandler.produces());
             response.setContentType(requestHandler.produces());
         } else {
+            log.debug("Using contentType '{}' from configuration'.", () -> configuration.defaultContentType());
             response.setContentType(configuration.defaultContentType());
         }
     }

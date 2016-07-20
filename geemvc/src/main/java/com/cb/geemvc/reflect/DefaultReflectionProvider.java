@@ -16,6 +16,7 @@
 
 package com.cb.geemvc.reflect;
 
+import com.cb.geemvc.Char;
 import com.cb.geemvc.annotation.Adapter;
 import com.cb.geemvc.annotation.Controller;
 import com.cb.geemvc.annotation.Evaluator;
@@ -60,162 +61,190 @@ import java.util.stream.Stream;
 public class DefaultReflectionProvider implements ReflectionProvider {
     protected final ReflectionsWrapper reflectionsWrapper;
     protected final Annotations annotations;
-    protected final Cache cache;
+
+    @Inject
+    protected Cache cache;
 
     @Inject
     protected Injector injector;
 
-    protected static final String CACHE_KEY_LOCATED_CONTROLLERS = "gee.located.controllers";
-    protected static final String CACHE_KEY_LOCATED_EVALUATORS = "gee.located.evaluators";
+    protected static final String CACHE_KEY_LOCATED_CONTROLLERS = "geemvc/controllers";
+    protected static final String CACHE_KEY_LOCATED_CONTROLLER_RESOLVERS = "geemvc/controllerResolvers";
+    protected static final String CACHE_KEY_LOCATED_HANDLER_RESOLVERS = "geemvc/handlerResolvers";
+    protected static final String CACHE_KEY_LOCATED_MESSAGE_RESOLVERS = "geemvc/messageResolvers";
+    protected static final String CACHE_KEY_LOCATED_AROUND_HANDLER_INTERCEPTORS = "geemvc/aroundHandlerInterceptors";
+    protected static final String CACHE_KEY_LOCATED_LIFECYCLE_INTERCEPTORS1 = "geemvc/lifecycleInterceptors/%s->%s";
+    protected static final String CACHE_KEY_LOCATED_LIFECYCLE_INTERCEPTORS2 = "geemvc/lifecycleInterceptors/%s";
+    protected static final String CACHE_KEY_LOCATED_REQUEST_HANDLER_METHODS = "geemvc/requestHandlerMethods/%s";
+    protected static final String CACHE_KEY_LOCATED_CONVERTER_ADAPTERS = "geemvc/converterAdapters";
+    protected static final String CACHE_KEY_LOCATED_PARAM_ADAPTERS = "geemvc/paramAdapters";
+    protected static final String CACHE_KEY_LOCATED_VALIDATION_ADAPTERS = "geemvc/validationAdapters";
+    protected static final String CACHE_KEY_LOCATED_BEAN_VALIDATORS = "geemvc/beanValidators/%s";
+    protected static final String CACHE_KEY_LOCATED_VIEW_ADAPTERS = "geemvc/viewAdapters";
+    protected static final String CACHE_KEY_LOCATED_DATA_ADAPTERS = "geemvc/dataAdapters";
+    protected static final String CACHE_KEY_GENERIC_TYPE1 = "geemvc/genericType#1/%s";
+    protected static final String CACHE_KEY_GENERIC_TYPE2 = "geemvc/genericType#2/%s";
+    protected static final String CACHE_KEY_GENERIC_TYPE3 = "geemvc/genericType#3/%s/%s";
+    protected static final String CACHE_KEY_MUTABLE_FIELDS = "geemvc/mutableFields/%s";
+    protected static final String CACHE_KEY_FIELDS_ANNOTATED_WITH = "geemvc/mutableFields/%s/%s";
+
+
+    protected static final String CACHE_KEY_LOCATED_EVALUATORS = "geemvc/evaluators";
 
     @Inject
-    public DefaultReflectionProvider(ReflectionsWrapper reflectionsWrapper, Annotations annotations, Cache cache) {
+    public DefaultReflectionProvider(ReflectionsWrapper reflectionsWrapper, Annotations annotations) {
         this.reflectionsWrapper = reflectionsWrapper;
         this.annotations = annotations;
-        this.cache = cache;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Set<Class<?>> locateControllers() {
-        Set<Class<?>> locatedControllers = (Set<Class<?>>) cache.get(CACHE_KEY_LOCATED_CONTROLLERS);
-
-        if (locatedControllers == null) {
+        return (Set<Class<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_CONTROLLERS, () -> {
             Set<Class<?>> geeControllers = reflectionsWrapper.getTypesAnnotatedWith(Controller.class, true);
             Set<Class<?>> jsr311Controllers = reflectionsWrapper.getTypesAnnotatedWith(Path.class, true);
 
-            locatedControllers = new LinkedHashSet<>(geeControllers);
+            Set<Class<?>> locatedControllers = new LinkedHashSet<>(geeControllers);
             locatedControllers.addAll(jsr311Controllers);
 
-//            Set<Class<?>> cachedLocatedControllers = (Set<Class<?>>)
-
-                    cache.putIfAbsent(CACHE_KEY_LOCATED_CONTROLLERS, locatedControllers);
-
-//            if (cachedLocatedControllers != null)
-//                locatedControllers = cachedLocatedControllers;
-        }
-
-        return locatedControllers;
+            return locatedControllers;
+        });
     }
 
     @Override
     public Set<ControllerResolver> locateControllerResolvers() {
-        Set<ControllerResolver> controllerResolvers = new LinkedHashSet<>();
+        return (Set<ControllerResolver>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_CONTROLLER_RESOLVERS, () -> {
+            Set<ControllerResolver> controllerResolvers = new LinkedHashSet<>();
 
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
 
-        List<Class<?>> controllerResolverClasses = new ArrayList<Class<?>>();
+            List<Class<?>> controllerResolverClasses = new ArrayList<Class<?>>();
 
-        for (Class<?> adapterClass : adapterClasses) {
-            if (ControllerResolver.class.isAssignableFrom(adapterClass))
-                controllerResolverClasses.add(adapterClass);
-        }
+            for (Class<?> adapterClass : adapterClasses) {
+                if (ControllerResolver.class.isAssignableFrom(adapterClass))
+                    controllerResolverClasses.add(adapterClass);
+            }
 
-        controllerResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+            controllerResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
 
-        for (Class<?> controllerResolverClass : controllerResolverClasses) {
-            ControllerResolver controllerResolver = (ControllerResolver) injector.getInstance(controllerResolverClass);
-            controllerResolvers.add(controllerResolver);
-        }
+            for (Class<?> controllerResolverClass : controllerResolverClasses) {
+                ControllerResolver controllerResolver = (ControllerResolver) injector.getInstance(controllerResolverClass);
+                controllerResolvers.add(controllerResolver);
+            }
 
-        return controllerResolvers;
+            return controllerResolvers;
+        });
     }
 
     @Override
     public Set<HandlerResolver> locateHandlerResolvers() {
-        Set<HandlerResolver> handlerResolvers = new LinkedHashSet<>();
+        return (Set<HandlerResolver>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_HANDLER_RESOLVERS, () -> {
+            Set<HandlerResolver> handlerResolvers = new LinkedHashSet<>();
 
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
 
-        List<Class<?>> handlerResolverClasses = new ArrayList<Class<?>>();
+            List<Class<?>> handlerResolverClasses = new ArrayList<Class<?>>();
 
-        for (Class<?> adapterClass : adapterClasses) {
-            if (HandlerResolver.class.isAssignableFrom(adapterClass))
-                handlerResolverClasses.add(adapterClass);
-        }
+            for (Class<?> adapterClass : adapterClasses) {
+                if (HandlerResolver.class.isAssignableFrom(adapterClass))
+                    handlerResolverClasses.add(adapterClass);
+            }
 
-        handlerResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+            handlerResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
 
-        for (Class<?> handlerResolverClass : handlerResolverClasses) {
-            HandlerResolver handlerResolver = (HandlerResolver) injector.getInstance(handlerResolverClass);
-            handlerResolvers.add(handlerResolver);
-        }
+            for (Class<?> handlerResolverClass : handlerResolverClasses) {
+                HandlerResolver handlerResolver = (HandlerResolver) injector.getInstance(handlerResolverClass);
+                handlerResolvers.add(handlerResolver);
+            }
 
-        return handlerResolvers;
+            return handlerResolvers;
+        });
     }
 
     @Override
     public Set<MessageResolver> locateMessageResolvers() {
-        Set<MessageResolver> messageResolvers = new LinkedHashSet<>();
+        return (Set<MessageResolver>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_MESSAGE_RESOLVERS, () -> {
+            Set<MessageResolver> messageResolvers = new LinkedHashSet<>();
 
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
 
-        List<Class<?>> messageResolverClasses = new ArrayList<Class<?>>();
+            List<Class<?>> messageResolverClasses = new ArrayList<Class<?>>();
 
-        for (Class<?> adapterClass : adapterClasses) {
-            if (MessageResolver.class.isAssignableFrom(adapterClass))
-                messageResolverClasses.add(adapterClass);
-        }
+            for (Class<?> adapterClass : adapterClasses) {
+                if (MessageResolver.class.isAssignableFrom(adapterClass))
+                    messageResolverClasses.add(adapterClass);
+            }
 
-        messageResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+            messageResolverClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
 
-        for (Class<?> messageResolverClass : messageResolverClasses) {
-            MessageResolver messageResolver = (MessageResolver) injector.getInstance(messageResolverClass);
-            messageResolvers.add(messageResolver);
-        }
+            for (Class<?> messageResolverClass : messageResolverClasses) {
+                MessageResolver messageResolver = (MessageResolver) injector.getInstance(messageResolverClass);
+                messageResolvers.add(messageResolver);
+            }
 
-        return messageResolvers;
+            return messageResolvers;
+        });
     }
 
     @Override
     public Set<AroundHandler> locateAroundHandlerInterceptors() {
-        Set<AroundHandler> aroundHandlerInterceptors = new LinkedHashSet<>();
+        return (Set<AroundHandler>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_AROUND_HANDLER_INTERCEPTORS, () -> {
+            Set<AroundHandler> aroundHandlerInterceptors = new LinkedHashSet<>();
 
-        Set<Class<?>> interceptClasses = reflectionsWrapper.getTypesAnnotatedWith(Intercept.class, true);
+            Set<Class<?>> interceptClasses = reflectionsWrapper.getTypesAnnotatedWith(Intercept.class, true);
 
-        List<Class<?>> aroundHandlerInterceptorClasses = new ArrayList<Class<?>>();
+            List<Class<?>> aroundHandlerInterceptorClasses = new ArrayList<Class<?>>();
 
-        for (Class<?> interceptClass : interceptClasses) {
-            if (AroundHandler.class.isAssignableFrom(interceptClass))
-                aroundHandlerInterceptorClasses.add(interceptClass);
-        }
+            for (Class<?> interceptClass : interceptClasses) {
+                if (AroundHandler.class.isAssignableFrom(interceptClass))
+                    aroundHandlerInterceptorClasses.add(interceptClass);
+            }
 
-        aroundHandlerInterceptorClasses.sort((cl1, cl2) -> cl1.getAnnotation(Intercept.class).weight() - cl2.getAnnotation(Intercept.class).weight());
+            aroundHandlerInterceptorClasses.sort((cl1, cl2) -> cl1.getAnnotation(Intercept.class).weight() - cl2.getAnnotation(Intercept.class).weight());
 
-        for (Class<?> aroundHandlerInterceptorClass : aroundHandlerInterceptorClasses) {
-            AroundHandler aroundHandler = (AroundHandler) injector.getInstance(aroundHandlerInterceptorClass);
-            aroundHandlerInterceptors.add(aroundHandler);
-        }
+            for (Class<?> aroundHandlerInterceptorClass : aroundHandlerInterceptorClasses) {
+                AroundHandler aroundHandler = (AroundHandler) injector.getInstance(aroundHandlerInterceptorClass);
+                aroundHandlerInterceptors.add(aroundHandler);
+            }
 
-        return aroundHandlerInterceptors;
+            return aroundHandlerInterceptors;
+        });
     }
 
     @Override
     public Set<LifecycleInterceptor> locateLifecycleInterceptors(Class<? extends Annotation> lifecycleAnnotation, Class<?> controllerClass) {
-        Set<LifecycleInterceptor> lifecycleInterceptorInterceptors = new LinkedHashSet<>();
-        Set<Method> lifecycleInterceptMethods = reflectionsWrapper.getMethodsAnnotatedWith(lifecycleAnnotation);
+        String cacheKey = String.format(CACHE_KEY_LOCATED_LIFECYCLE_INTERCEPTORS1, lifecycleAnnotation.getName(), controllerClass.getName());
 
-        for (Method lifecycleInterceptMethod : lifecycleInterceptMethods) {
-            LifecycleInterceptor lifecycleInterceptor = injector.getInstance(LifecycleInterceptor.class).build(lifecycleInterceptMethod.getAnnotation(lifecycleAnnotation), lifecycleInterceptMethod);
-            lifecycleInterceptorInterceptors.add(lifecycleInterceptor);
-        }
+        return (Set<LifecycleInterceptor>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            Set<LifecycleInterceptor> lifecycleInterceptorInterceptors = new LinkedHashSet<>();
+            Set<Method> lifecycleInterceptMethods = reflectionsWrapper.getMethodsAnnotatedWith(lifecycleAnnotation);
 
-        return lifecycleInterceptorInterceptors;
+            for (Method lifecycleInterceptMethod : lifecycleInterceptMethods) {
+                LifecycleInterceptor lifecycleInterceptor = injector.getInstance(LifecycleInterceptor.class).build(lifecycleInterceptMethod.getAnnotation(lifecycleAnnotation), lifecycleInterceptMethod);
+                lifecycleInterceptorInterceptors.add(lifecycleInterceptor);
+            }
+
+            return lifecycleInterceptorInterceptors;
+        });
     }
 
     @Override
     public Set<LifecycleInterceptor> locateLifecycleInterceptors(Class<? extends Annotation> lifecycleAnnotation) {
-        Set<LifecycleInterceptor> lifecycleInterceptorInterceptors = new LinkedHashSet<>();
-        Set<Class<?>> lifecycleInterceptTypes = reflectionsWrapper.getTypesAnnotatedWith(lifecycleAnnotation);
+        String cacheKey = String.format(CACHE_KEY_LOCATED_LIFECYCLE_INTERCEPTORS2, lifecycleAnnotation.getName());
 
-        for (Class<?> lifecycleInterceptType : lifecycleInterceptTypes) {
+        return (Set<LifecycleInterceptor>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            Set<LifecycleInterceptor> lifecycleInterceptorInterceptors = new LinkedHashSet<>();
+            Set<Class<?>> lifecycleInterceptTypes = reflectionsWrapper.getTypesAnnotatedWith(lifecycleAnnotation);
 
-            Method lifecycleInterceptMethod = interceptorMethod(lifecycleInterceptType);
-            LifecycleInterceptor lifecycleInterceptor = injector.getInstance(LifecycleInterceptor.class).build(lifecycleInterceptType.getAnnotation(lifecycleAnnotation), lifecycleInterceptMethod);
-            lifecycleInterceptorInterceptors.add(lifecycleInterceptor);
-        }
+            for (Class<?> lifecycleInterceptType : lifecycleInterceptTypes) {
 
-        return lifecycleInterceptorInterceptors;
+                Method lifecycleInterceptMethod = interceptorMethod(lifecycleInterceptType);
+                LifecycleInterceptor lifecycleInterceptor = injector.getInstance(LifecycleInterceptor.class).build(lifecycleInterceptType.getAnnotation(lifecycleAnnotation), lifecycleInterceptMethod);
+                lifecycleInterceptorInterceptors.add(lifecycleInterceptor);
+            }
+
+            return lifecycleInterceptorInterceptors;
+        });
     }
 
     protected Method interceptorMethod(Class<?> lifecycleInterceptType) {
@@ -240,7 +269,9 @@ public class DefaultReflectionProvider implements ReflectionProvider {
 
     @Override
     public Set<Class<?>> locateEvaluators() {
-        return reflectionsWrapper.getTypesAnnotatedWith(Evaluator.class, true);
+        return (Set<Class<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_EVALUATORS, () -> {
+            return reflectionsWrapper.getTypesAnnotatedWith(Evaluator.class, true);
+        });
     }
 
     @Override
@@ -268,15 +299,19 @@ public class DefaultReflectionProvider implements ReflectionProvider {
         if (controllerClass == null)
             return null;
 
-        Method[] methods = controllerClass.getMethods();
+        String cacheKey = String.format(CACHE_KEY_LOCATED_REQUEST_HANDLER_METHODS, controllerClass.getName());
 
-        Map<RequestMappingKey, Method> requestMappings = new LinkedHashMap<>();
+        Map<RequestMappingKey, Method> requestMappings = (Map<RequestMappingKey, Method>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            Map<RequestMappingKey, Method> mappings = new LinkedHashMap<>();
+            Method[] methods = controllerClass.getMethods();
 
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Request.class) || method.isAnnotationPresent(Path.class)) {
-                requestMappings.put(injector.getInstance(RequestMappingKey.class).build(controllerClass, method, annotations.requestMapping(method)), method);
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Request.class) || method.isAnnotationPresent(Path.class)) {
+                    mappings.put(injector.getInstance(RequestMappingKey.class).build(controllerClass, method, annotations.requestMapping(method)), method);
+                }
             }
-        }
+            return mappings;
+        });
 
         Stream<Entry<RequestMappingKey, Method>> stream = requestMappings.entrySet().stream();
 
@@ -292,294 +327,357 @@ public class DefaultReflectionProvider implements ReflectionProvider {
 
     @Override
     public Map<ConverterAdapterKey, ConverterAdapter<?>> locateConverterAdapters() {
-        Map<ConverterAdapterKey, ConverterAdapter<?>> converters = new LinkedHashMap<>();
+        return (Map<ConverterAdapterKey, ConverterAdapter<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_CONVERTER_ADAPTERS, () -> {
 
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+            Map<ConverterAdapterKey, ConverterAdapter<?>> converters = new LinkedHashMap<>();
 
-        List<Class<?>> converterClasses = new ArrayList<Class<?>>();
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
 
-        for (Class<?> adapterClass : adapterClasses) {
-            if (ConverterAdapter.class.isAssignableFrom(adapterClass))
-                converterClasses.add(adapterClass);
-        }
+            List<Class<?>> converterClasses = new ArrayList<Class<?>>();
 
-        converterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl1.getAnnotation(Adapter.class).weight());
-
-        for (Class<?> converterClass : converterClasses) {
-            Type[] inferfaces = converterClass.getGenericInterfaces();
-
-            for (Type type : inferfaces) {
-                if (type instanceof ParameterizedType) {
-                    Type rawClass = ((ParameterizedType) type).getRawType();
-
-                    if (rawClass == ConverterAdapter.class) {
-                        List<Class<?>> genericType = getGenericType(type);
-
-                        if (genericType.size() == 1) {
-                            converters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0)).weight(converterClass.getAnnotation(Adapter.class).weight()), (ConverterAdapter<?>) injector.getInstance(converterClass));
-                        } else if (genericType.size() > 1) {
-                            converters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0), genericType.subList(1, genericType.size())).weight(converterClass.getAnnotation(Adapter.class).weight()),
-                                    (ConverterAdapter<?>) injector.getInstance(converterClass));
-                        }
-                    }
-                }
+            for (Class<?> adapterClass : adapterClasses) {
+                if (ConverterAdapter.class.isAssignableFrom(adapterClass))
+                    converterClasses.add(adapterClass);
             }
-        }
 
-        Map<ConverterAdapterKey, ConverterAdapter<?>> sortedConverters = converters.entrySet().stream().sorted((e1, e2) -> e2.getKey().weight() - e1.getKey().weight())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+            converterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl1.getAnnotation(Adapter.class).weight());
 
-        return sortedConverters;
-    }
+            for (Class<?> converterClass : converterClasses) {
+                Type[] inferfaces = converterClass.getGenericInterfaces();
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<ParamAdapterKey, ParamAdapter<?>> locateParamAdapters() {
-        Map<ParamAdapterKey, ParamAdapter<?>> paramAdapters = new HashMap<>();
+                for (Type type : inferfaces) {
+                    if (type instanceof ParameterizedType) {
+                        Type rawClass = ((ParameterizedType) type).getRawType();
 
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+                        if (rawClass == ConverterAdapter.class) {
+                            List<Class<?>> genericType = getGenericType(type);
 
-        List<Class<?>> paramAdapterClasses = new ArrayList<Class<?>>();
-
-        for (Class<?> adapterClass : adapterClasses) {
-            if (ParamAdapter.class.isAssignableFrom(adapterClass))
-                paramAdapterClasses.add(adapterClass);
-        }
-
-        paramAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
-
-        for (Class<?> paramAdapterClass : paramAdapterClasses) {
-            Type[] inferfaces = paramAdapterClass.getGenericInterfaces();
-
-            for (Type type : inferfaces) {
-                if (type instanceof ParameterizedType) {
-                    Type rawClass = ((ParameterizedType) type).getRawType();
-
-                    if (rawClass == ParamAdapter.class || rawClass == TypedParamAdapter.class) {
-                        List<Class<?>> genericType = getGenericType(type);
-                        paramAdapters.put(injector.getInstance(ParamAdapterKey.class).build((Class<? extends Annotation>) genericType.get(0)), (ParamAdapter<?>) injector.getInstance(paramAdapterClass));
-                    }
-                }
-            }
-        }
-
-        return paramAdapters;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<ValidationAdapterKey, ValidationAdapter<?>> locateValidationAdapters() {
-        Map<ValidationAdapterKey, ValidationAdapter<?>> validationAdapters = new HashMap<>();
-
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
-
-        List<Class<?>> validationAdapterClasses = new ArrayList<Class<?>>();
-
-        for (Class<?> adapterClass : adapterClasses) {
-            if (ValidationAdapter.class.isAssignableFrom(adapterClass))
-                validationAdapterClasses.add(adapterClass);
-        }
-
-        validationAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
-
-        for (Class<?> validationAdapterClass : validationAdapterClasses) {
-            Type[] inferfaces = validationAdapterClass.getGenericInterfaces();
-
-            for (Type type : inferfaces) {
-                if (type instanceof ParameterizedType) {
-                    Type rawClass = ((ParameterizedType) type).getRawType();
-
-                    if (rawClass == ValidationAdapter.class) {
-                        List<Class<?>> genericType = getGenericType(type);
-                        validationAdapters.put(injector.getInstance(ValidationAdapterKey.class).build((Class<? extends Annotation>) genericType.get(0)), (ValidationAdapter<?>) injector.getInstance(validationAdapterClass));
-                    }
-                }
-            }
-        }
-
-        return validationAdapters;
-    }
-
-    @Override
-    public Set<Validator> locateBeanValidators(Class<?> forType) {
-        Set<Validator> validators = new LinkedHashSet<>();
-        List<Class<?>> validatorClasses = new ArrayList<>(reflectionsWrapper.getTypesAnnotatedWith(CheckBean.class, true));
-
-        validatorClasses.sort((cl1, cl2) -> cl1.getAnnotation(CheckBean.class).weight() - cl2.getAnnotation(CheckBean.class).weight());
-
-        for (Class<?> validatorClass : validatorClasses) {
-            CheckBean checkBean = validatorClass.getAnnotation(CheckBean.class);
-
-            if (((checkBean.value() != Object.class && checkBean.value() == forType) || (checkBean.type() != Object.class && checkBean.type() == forType)) && Validator.class.isAssignableFrom(validatorClass)) {
-                validators.add((Validator) injector.getInstance(validatorClass));
-            }
-        }
-
-        return validators;
-    }
-
-    @Override
-    public Map<String, ViewAdapter> locateViewAdapters() {
-        Map<String, ViewAdapter> viewAdapters = new HashMap<>();
-
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
-
-        List<Class<?>> viewAdapterClasses = new ArrayList<Class<?>>();
-
-        for (Class<?> viewClass : adapterClasses) {
-            if (ViewAdapter.class.isAssignableFrom(viewClass))
-                viewAdapterClasses.add(viewClass);
-        }
-
-        viewAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
-
-        for (Class<?> viewAdapterClass : viewAdapterClasses) {
-            ViewAdapter viewAdapter = (ViewAdapter) injector.getInstance(viewAdapterClass);
-            viewAdapters.put(viewAdapter.name(), viewAdapter);
-        }
-
-        return viewAdapters;
-    }
-
-    @Override
-    public Map<String, DataAdapter> locateDataAdapters() {
-        Map<String, DataAdapter> dataAdapters = new HashMap<>();
-
-        Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
-
-        List<Class<?>> dataAdapterClasses = new ArrayList<Class<?>>();
-
-        for (Class<?> dataAdapterClass : adapterClasses) {
-            if (DataAdapter.class.isAssignableFrom(dataAdapterClass))
-                dataAdapterClasses.add(dataAdapterClass);
-        }
-
-        dataAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
-
-        for (Class<?> dataAdapterClass : dataAdapterClasses) {
-            DataAdapter dataAdapter = (DataAdapter) injector.getInstance(dataAdapterClass);
-            dataAdapters.put(dataAdapter.name(), dataAdapter);
-        }
-
-        return dataAdapters;
-    }
-
-    @Override
-    public List<Class<?>> getGenericType(Type[] inferfaces) {
-        for (Type type : inferfaces) {
-            if (type instanceof ParameterizedType) {
-                Type rawClass = ((ParameterizedType) type).getRawType();
-
-                if (rawClass == ConverterAdapter.class) {
-                    return getGenericType(type);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<Class<?>> getGenericType(Type genericType) {
-        List<Class<?>> ret = null;
-
-        if (genericType instanceof ParameterizedType) {
-            Type[] argTypes = ((ParameterizedType) genericType).getActualTypeArguments();
-
-            if (argTypes != null && argTypes.length > 0) {
-                ret = new ArrayList<>();
-
-                for (Type argType : argTypes) {
-                    if (argType instanceof Class<?>) {
-                        ret.add((Class<?>) argType);
-                    } else if (argType instanceof ParameterizedType) {
-                        ret.add((Class<?>) ((ParameterizedType) argType).getRawType());
-
-                        Type[] nestedArgTypes = ((ParameterizedType) argType).getActualTypeArguments();
-
-                        for (Type nestedArgType : nestedArgTypes) {
-                            if (nestedArgType instanceof Class<?>) {
-                                ret.add((Class<?>) nestedArgType);
-                            } else if (nestedArgType instanceof ParameterizedType) {
-                                ret.add((Class<?>) ((ParameterizedType) nestedArgType).getRawType());
+                            if (genericType.size() == 1) {
+                                converters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0)).weight(converterClass.getAnnotation(Adapter.class).weight()), (ConverterAdapter<?>) injector.getInstance(converterClass));
+                            } else if (genericType.size() > 1) {
+                                converters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0), genericType.subList(1, genericType.size())).weight(converterClass.getAnnotation(Adapter.class).weight()),
+                                        (ConverterAdapter<?>) injector.getInstance(converterClass));
                             }
                         }
                     }
                 }
             }
-        }
 
-        return ret;
+            Map<ConverterAdapterKey, ConverterAdapter<?>> sortedConverters = converters.entrySet().stream().sorted((e1, e2) -> e2.getKey().weight() - e1.getKey().weight())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+            return sortedConverters;
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<ParamAdapterKey, ParamAdapter<?>> locateParamAdapters() {
+        return (Map<ParamAdapterKey, ParamAdapter<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_PARAM_ADAPTERS, () -> {
+            Map<ParamAdapterKey, ParamAdapter<?>> paramAdapters = new HashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> paramAdapterClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> adapterClass : adapterClasses) {
+                if (ParamAdapter.class.isAssignableFrom(adapterClass))
+                    paramAdapterClasses.add(adapterClass);
+            }
+
+            paramAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> paramAdapterClass : paramAdapterClasses) {
+                Type[] inferfaces = paramAdapterClass.getGenericInterfaces();
+
+                for (Type type : inferfaces) {
+                    if (type instanceof ParameterizedType) {
+                        Type rawClass = ((ParameterizedType) type).getRawType();
+
+                        if (rawClass == ParamAdapter.class || rawClass == TypedParamAdapter.class) {
+                            List<Class<?>> genericType = getGenericType(type);
+                            paramAdapters.put(injector.getInstance(ParamAdapterKey.class).build((Class<? extends Annotation>) genericType.get(0)), (ParamAdapter<?>) injector.getInstance(paramAdapterClass));
+                        }
+                    }
+                }
+            }
+
+            return paramAdapters;
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<ValidationAdapterKey, ValidationAdapter<?>> locateValidationAdapters() {
+        return (Map<ValidationAdapterKey, ValidationAdapter<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_VALIDATION_ADAPTERS, () -> {
+            Map<ValidationAdapterKey, ValidationAdapter<?>> validationAdapters = new HashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> validationAdapterClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> adapterClass : adapterClasses) {
+                if (ValidationAdapter.class.isAssignableFrom(adapterClass))
+                    validationAdapterClasses.add(adapterClass);
+            }
+
+            validationAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> validationAdapterClass : validationAdapterClasses) {
+                Type[] inferfaces = validationAdapterClass.getGenericInterfaces();
+
+                for (Type type : inferfaces) {
+                    if (type instanceof ParameterizedType) {
+                        Type rawClass = ((ParameterizedType) type).getRawType();
+
+                        if (rawClass == ValidationAdapter.class) {
+                            List<Class<?>> genericType = getGenericType(type);
+                            validationAdapters.put(injector.getInstance(ValidationAdapterKey.class).build((Class<? extends Annotation>) genericType.get(0)), (ValidationAdapter<?>) injector.getInstance(validationAdapterClass));
+                        }
+                    }
+                }
+            }
+
+            return validationAdapters;
+        });
+    }
+
+    @Override
+    public Set<Validator> locateBeanValidators(Class<?> forType) {
+        String cacheKey = String.format(CACHE_KEY_LOCATED_BEAN_VALIDATORS, forType.getName());
+
+        return (Set<Validator>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+
+            Set<Validator> validators = new LinkedHashSet<>();
+            List<Class<?>> validatorClasses = new ArrayList<>(reflectionsWrapper.getTypesAnnotatedWith(CheckBean.class, true));
+
+            validatorClasses.sort((cl1, cl2) -> cl1.getAnnotation(CheckBean.class).weight() - cl2.getAnnotation(CheckBean.class).weight());
+
+            for (Class<?> validatorClass : validatorClasses) {
+                CheckBean checkBean = validatorClass.getAnnotation(CheckBean.class);
+
+                if (((checkBean.value() != Object.class && checkBean.value() == forType) || (checkBean.type() != Object.class && checkBean.type() == forType)) && Validator.class.isAssignableFrom(validatorClass)) {
+                    validators.add((Validator) injector.getInstance(validatorClass));
+                }
+            }
+
+            return validators;
+        });
+    }
+
+    @Override
+    public Map<String, ViewAdapter> locateViewAdapters() {
+        return (Map<String, ViewAdapter>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_VIEW_ADAPTERS, () -> {
+            Map<String, ViewAdapter> viewAdapters = new HashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> viewAdapterClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> viewClass : adapterClasses) {
+                if (ViewAdapter.class.isAssignableFrom(viewClass))
+                    viewAdapterClasses.add(viewClass);
+            }
+
+            viewAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> viewAdapterClass : viewAdapterClasses) {
+                ViewAdapter viewAdapter = (ViewAdapter) injector.getInstance(viewAdapterClass);
+                viewAdapters.put(viewAdapter.name(), viewAdapter);
+            }
+
+            return viewAdapters;
+        });
+    }
+
+    @Override
+    public Map<String, DataAdapter> locateDataAdapters() {
+        return (Map<String, DataAdapter>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_DATA_ADAPTERS, () -> {
+            Map<String, DataAdapter> dataAdapters = new HashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> dataAdapterClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> dataAdapterClass : adapterClasses) {
+                if (DataAdapter.class.isAssignableFrom(dataAdapterClass))
+                    dataAdapterClasses.add(dataAdapterClass);
+            }
+
+            dataAdapterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl2.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> dataAdapterClass : dataAdapterClasses) {
+                DataAdapter dataAdapter = (DataAdapter) injector.getInstance(dataAdapterClass);
+                dataAdapters.put(dataAdapter.name(), dataAdapter);
+            }
+
+            return dataAdapters;
+        });
+    }
+
+    @Override
+    public List<Class<?>> getGenericType(Type[] inferfaces) {
+        String cacheKey = String.format(CACHE_KEY_GENERIC_TYPE1, Arrays.toString(inferfaces));
+
+        return (List<Class<?>>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            for (Type type : inferfaces) {
+                if (type instanceof ParameterizedType) {
+                    Type rawClass = ((ParameterizedType) type).getRawType();
+
+                    if (rawClass == ConverterAdapter.class) {
+                        return getGenericType(type);
+                    }
+                }
+            }
+
+            return null;
+        });
+    }
+
+    @Override
+    public List<Class<?>> getGenericType(Type genericType) {
+        String cacheKey = String.format(CACHE_KEY_GENERIC_TYPE2, genericType.getTypeName());
+
+        return (List<Class<?>>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            List<Class<?>> ret = null;
+
+            if (genericType instanceof ParameterizedType) {
+                Type[] argTypes = ((ParameterizedType) genericType).getActualTypeArguments();
+
+                if (argTypes != null && argTypes.length > 0) {
+                    ret = new ArrayList<>();
+
+                    for (Type argType : argTypes) {
+                        if (argType instanceof Class<?>) {
+                            ret.add((Class<?>) argType);
+                        } else if (argType instanceof ParameterizedType) {
+                            ret.add((Class<?>) ((ParameterizedType) argType).getRawType());
+
+                            Type[] nestedArgTypes = ((ParameterizedType) argType).getActualTypeArguments();
+
+                            for (Type nestedArgType : nestedArgTypes) {
+                                if (nestedArgType instanceof Class<?>) {
+                                    ret.add((Class<?>) nestedArgType);
+                                } else if (nestedArgType instanceof ParameterizedType) {
+                                    ret.add((Class<?>) ((ParameterizedType) nestedArgType).getRawType());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        });
     }
 
     @Override
     public List<Class<?>> getGenericType(Class<?> type, String propertyName) {
-        List<Class<?>> genericType = null;
-        Field field = getField(type, propertyName);
+        String cacheKey = String.format(CACHE_KEY_GENERIC_TYPE3, type.getTypeName(), propertyName);
 
-        if (field != null) {
-            genericType = getGenericType(field.getGenericType());
-        } else {
-            PropertyDescriptor pd = getPropertyDescriptor(type, propertyName);
+        return (List<Class<?>>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            List<Class<?>> genericType = null;
+            Field field = getField(type, propertyName);
 
-            if (pd != null) {
-                Method readMethod = pd.getReadMethod();
+            if (field != null) {
+                genericType = getGenericType(field.getGenericType());
+            } else {
+                PropertyDescriptor pd = getPropertyDescriptor(type, propertyName);
 
-                if (readMethod != null) {
-                    genericType = getGenericType(readMethod.getGenericReturnType());
-                } else {
-                    Method writeMethod = pd.getWriteMethod();
+                if (pd != null) {
+                    Method readMethod = pd.getReadMethod();
 
-                    if (writeMethod != null)
-                        genericType = getGenericType(writeMethod.getGenericReturnType());
+                    if (readMethod != null) {
+                        genericType = getGenericType(readMethod.getGenericReturnType());
+                    } else {
+                        Method writeMethod = pd.getWriteMethod();
+
+                        if (writeMethod != null)
+                            genericType = getGenericType(writeMethod.getGenericReturnType());
+                    }
                 }
+            }
+
+            return genericType;
+        });
+    }
+
+    @Override
+    public String toString(Class<?> clazz, Type parameterizedType) {
+        StringBuilder str = new StringBuilder(clazz.getName());
+
+        if (parameterizedType != null) {
+            List<Class<?>> genericType = getGenericType(parameterizedType);
+
+            if (genericType != null && !genericType.isEmpty()) {
+                str.append(Char.LESS_THAN);
+
+                int x = 0;
+                for (Class<?> gt : genericType) {
+                    if (x > 0)
+                        str.append(", ");
+
+                    str.append(gt.getName());
+                    x++;
+                }
+
+                str.append(Char.GREATER_THAN);
             }
         }
 
-        return genericType;
+        return str.toString();
     }
 
     @Override
     public Set<Field> getMutableFields(Class<?> clazz) {
-        Set<Field> fields = new LinkedHashSet<>();
-        Class<?> current = clazz;
+        String cacheKey = String.format(CACHE_KEY_MUTABLE_FIELDS, clazz.getName());
 
-        while (current != null && current != Object.class) {
+        return (Set<Field>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
+            Set<Field> fields = new LinkedHashSet<>();
+            Class<?> current = clazz;
 
-            Field[] allFields = current.getDeclaredFields();
+            while (current != null && current != Object.class) {
 
-            for (Field field : allFields) {
-                if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())) {
-                    field.setAccessible(true);
-                    fields.add(field);
+                Field[] allFields = current.getDeclaredFields();
+
+                for (Field field : allFields) {
+                    if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())) {
+                        field.setAccessible(true);
+                        fields.add(field);
+                    }
                 }
+
+                current = current.getSuperclass();
             }
 
-            current = current.getSuperclass();
-        }
-
-        return fields;
+            return fields;
+        });
     }
 
     @Override
     public Set<Field> getFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClass) {
-        Set<Field> fields = new LinkedHashSet<>();
-        Class<?> current = clazz;
+        String cacheKey = String.format(CACHE_KEY_FIELDS_ANNOTATED_WITH, clazz.getName(), annotationClass.getName());
 
-        while (current != null && current != Object.class) {
-            Field[] allFields = current.getDeclaredFields();
+        return (Set<Field>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
 
-            for (Field field : allFields) {
-                if (field.isAnnotationPresent(annotationClass)) {
-                    field.setAccessible(true);
-                    fields.add(field);
+            Set<Field> fields = new LinkedHashSet<>();
+            Class<?> current = clazz;
+
+            while (current != null && current != Object.class) {
+                Field[] allFields = current.getDeclaredFields();
+
+                for (Field field : allFields) {
+                    if (field.isAnnotationPresent(annotationClass)) {
+                        field.setAccessible(true);
+                        fields.add(field);
+                    }
                 }
+
+                current = current.getSuperclass();
             }
 
-            current = current.getSuperclass();
-        }
-
-        return fields;
+            return fields;
+        });
     }
 
     @Override

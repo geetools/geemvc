@@ -16,6 +16,17 @@
 
 package com.cb.geemvc.handler;
 
+import com.cb.geemvc.Str;
+import com.cb.geemvc.annotation.Request;
+import com.cb.geemvc.bind.MethodParam;
+import com.cb.geemvc.helper.Annotations;
+import com.cb.geemvc.matcher.PathMatcher;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import jodd.paramo.MethodParameter;
+import jodd.paramo.Paramo;
+
+import javax.ws.rs.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -23,24 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-
-import jodd.paramo.MethodParameter;
-import jodd.paramo.Paramo;
-
-import com.cb.geemvc.annotation.Request;
-import com.cb.geemvc.bind.MethodParam;
-import com.cb.geemvc.helper.Annotations;
-import com.cb.geemvc.matcher.PathMatcher;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 public class DefaultRequestHandler implements RequestHandler {
     protected Class<?> controllerClass = null;
@@ -55,10 +48,10 @@ public class DefaultRequestHandler implements RequestHandler {
     protected String produces = null;
     protected List<MethodParam> methodParams = null;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
     public RequestHandler build(Class<?> controllerClass, Method method, String consumes, String produces) {
         if (!isInitialized) {
@@ -251,7 +244,11 @@ public class DefaultRequestHandler implements RequestHandler {
 
     @Override
     public String toString() {
-        return "DefaultRequestHandler [controllerClass=" + controllerClass + ", method=" + method + ", name=" + name + ", pathMatcher=" + pathMatcher + ", resolvedParameters=" + resolvedParameters + ", resolvedHeaders=" + resolvedHeaders
-                + ", resolvedCookies=" + resolvedCookies + ", resolvedHandlesScripts=" + resolvedHandlesScripts + ", consumes=" + consumes + ", produces=" + produces + "]";
+        return controllerClass().getName() + Str.HASH + handlerMethod().getName() + Str.BRACKET_OPEN_CLOSE;
+    }
+
+    @Override
+    public String toGenericString() {
+        return handlerMethod().toGenericString();
     }
 }

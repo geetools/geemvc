@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 import com.cb.geemvc.Str;
 
 public class DefaultRequestHandlerKey implements RequestHandlerKey {
-    private String key = null;
-    private boolean isInitialized = false;
+    protected String key = null;
+    protected boolean isInitialized = false;
 
     @Override
     public RequestHandlerKey build(Class<?> controllerClass, Method method) {

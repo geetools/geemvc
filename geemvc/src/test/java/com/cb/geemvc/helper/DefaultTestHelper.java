@@ -29,7 +29,7 @@ import com.google.inject.Injector;
 
 public class DefaultTestHelper implements TestHelper {
     @Inject
-    private Injector injector;
+    protected Injector injector;
 
     @Override
     public RequestContext newRequestContext(String contextPath, String servletPath, String requestURI) {

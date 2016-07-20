@@ -16,44 +16,96 @@
 
 package com.cb.geemvc.cache;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class DefaultCache implements Cache {
     protected static final Map<Object, com.google.common.cache.Cache> caches = new ConcurrentHashMap<>();
 
     protected static final String DEFAULT_CACHE_NAME = "__DEFAULT_CACHE";
 
+    @Inject
+    protected Injector injector;
+
     @Override
     public void put(Object key, Object value) {
-        cache(DEFAULT_CACHE_NAME).put(key, value);
+        cache(DEFAULT_CACHE_NAME).put(key, injector.getInstance(CacheEntry.class).build(value));
     }
 
     @Override
     public void put(Object cacheKey, Object key, Object value) {
-        cache(cacheKey).put(key, value);
+        cache(cacheKey).put(key, injector.getInstance(CacheEntry.class).build(value));
     }
 
     @Override
     public Object putIfAbsent(Object key, Object value) {
-        cache(DEFAULT_CACHE_NAME).put(key, value);
+        cache(DEFAULT_CACHE_NAME).put(key, injector.getInstance(CacheEntry.class).build(value));
         return true;
     }
 
     @Override
     public Object putIfAbsent(Object cacheKey, Object key, Object value) {
-        cache(cacheKey).put(key, value);
+        cache(cacheKey).put(key, injector.getInstance(CacheEntry.class).build(value));
         return true;
     }
 
     @Override
     public Object get(Object key) {
-        return cache(DEFAULT_CACHE_NAME).getIfPresent(key);
+        CacheEntry entry = cache(DEFAULT_CACHE_NAME).getIfPresent(key);
+        return entry == null ? null : entry.get();
+    }
+
+    @Override
+    public Object get(Object key, Callable callable) {
+        CacheEntry entry = null;
+        try {
+            entry = cache(DEFAULT_CACHE_NAME).get(key, wrap(callable));
+        } catch (IllegalStateException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        return entry == null ? null : entry.get();
     }
 
     @Override
     public Object get(Object cacheKey, Object key) {
-        return cache(cacheKey).getIfPresent(key);
+        CacheEntry entry = cache(cacheKey).getIfPresent(key);
+        return entry == null ? null : entry.get();
+    }
+
+    @Override
+    public Object get(Object cacheKey, Object key, Callable callable) {
+        CacheEntry entry = null;
+
+        try {
+            entry = cache(cacheKey).get(key, wrap(callable));
+        } catch (IllegalStateException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        return entry == null ? null : entry.get();
+    }
+
+    protected Callable wrap(Callable callable) {
+        return () -> {
+            try {
+                final Object val = callable.call();
+                return injector.getInstance(CacheEntry.class).build(val);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        };
     }
 
     @Override
@@ -86,27 +138,16 @@ public class DefaultCache implements Cache {
         cache(cacheKey).invalidateAll();
     }
 
-    protected com.google.common.cache.Cache cache(Object cacheKey) {
-//        org.cache2k.Cache<Object, Object> cache = caches.get(cacheKey);
-
-        com.google.common.cache.Cache<Object, Object> cache = caches.get(cacheKey);
+    protected com.google.common.cache.Cache<Object, CacheEntry> cache(Object cacheKey) {
+        com.google.common.cache.Cache<Object, CacheEntry> cache = caches.get(cacheKey);
 
         if (cache == null) {
-            com.google.common.cache.Cache<Object, Object> newCache = com.google.common.cache.CacheBuilder.newBuilder()
-                    .maximumSize(100000).build();
 
-/*
-            org.cache2k.Cache<Object, Object> newCache =
-                    CacheBuilder.newCache(Object.class, Object.class)
-                            .eternal(true)
+            com.google.common.cache.Cache newCache =
+                    CacheBuilder.newBuilder()
+                            .maximumSize(100000)
                             .build();
 
-            org.cache2k.Cache<Object, Object> newCache = Cache2kBuilder.of(Object.class, Object.class)
-                    .name(cacheKey.toString())
-                    .entryCapacity(100000)
-                    .eternal(true)
-                    .build();
-*/
             cache = caches.putIfAbsent(cacheKey, newCache);
 
             if (cache == null)

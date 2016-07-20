@@ -55,15 +55,9 @@ public class DefaultSimpleControllerResolver implements SimpleControllerResolver
 
     @Override
     public Map<PathMatcherKey, Class<?>> allControllers() {
-        Map<PathMatcherKey, Class<?>> controllers = (Map<PathMatcherKey, Class<?>>) cache.get(SimpleControllerResolver.class, CONTROLLERS_CACHE_KEY);
-
-        if (controllers == null) {
-            controllers = toMap(reflectionProvider.locateControllers());
-
-            cache.putIfAbsent(SimpleControllerResolver.class, CONTROLLERS_CACHE_KEY, controllers);
-        }
-
-        return controllers;
+        return (Map<PathMatcherKey, Class<?>>) cache.get(DefaultSimpleControllerResolver.class, CONTROLLERS_CACHE_KEY, () -> {
+            return toMap(reflectionProvider.locateControllers());
+        });
     }
 
     @Override

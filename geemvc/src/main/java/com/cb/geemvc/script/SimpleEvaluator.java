@@ -32,7 +32,7 @@ public class SimpleEvaluator extends AbstractEvaluator {
 
     protected Pattern isRegexPattern = Pattern.compile("^.+=[ ]*\\/.+\\/[gi]*$");
 
-    private static final String NOT_EQUALS_OPERATOR = "!=";
+    protected static final String NOT_EQUALS_OPERATOR = "!=";
 
     @Override
     public SimpleEvaluator build(String expression) {

@@ -20,7 +20,9 @@ import com.cb.geemvc.*;
 import com.cb.geemvc.bind.*;
 import com.cb.geemvc.bind.param.*;
 import com.cb.geemvc.cache.Cache;
+import com.cb.geemvc.cache.CacheEntry;
 import com.cb.geemvc.cache.DefaultCache;
+import com.cb.geemvc.cache.DefaultCacheEntry;
 import com.cb.geemvc.config.Configuration;
 import com.cb.geemvc.config.DefaultConfiguration;
 import com.cb.geemvc.converter.*;
@@ -59,6 +61,7 @@ public class GeemvcModule extends AbstractModule {
         configureLoggerTypeListener();
         configureConfiguration();
         configureCache();
+        configureCacheEntry();
         configureRequestRunner();
         configureRequestContext();
         configurePathOnlyRequestContext();
@@ -270,6 +273,10 @@ public class GeemvcModule extends AbstractModule {
 
     protected void configureCache() {
         bind(Cache.class).to(DefaultCache.class);
+    }
+
+    protected void configureCacheEntry() {
+        bind(CacheEntry.class).to(DefaultCacheEntry.class);
     }
 
     protected void configureCompositeControllerResolver() {

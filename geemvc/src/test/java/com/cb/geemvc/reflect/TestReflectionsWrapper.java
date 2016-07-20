@@ -36,10 +36,6 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class TestReflectionsWrapper extends DefaultReflectionsWrapper {
-    @Inject
-    public TestReflectionsWrapper(Cache cache) {
-        super(cache);
-    }
 
     @Override
     public ReflectionsWrapper configure() {

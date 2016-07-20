@@ -69,4 +69,6 @@ public interface RequestHandler extends Comparable<RequestHandler> {
     List<MethodParam> methodParams();
 
     Object invoke(Map<String, Object> args);
+
+    String toGenericString();
 }

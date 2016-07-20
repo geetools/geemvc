@@ -35,7 +35,7 @@ public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
 
     protected RequestHandler requestHandler;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     @Override
     public RequestContext build(ServletRequest request, ServletResponse response, ServletContext servletContext) {

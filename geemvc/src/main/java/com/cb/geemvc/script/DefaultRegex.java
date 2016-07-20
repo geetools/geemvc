@@ -20,8 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DefaultRegex implements Regex {
-    private String expression = null;
-    private Pattern pattern = null;
+    protected String expression = null;
+    protected Pattern pattern = null;
 
     @Override
     public Regex build(String expression) {

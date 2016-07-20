@@ -41,9 +41,8 @@ public class DefaultControllers implements Controllers {
     @Override
     public String getBasePath(Class<?> controllerClass) {
         String cacheKey = String.format(BASE_PATH_CACHE_KEY, controllerClass.getName());
-        String basePath = (String) cache.get(cacheKey);
 
-        if (basePath == null) {
+        return (String) cache.get(DefaultControllers.class, cacheKey, () -> {
             String newBasePath = null;
             Request typeRequestMapping = controllerClass.getAnnotation(Request.class);
 
@@ -60,14 +59,8 @@ public class DefaultControllers implements Controllers {
                 newBasePath = basePaths == null || basePaths.length == 0 ? Str.EMPTY : basePaths[0].trim();
             }
 
-//            basePath = (String)
-                    cache.putIfAbsent(cacheKey, newBasePath);
-
-            if (basePath == null)
-                basePath = newBasePath;
-        }
-
-        return basePath;
+            return newBasePath;
+        });
     }
 
     @Override

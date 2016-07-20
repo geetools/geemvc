@@ -16,18 +16,6 @@
 
 package com.cb.geemvc.reflect;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-
-import org.reflections.Reflections;
-
 import com.cb.geemvc.Str;
 import com.cb.geemvc.ThreadStash;
 import com.cb.geemvc.cache.Cache;
@@ -35,31 +23,30 @@ import com.cb.geemvc.config.Configuration;
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.reflections.Reflections;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 @Singleton
 public class DefaultReflectionsWrapper implements ReflectionsWrapper {
-    protected final Cache cache;
+
     protected Reflections reflections;
 
     @Inject
-    public DefaultReflectionsWrapper(Cache cache) {
-        this.cache = cache;
-    }
+    protected Cache cache;
+
+    protected static final String REFLECTIONS_CACHE_KEY = "geemvc/reflections";
 
     @Override
     public ReflectionsWrapper configure() {
-
-        reflections = (Reflections) cache.get(Reflections.class.getName());
-
-        if (reflections == null) {
-
-            reflections = reflections();
-
-            Reflections cachedReflections = (Reflections) cache.putIfAbsent(Reflections.class.getName(), reflections);
-
-            if (cachedReflections != null)
-                reflections = cachedReflections;
-        }
+        reflections = (Reflections) cache.get(DefaultReflectionsWrapper.class, REFLECTIONS_CACHE_KEY, () -> reflections());
 
         if (reflections == null)
             throw new IllegalStateException("Unable to initialize reflections. Make sure that you have provided the correct lib, classes and classLoaders.");

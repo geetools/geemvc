@@ -161,6 +161,11 @@ public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
     }
 
     @Override
+    public String toGenericString() {
+        return requestHandler.toGenericString();
+    }
+
+    @Override
     public int compareTo(RequestHandler rh) {
         int p1 = handlerRequestMapping().priority();
         int p2 = rh.handlerRequestMapping().priority();

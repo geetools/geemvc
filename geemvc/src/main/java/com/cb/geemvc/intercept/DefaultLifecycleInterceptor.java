@@ -18,6 +18,7 @@ package com.cb.geemvc.intercept;
 
 import com.cb.geemvc.Bindings;
 import com.cb.geemvc.RequestContext;
+import com.cb.geemvc.Str;
 import com.cb.geemvc.helper.Annotations;
 import com.cb.geemvc.intercept.annotation.*;
 import com.cb.geemvc.reflect.ReflectionProvider;
@@ -36,7 +37,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Michael on 13.07.2016.
@@ -148,14 +152,19 @@ public class DefaultLifecycleInterceptor implements LifecycleInterceptor {
             if (genericType != null && genericType.size() == 2 && String.class == genericType.get(0) && String[].class == genericType.get(1)) {
                 return request.getParameterMap();
             } else {
-                throw new IllegalStateException("The @Context annotation only support a map of type Map<String, String[]> which provides the request parameter map.");
+                throw new IllegalStateException("The interceptor method only support a map of type Map<String, String[]> which provides the request parameter map.");
             }
         } else {
-            throw new IllegalStateException("The @Context annotation does not support the type: " + type);
+            throw new IllegalStateException("The interceptor method does not support the type: " + type);
         }
     }
 
     protected Object instance() {
         return injector.getInstance(interceptMethod.getDeclaringClass());
+    }
+
+    @Override
+    public String toString() {
+        return interceptMethod.getDeclaringClass().getName() + Str.HASH + interceptMethod.getName() + Str.BRACKET_OPEN_CLOSE;
     }
 }

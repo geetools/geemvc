@@ -21,12 +21,12 @@ import java.util.Collection;
 public class DefaultHandlerResolverStats implements HandlerResolverStats {
     private static final long serialVersionUID = 139759354949935010L;
 
-    private Collection<String> resolvedParameters = null;
-    private Collection<String> resolvedHeaders = null;
-    private Collection<String> resolvedCookes = null;
-    private Collection<String> resolvedHandlesScripts = null;
+    protected Collection<String> resolvedParameters = null;
+    protected Collection<String> resolvedHeaders = null;
+    protected Collection<String> resolvedCookes = null;
+    protected Collection<String> resolvedHandlesScripts = null;
 
-    private boolean isInitialized = false;
+    protected boolean isInitialized = false;
 
     public HandlerResolverStats build(Collection<String> resolvedParameters, Collection<String> resolvedHeaders, Collection<String> resolvedCookes, Collection<String> resolvedHandlesScripts) {
         if (!isInitialized) {
