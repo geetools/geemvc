@@ -28,8 +28,10 @@ import com.google.inject.Injector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DefaultValidations implements Validations {
 
@@ -63,7 +65,7 @@ public class DefaultValidations implements Validations {
         if (handlerMethod.getAnnotations().length > 0)
             allAnnotations.addAll(annotations.explodeAnnotations(handlerMethod.getAnnotations()));
 
-        List<Validation> validations = toValidations(allAnnotations, null, null);
+        List<Validation> validations = toValidations(allAnnotations.toArray(new Annotation[allAnnotations.size()]), null, null);
 
         return allValidations;
     }
@@ -87,7 +89,7 @@ public class DefaultValidations implements Validations {
             On onAnnotation = onAnnotation(methodParam.annotations());
             String[] on = onAnnotation == null ? null : onAnnotation.value();
 
-            List<Validation> validations = toValidations(Arrays.asList(methodParamAnnotations), methodParam.name(), on);
+            List<Validation> validations = toValidations(methodParamAnnotations, methodParam.name(), on);
             allValidations.addAll(validations);
         }
 
@@ -109,7 +111,7 @@ public class DefaultValidations implements Validations {
             On onAnnotation = field.getAnnotation(On.class);
             String[] on = onAnnotation == null ? null : onAnnotation.value();
 
-            List<Validation> validations = toValidations(Arrays.asList(fieldAnnotations), propertyName, on);
+            List<Validation> validations = toValidations(fieldAnnotations, propertyName, on);
             allValidations.addAll(validations);
         }
 
@@ -117,15 +119,15 @@ public class DefaultValidations implements Validations {
     }
 
     @Override
-    public List<Validation> toValidations(List<Annotation> annotationList, String propertyName, String[] on) {
-        if (annotationList == null || annotationList.size() == 0)
+    public List<Validation> toValidations(Annotation[] annotationArr, String propertyName, String[] on) {
+        if (annotationArr == null || annotationArr.length == 0)
             return null;
 
         Map<ValidationAdapterKey, ValidationAdapter<? extends Annotation>> validationAdapters = reflectionProvider.locateValidationAdapters();
 
         List<Validation> validations = new ArrayList<>();
 
-        List<Annotation> validationAnnotations = validationAnnotations(annotationList);
+        List<Annotation> validationAnnotations = validationAnnotations(annotationArr);
 
         if (validationAnnotations != null && !validationAnnotations.isEmpty()) {
             for (Annotation validationAnnotation : validationAnnotations) {
@@ -151,10 +153,19 @@ public class DefaultValidations implements Validations {
     }
 
     @Override
-    public List<Annotation> validationAnnotations(Collection<Annotation> annotations) {
-        if (annotations == null || annotations.size() == 0)
+    public List<Annotation> validationAnnotations(Annotation[] annotations) {
+        if (annotations == null || annotations.length == 0)
             return null;
 
-        return annotations.stream().filter(a -> validationAdapterFactory.exists(a.annotationType())).collect(Collectors.toCollection(ArrayList::new));
+        List<Annotation> explodedAnnotations = this.annotations.explodeAnnotations(annotations);
+        List<Annotation> filteredAnnotations = new ArrayList<>();
+
+        for (Annotation annotation : explodedAnnotations) {
+            if (validationAdapterFactory.exists(annotation.annotationType())) {
+                filteredAnnotations.add(annotation);
+            }
+        }
+
+        return filteredAnnotations;
     }
 }

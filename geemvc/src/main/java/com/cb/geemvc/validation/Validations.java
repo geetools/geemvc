@@ -34,9 +34,9 @@ public interface Validations {
 
     List<Validation> forBeanFields(Class<?> type, String name);
 
-    List<Validation> toValidations(List<Annotation> annotations, String propertyName, String[] on);
+    List<Validation> toValidations(Annotation[] annotations, String propertyName, String[] on);
 
     On onAnnotation(Annotation[] annotations);
 
-    List<Annotation> validationAnnotations(Collection<Annotation> annotations);
+    List<Annotation> validationAnnotations(Annotation[] annotations);
 }
