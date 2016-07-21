@@ -39,6 +39,8 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
     protected String actionSuffix = "Action";
 
+    protected String noLocale = "NONE";
+
     protected final ReflectionProvider reflectionProvider;
 
     @Inject
@@ -70,10 +72,11 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
     @Override
     public String resolve(String messageKey, Locale locale, RequestContext requestCtx, boolean failQuietly) {
+        String localeStr = locale == null ? noLocale : locale.toString();
 
-        log.trace("Attempting to resolve message '{}' using locale '{}'.", () -> messageKey, () -> locale);
+        log.trace("Attempting to resolve message '{}' using locale '{}'.", () -> messageKey, () -> localeStr);
 
-        String cacheKey = String.format(RESOLVED_MESSAGE_CACHE_KEY, messageKey, locale.toString());
+        String cacheKey = String.format(RESOLVED_MESSAGE_CACHE_KEY, messageKey, localeStr);
 
         return (String) cache.get(DefaultCompositeMessageResolver.class, cacheKey, () -> {
             Set<String> resolveAttempts = new LinkedHashSet<>();
@@ -109,12 +112,12 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
                         for (String ctxPrefix : attemptContextPrefixes) {
                             resolveAttempts.add(toString(baseName, attemptLocale, ctxPrefix, messageKey));
 
-                            log.trace("Attempting to resolve message '{}' using baseName '{}', locale '{}' and context prefix '{}'.", () -> messageKey, () -> baseName, () -> locale, () -> ctxPrefix);
+                            log.trace("Attempting to resolve message '{}' using baseName '{}', locale '{}' and context prefix '{}'.", () -> messageKey, () -> baseName, () -> localeStr, () -> ctxPrefix);
 
                             String message = messageResolver.resolve(String.format("%s%s", ctxPrefix, messageKey), baseName, attemptLocale);
 
                             if (message != null) {
-                                log.debug("Resolved message '{}' using key '{}', baseName '{}', locale '{}' and context prefix '{}'.", () -> message, () -> messageKey, () -> baseName, () -> locale, () -> ctxPrefix);
+                                log.debug("Resolved message '{}' using key '{}', baseName '{}', locale '{}' and context prefix '{}'.", () -> message, () -> messageKey, () -> baseName, () -> localeStr, () -> ctxPrefix);
 
                                 return message;
                             }
@@ -127,7 +130,7 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
                 throw new IllegalStateException("Unable to find message key '" + messageKey + "' in any of the following attempts: " + resolveAttempts);
 
             else {
-                log.debug("Unable to resolve message using key '{}' and locale '{}'.", () -> messageKey, () -> locale);
+                log.debug("Unable to resolve message using key '{}' and locale '{}'.", () -> messageKey, () -> localeStr);
                 return null;
             }
         });

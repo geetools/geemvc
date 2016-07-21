@@ -289,7 +289,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
                 }
             }
 
-            if (args != null && args.length > 0)
+            if (resolvedErrorMessage != null && args != null && args.length > 0)
                 resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, args);
         }
 
