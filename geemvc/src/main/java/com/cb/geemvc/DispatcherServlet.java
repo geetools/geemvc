@@ -65,11 +65,6 @@ public class DispatcherServlet extends HttpServlet {
         try {
             this.servletConfig = getServletConfig();
 
-            // Add request objects to thread local stash for the rare case where these cannot be injected.
-            ThreadStash.put(ServletConfig.class, servletConfig);
-            ThreadStash.put(ServletRequest.class, request);
-            ThreadStash.put(ServletResponse.class, response);
-
             // AsyncContext asyncContext = request.startAsync(request,
             // response);
             // asyncContext.setTimeout(0);
@@ -81,6 +76,13 @@ public class DispatcherServlet extends HttpServlet {
             Configuration c = injector.getInstance(Configuration.class).build(servletConfig);
 
             RequestContext requestCtx = injector.getInstance(RequestContext.class).build(request, response, getServletContext());
+
+            ThreadStash.prepare(requestCtx);
+
+            // Add request objects to thread local stash for the rare case where these cannot be injected.
+            ThreadStash.put(ServletConfig.class, servletConfig);
+            ThreadStash.put(ServletRequest.class, request);
+            ThreadStash.put(ServletResponse.class, response);
 
             injector.getInstance(ReflectionsWrapper.class).configure();
 

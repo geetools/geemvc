@@ -81,8 +81,10 @@ public class DefaultViewHandler implements ViewHandler {
             log.trace("Forwarding request to view servlet.");
             viewAdapter.forward(viewPath, requestCtx);
 
+            LifecycleContext lifecycleCtx = (LifecycleContext) ThreadStash.get(LifecycleContext.class);
+
             // ---------- Intercept lifecycle: PostView.
-            interceptors.interceptLifecycle(PostView.class, (LifecycleContext) ThreadStash.get(LifecycleContext.class));
+            interceptors.interceptLifecycle(PostView.class, lifecycleCtx);
 
         } else if (view.redirect() != null) {
             HttpServletRequest request = (HttpServletRequest) requestCtx.getRequest();

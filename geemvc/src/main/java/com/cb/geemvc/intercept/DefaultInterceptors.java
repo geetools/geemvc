@@ -64,7 +64,6 @@ public class DefaultInterceptors implements Interceptors {
 
         Set<LifecycleInterceptor> lifecycleInterceptors = interceptorResolver.resolveLifecycleInterceptors(lifecycleAnnotation, lifecycleCtx.requestHandler());
 
-
         if (lifecycleInterceptors != null && !lifecycleInterceptors.isEmpty()) {
             for (LifecycleInterceptor lifecycleInterceptor : lifecycleInterceptors) {
                 Lifecycle lifecycle = lifecycleInterceptor.lifecycleAnnotation();

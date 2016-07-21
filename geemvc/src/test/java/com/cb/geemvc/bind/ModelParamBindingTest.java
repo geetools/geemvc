@@ -53,7 +53,6 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18a() {
         Errors e = instance(Errors.class);
-        ThreadStash.put(Errors.class, e);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.forename", new String[]{"Michael"});
@@ -61,6 +60,9 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("person.age", new String[]{"10"});
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", "POST", requestParams);
+
+        ThreadStash.prepare(reqCtx);
+        ThreadStash.put(Errors.class, e);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
@@ -121,6 +123,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("person.addresses[1].countryCode", new String[]{"us"});
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", requestParams);
+        ThreadStash.prepare(reqCtx);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
