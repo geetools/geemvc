@@ -16,37 +16,25 @@
 
 package com.cb.geemvc.taglib.form;
 
-import com.cb.geemvc.Char;
 import com.cb.geemvc.Str;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
-public class ErrorTagSupport extends FormFieldTagSupport {
+public class ErrorsTagSupport extends FormFieldTagSupport {
     protected String name;
 
     @Override
     public void doTag() throws JspException, IOException {
+
+        validationErrors();
+
         if (hasError(name)) {
-            JspWriter writer = jspContext.getOut();
+            String errorMsg = errorMessage(name);
 
-            writer.write("<small class=\"error");
-
-            String classValue = (String) dynamicAttributes.get("class");
-
-            if (classValue == null)
-                classValue = getErrorClass();
-
-            if (!Str.isEmpty(classValue)) {
-                writer.write(Char.SPACE);
-                writer.write(classValue);
-            }
-
-            writer.write("\">\n");
-
-            writer.write(errorMessage(name));
-            writer.write("</small>\n");
+            if (!Str.isEmpty(errorMsg))
+                jspContext.getOut().write(errorMsg);
         }
     }
 
@@ -64,5 +52,13 @@ public class ErrorTagSupport extends FormFieldTagSupport {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

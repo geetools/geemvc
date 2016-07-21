@@ -268,7 +268,21 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>value</name>
+            <name>label</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
+        <name>haserror</name>
+        <tag-class>com.cb.geemvc.taglib.form.HasErrorTagSupport</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>name</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>label</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
