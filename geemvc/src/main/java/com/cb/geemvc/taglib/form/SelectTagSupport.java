@@ -74,7 +74,7 @@ public class SelectTagSupport extends FormFieldTagSupport {
 
             String classValue = (String) dynamicAttributes.get("class");
 
-            if (classValue == null) {
+            if (classValue == null && !fieldOnly) {
                 FormTagSupport formTag = formTag();
                 classValue = formTag.fieldClass;
             }

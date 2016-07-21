@@ -201,7 +201,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
             String classValue = (String) dynamicAttributes.get("class");
 
-            if (classValue == null) {
+            if (classValue == null && !fieldOnly) {
                 FormTagSupport formTag = formTag();
                 classValue = formTag.fieldClass;
             }
