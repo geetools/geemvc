@@ -259,4 +259,18 @@
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
+    <tag>
+        <name>error</name>
+        <tag-class>com.cb.geemvc.taglib.form.ErrorTagSupport</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>name</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
 </taglib>
