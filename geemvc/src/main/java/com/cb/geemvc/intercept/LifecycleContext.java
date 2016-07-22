@@ -19,6 +19,7 @@ package com.cb.geemvc.intercept;
 import com.cb.geemvc.Bindings;
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.validation.Errors;
 import com.cb.geemvc.view.bean.View;
 
@@ -29,7 +30,7 @@ import java.lang.reflect.Method;
  * Created by Michael on 13.07.2016.
  */
 public interface LifecycleContext {
-    LifecycleContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors);
+    LifecycleContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices);
 
     LifecycleContext lifecycle(Annotation lifecycleAnnotation);
 
@@ -38,6 +39,8 @@ public interface LifecycleContext {
     RequestHandler requestHandler();
 
     Errors errors();
+
+    Notices notices();
 
     Bindings bindings();
 

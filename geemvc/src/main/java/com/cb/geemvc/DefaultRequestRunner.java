@@ -24,6 +24,7 @@ import com.cb.geemvc.handler.CompositeControllerResolver;
 import com.cb.geemvc.handler.CompositeHandlerResolver;
 import com.cb.geemvc.handler.RequestHandler;
 import com.cb.geemvc.i18n.locale.LocaleResolver;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.intercept.Interceptors;
 import com.cb.geemvc.intercept.LifecycleContext;
 import com.cb.geemvc.intercept.annotation.*;
@@ -83,11 +84,14 @@ public class DefaultRequestRunner implements RequestRunner {
 
     @Override
     public void process(RequestContext requestCtx) throws Exception {
-        // Create a new Errors instance for collecting errors.
+        // Create a new Error instance for collecting errors.
         Errors errors = injector.getInstance(Errors.class);
+        // Create a new Notices instance for collecting notice information.
+        Notices notices = injector.getInstance(Notices.class);
 
-        // Add errors to thread local stash so that they can be retrieved in taglibs etc.
+        // Add errors and notices to thread local stash so that they can be retrieved in taglibs etc.
         ThreadStash.put(Errors.class, errors);
+        ThreadStash.put(Notices.class, notices);
 
         // Find the request handler for the current request.
         RequestHandler requestHandler = resolveHandler(requestCtx);
@@ -96,10 +100,10 @@ public class DefaultRequestRunner implements RequestRunner {
         processLocale(requestCtx);
 
         // Add context attributes to request for later use in taglibs etc.
-        setContextAttributes(requestCtx, errors);
+        setContextAttributes(requestCtx, errors, notices);
 
         // Process the resolved request-handler.
-        View view = processRequestHandler(requestHandler, requestCtx, errors);
+        View view = processRequestHandler(requestHandler, requestCtx, errors, notices);
 
         // Adds the content type to the response.
         setContentType(view, requestHandler, requestCtx);
@@ -117,9 +121,9 @@ public class DefaultRequestRunner implements RequestRunner {
         viewHandler.handle(view, requestCtx);
     }
 
-    protected View processRequestHandler(RequestHandler requestHandler, RequestContext requestCtx, Errors errors) {
+    protected View processRequestHandler(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices) {
 
-        LifecycleContext lifecycleCtx = injector.getInstance(LifecycleContext.class).build(requestHandler, requestCtx, errors);
+        LifecycleContext lifecycleCtx = injector.getInstance(LifecycleContext.class).build(requestHandler, requestCtx, errors, notices);
         ThreadStash.put(LifecycleContext.class, lifecycleCtx);
 
         // ---------- Intercept lifecycle: PreBinding.
@@ -135,7 +139,7 @@ public class DefaultRequestRunner implements RequestRunner {
         // Now we convert the string parameters to the appropriate types.
         Map<String, Object> typedValues = methodParams.typedValues(requestValues, methodParameters, requestCtx);
 
-        Bindings bindings = injector.getInstance(Bindings.class).build(requestValues, typedValues, errors);
+        Bindings bindings = injector.getInstance(Bindings.class).build(requestValues, typedValues, errors, notices);
         lifecycleCtx.bindings(bindings);
 
         // ---------- Intercept lifecycle: PostBinding.
@@ -153,7 +157,7 @@ public class DefaultRequestRunner implements RequestRunner {
         }
 
         // Execute pre-handler validation.
-        View preHandlerValidationView = preHandlerValidation(requestHandler, typedValues, requestCtx, errors);
+        View preHandlerValidationView = preHandlerValidation(requestHandler, typedValues, requestCtx, errors, notices);
 
         if (preHandlerValidationView != null) {
             lifecycleCtx.view(preHandlerValidationView).invokeHandler(false);
@@ -167,7 +171,7 @@ public class DefaultRequestRunner implements RequestRunner {
         }
 
         if (lifecycleCtx.view() != null) {
-            return view(intercept(injector.getInstance(ViewOnlyRequestHandler.class).build(lifecycleCtx.view(), requestHandler), typedValues, requestCtx, errors));
+            return view(intercept(injector.getInstance(ViewOnlyRequestHandler.class).build(lifecycleCtx.view(), requestHandler), typedValues, requestCtx, errors, notices));
         } else {
             View preHandleView = view(interceptors.interceptLifecycle(PreHandle.class, lifecycleCtx));
 
@@ -176,7 +180,7 @@ public class DefaultRequestRunner implements RequestRunner {
             }
 
             if (lifecycleCtx.isInvokeHandler()) {
-                View handlerView = view(intercept(requestHandler, typedValues, requestCtx, errors));
+                View handlerView = view(intercept(requestHandler, typedValues, requestCtx, errors, notices));
 
                 log.debug("Request handler returned view '{}'.", () -> handlerView);
 
@@ -212,12 +216,12 @@ public class DefaultRequestRunner implements RequestRunner {
         return null;
     }
 
-    protected Object intercept(RequestHandler targetRequestHandler, Map<String, Object> targetArgs, RequestContext requestCtx, Errors errors) {
-        return interceptors.intercept(targetRequestHandler, targetArgs, requestCtx, errors);
+    protected Object intercept(RequestHandler targetRequestHandler, Map<String, Object> targetArgs, RequestContext requestCtx, Errors errors, Notices notices) {
+        return interceptors.intercept(targetRequestHandler, targetArgs, requestCtx, errors, notices);
     }
 
-    protected View preHandlerValidation(RequestHandler requestHandler, Map<String, Object> typedValues, RequestContext requestCtx, Errors errors) {
-        ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(requestCtx, typedValues);
+    protected View preHandlerValidation(RequestHandler requestHandler, Map<String, Object> typedValues, RequestContext requestCtx, Errors errors, Notices notices) {
+        ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(requestCtx, typedValues, notices);
         Object view = validator.validate(requestHandler, validationCtx, errors);
 
         if (view != null) {
@@ -330,7 +334,7 @@ public class DefaultRequestRunner implements RequestRunner {
         // TODO
     }
 
-    protected void setContextAttributes(RequestContext requestCtx, Errors errors) {
+    protected void setContextAttributes(RequestContext requestCtx, Errors errors, Notices notices) {
         RequestHandler rh = requestCtx.requestHandler();
         PathMatcher pm = requestCtx.requestHandler().pathMatcher();
 
@@ -341,6 +345,7 @@ public class DefaultRequestRunner implements RequestRunner {
         request.setAttribute(GeemvcKey.REQUEST_HANDLER, rh);
         request.setAttribute(GeemvcKey.RESOLVED_PATH, pm.getMappedPath());
         request.setAttribute(GeemvcKey.VALIDATION_ERRORS, errors);
+        request.setAttribute(GeemvcKey.NOTICES, notices);
 
         if (pm.parameterCount() > 0 && pm.parameterExists("id")) {
             Map<String, String[]> params = pm.parameters(requestCtx);

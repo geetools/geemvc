@@ -18,6 +18,8 @@ package com.cb.geemvc.taglib.form;
 
 import com.cb.geemvc.Char;
 import com.cb.geemvc.Str;
+import com.cb.geemvc.i18n.notice.Notice;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.taglib.GeemvcTagSupport;
 import com.cb.geemvc.taglib.HtmlTagSupport;
 import com.cb.geemvc.validation.Error;
@@ -41,6 +43,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
     protected String wrapperClass;
     protected String hintClass;
     protected String errorClass;
+    protected String noticeClass;
 
     public void writePreFieldBlock(String elementId, String name, Object value) throws JspException, IOException {
         if (fieldOnly)
@@ -61,6 +64,10 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
         if (hasError(name)) {
             writer.write(" has-error");
+        }
+
+        if (hasNotice(name)) {
+            writer.write(" has-notice");
         }
 
         writer.write("\">\n");
@@ -118,6 +125,22 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
             writer.write(errorMessage(fieldName));
             writer.write("</small>\n");
+        }
+
+        boolean displayFieldNotices = formTag != null && formTag.isFieldNotices();
+
+        if (displayFieldNotices && hasNotice(fieldName)) {
+            writer.write("<span class=\"notice");
+
+            if (!Str.isEmpty(getNoticeClass())) {
+                writer.write(Char.SPACE);
+                writer.write(getNoticeClass());
+            }
+
+            writer.write("\">\n");
+
+            writer.write(noticeMessage(fieldName));
+            writer.write("</span>\n");
         }
 
         writer.write("</div>\n");
@@ -233,6 +256,21 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         return errorClass;
     }
 
+    public void setNoticeClass(String noticeClass) {
+        this.noticeClass = noticeClass;
+    }
+
+    public String getNoticeClass() {
+        if (noticeClass == null) {
+            FormTagSupport formTag = formTag();
+
+            if (formTag != null)
+                return formTag.getFieldNoticeClass();
+        }
+
+        return noticeClass;
+    }
+
     public void setErrorClass(String errorClass) {
         this.errorClass = errorClass;
     }
@@ -323,6 +361,70 @@ public class FormFieldTagSupport extends HtmlTagSupport {
             resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, error.args());
 
         return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
+    }
+
+    protected boolean hasNotice(String fieldName) {
+        Notices notices = notices();
+        return notices != null && notices.exist(fieldName);
+    }
+
+    protected String noticeMessage(String fieldName) {
+        Notices notices = notices();
+
+        if (Str.isEmpty(fieldName) || notices == null || notices.isEmpty())
+            return null;
+
+        FormTagSupport formTag = formTag();
+        Notice notice = notices.get(fieldName);
+        String resolvedNoticeMessage = null;
+
+        if (notice != null) {
+            String noticeMsgKey = new StringBuilder(formTag.getName())
+                    .append(Char.DOT).append(fieldName).append(Char.DOT).append(notice.message()).toString();
+
+            resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+
+            if (resolvedNoticeMessage == null) {
+                noticeMsgKey = new StringBuilder(fieldName)
+                        .append(Char.DOT).append(notice.message()).toString();
+
+                resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+
+                if (resolvedNoticeMessage == null) {
+                    resolvedNoticeMessage = messageResolver.resolve(notice.message(), requestContext(), true);
+                }
+            }
+
+            if (resolvedNoticeMessage != null && notice.args() != null && notice.args().length > 0)
+                resolvedNoticeMessage = MessageFormat.format(resolvedNoticeMessage, notice.args());
+        }
+
+        return resolvedNoticeMessage == null ? notice.message() : resolvedNoticeMessage;
+    }
+
+    protected String noticeMessage(Notice notice) {
+        if (notice == null)
+            return null;
+
+        if (!Str.isEmpty(notice.field()))
+            return noticeMessage(notice.field());
+
+        FormTagSupport formTag = formTag();
+        String resolvedNoticeMessage = null;
+
+        String noticeMsgKey = new StringBuilder(formTag.getName())
+                .append(Char.DOT).append(notice.message()).toString();
+
+        resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+
+        if (resolvedNoticeMessage == null) {
+            resolvedNoticeMessage = messageResolver.resolve(notice.message(), requestContext(), true);
+        }
+
+        if (resolvedNoticeMessage != null && notice.args() != null && notice.args().length > 0)
+            resolvedNoticeMessage = MessageFormat.format(resolvedNoticeMessage, notice.args());
+
+        return resolvedNoticeMessage == null ? notice.message() : resolvedNoticeMessage;
     }
 
     protected String hint(String fieldName) {

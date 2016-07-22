@@ -329,5 +329,51 @@
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
+    <tag>
+        <name>notice</name>
+        <tag-class>com.cb.geemvc.taglib.form.NoticeTagSupport</tag-class>
+        <attribute>
+            <name>name</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>label</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
+        <name>hasnotice</name>
+        <tag-class>com.cb.geemvc.taglib.form.HasNoticeTagSupport</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>name</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>label</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
+        <name>notices</name>
+        <tag-class>com.cb.geemvc.taglib.form.NoticesTagSupport</tag-class>
+        <attribute>
+            <name>show</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
+        <name>hasnotices</name>
+        <tag-class>com.cb.geemvc.taglib.form.HasNoticesTagSupport</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>show</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
 
 </taglib>

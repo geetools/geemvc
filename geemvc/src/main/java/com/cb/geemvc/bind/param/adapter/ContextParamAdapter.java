@@ -16,10 +16,17 @@
 
 package com.cb.geemvc.bind.param.adapter;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import com.cb.geemvc.Bindings;
+import com.cb.geemvc.ThreadStash;
+import com.cb.geemvc.annotation.Adapter;
+import com.cb.geemvc.bind.param.ParamContext;
+import com.cb.geemvc.bind.param.TypedParamAdapter;
+import com.cb.geemvc.i18n.notice.Notices;
+import com.cb.geemvc.reflect.ReflectionProvider;
+import com.cb.geemvc.validation.Errors;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
@@ -28,17 +35,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Context;
-
-import com.cb.geemvc.Bindings;
-import com.cb.geemvc.ThreadStash;
-import com.cb.geemvc.annotation.Adapter;
-import com.cb.geemvc.bind.param.ParamContext;
-import com.cb.geemvc.bind.param.TypedParamAdapter;
-import com.cb.geemvc.reflect.ReflectionProvider;
-import com.cb.geemvc.validation.Errors;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Singleton
 @Adapter
@@ -84,8 +84,10 @@ public class ContextParamAdapter implements TypedParamAdapter<Context> {
             return request.getLocale();
         } else if (Errors.class.isAssignableFrom(paramType)) {
             return ThreadStash.get(Errors.class);
+        } else if (Notices.class.isAssignableFrom(paramType)) {
+            return ThreadStash.get(Notices.class);
         } else if (Bindings.class.isAssignableFrom(paramType)) {
-            return injector.getInstance(Bindings.class).build(paramCtx.requestValues(), paramCtx.typedValues(), (Errors) ThreadStash.get(Errors.class));
+            return injector.getInstance(Bindings.class).build(paramCtx.requestValues(), paramCtx.typedValues(), (Errors) ThreadStash.get(Errors.class), (Notices) ThreadStash.get(Notices.class));
         } else if (Map.class.isAssignableFrom(paramType)) {
             Type paramGenericType = paramCtx.methodParam().parameterizedType();
             List<Class<?>> genericType = reflectionProvider.getGenericType(paramGenericType);

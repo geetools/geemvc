@@ -33,6 +33,7 @@ import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTag;
 
 import com.cb.geemvc.i18n.message.CompositeMessageResolver;
+import com.cb.geemvc.i18n.notice.Notices;
 import org.apache.commons.io.IOUtils;
 
 import com.cb.geemvc.Char;
@@ -399,5 +400,9 @@ public class GeemvcTagSupport implements SimpleTag {
 
     public Errors validationErrors() {
         return (Errors) jspContext.getAttribute(GeemvcKey.VALIDATION_ERRORS, PageContext.REQUEST_SCOPE);
+    }
+
+    public Notices notices() {
+        return (Notices) jspContext.getAttribute(GeemvcKey.NOTICES, PageContext.REQUEST_SCOPE);
     }
 }

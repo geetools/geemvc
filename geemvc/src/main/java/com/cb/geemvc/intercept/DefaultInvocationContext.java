@@ -18,6 +18,7 @@ package com.cb.geemvc.intercept;
 
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.logging.Log;
 import com.cb.geemvc.logging.annotation.Logger;
 import com.cb.geemvc.validation.Errors;
@@ -34,18 +35,20 @@ public class DefaultInvocationContext implements InvocationContext {
     protected Iterator<AroundHandler> iterator;
     protected RequestContext requestContext;
     protected Errors errors;
+    protected Notices notices;
 
     @Logger
     protected Log log;
 
     @Override
-    public InvocationContext build(RequestHandler targetHandler, Map<String, Object> targetArgs, Set<AroundHandler> interceptors, RequestContext requestContext, Errors errors) {
+    public InvocationContext build(RequestHandler targetHandler, Map<String, Object> targetArgs, Set<AroundHandler> interceptors, RequestContext requestContext, Errors errors, Notices notices) {
         this.targetHandler = targetHandler;
         this.targetArgs = targetArgs;
         this.interceptors = interceptors;
         this.iterator = interceptors.iterator();
         this.requestContext = requestContext;
         this.errors = errors;
+        this.notices = notices;
 
         return this;
     }
@@ -101,5 +104,10 @@ public class DefaultInvocationContext implements InvocationContext {
     @Override
     public Errors errors() {
         return errors;
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
     }
 }

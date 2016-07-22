@@ -64,7 +64,11 @@ public class FormTagSupport extends HtmlTagSupport {
 
     protected String fieldErrorClass;
 
+    protected String fieldNoticeClass;
+
     protected boolean fieldErrors = true;
+
+    protected boolean fieldNotices = true;
 
     protected Pattern pathParameterPattern = Pattern.compile("(\\{[a-zA-Z0-9]+:?[^\\{\\}]+\\})");
 
@@ -379,11 +383,27 @@ public class FormTagSupport extends HtmlTagSupport {
         this.fieldErrorClass = fieldErrorClass;
     }
 
+    public String getFieldNoticeClass() {
+        return fieldNoticeClass;
+    }
+
+    public void setFieldNoticeClass(String fieldNoticeClass) {
+        this.fieldNoticeClass = fieldNoticeClass;
+    }
+
     public boolean isFieldErrors() {
         return fieldErrors;
     }
 
     public void setFieldErrors(boolean fieldErrors) {
         this.fieldErrors = fieldErrors;
+    }
+
+    public boolean isFieldNotices() {
+        return fieldNotices;
+    }
+
+    public void setFieldNotices(boolean fieldNotices) {
+        this.fieldNotices = fieldNotices;
     }
 }

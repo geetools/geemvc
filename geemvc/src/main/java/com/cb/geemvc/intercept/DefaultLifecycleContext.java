@@ -19,6 +19,7 @@ package com.cb.geemvc.intercept;
 import com.cb.geemvc.Bindings;
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.validation.Errors;
 import com.cb.geemvc.view.bean.View;
 
@@ -31,15 +32,17 @@ public class DefaultLifecycleContext implements LifecycleContext {
     protected RequestContext requestCtx;
     protected Bindings bindings;
     protected Errors errors;
+    protected Notices notices;
     protected View view;
     protected boolean invokeHandler = true;
 
 
     @Override
-    public LifecycleContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors) {
+    public LifecycleContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices) {
         this.requestHandler = requestHandler;
         this.requestCtx = requestCtx;
         this.errors = errors;
+        this.notices = notices;
 
         return this;
     }
@@ -64,6 +67,11 @@ public class DefaultLifecycleContext implements LifecycleContext {
     @Override
     public Errors errors() {
         return errors;
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
     }
 
     @Override

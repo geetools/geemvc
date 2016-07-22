@@ -19,6 +19,7 @@ package com.cb.geemvc.intercept;
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
 import com.cb.geemvc.helper.Paths;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.intercept.annotation.Lifecycle;
 import com.cb.geemvc.logging.Log;
 import com.cb.geemvc.logging.annotation.Logger;
@@ -48,11 +49,11 @@ public class DefaultInterceptors implements Interceptors {
     }
 
     @Override
-    public Object intercept(RequestHandler targetRequestHandler, Map<String, Object> targetArgs, RequestContext requestCtx, Errors errors) {
+    public Object intercept(RequestHandler targetRequestHandler, Map<String, Object> targetArgs, RequestContext requestCtx, Errors errors, Notices notices) {
         Set<AroundHandler> aroundInterceptors = interceptorResolver.resolveInterceptors(targetRequestHandler);
 
         if (aroundInterceptors != null && !aroundInterceptors.isEmpty()) {
-            return injector.getInstance(InvocationContext.class).build(targetRequestHandler, targetArgs, aroundInterceptors, requestCtx, errors).proceed();
+            return injector.getInstance(InvocationContext.class).build(targetRequestHandler, targetArgs, aroundInterceptors, requestCtx, errors, notices).proceed();
         } else {
             return targetRequestHandler.invoke(targetArgs);
         }

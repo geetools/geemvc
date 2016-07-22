@@ -19,18 +19,21 @@ package com.cb.geemvc;
 import java.util.List;
 import java.util.Map;
 
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.validation.Errors;
 
 public class DefaultBindings implements Bindings {
     protected Map<String, List<String>> requestValues;
     protected Map<String, Object> typedValues;
     protected Errors errors;
+    protected Notices notices;
 
     @Override
-    public Bindings build(Map<String, List<String>> requestValues, Map<String, Object> typedValues, Errors errors) {
+    public Bindings build(Map<String, List<String>> requestValues, Map<String, Object> typedValues, Errors errors, Notices notices) {
         this.requestValues = requestValues;
         this.typedValues = typedValues;
         this.errors = errors;
+        this.notices = notices;
         return this;
     }
 
@@ -52,5 +55,15 @@ public class DefaultBindings implements Bindings {
     @Override
     public boolean hasErrors() {
         return errors != null && !errors.isEmpty();
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
+    }
+
+    @Override
+    public boolean hasNotices() {
+        return notices != null && !notices.isEmpty();
     }
 }

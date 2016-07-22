@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package com.cb.geemvc.intercept;
+package com.cb.geemvc.i18n.notice;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
+import java.util.Set;
 
-import com.cb.geemvc.RequestContext;
-import com.cb.geemvc.handler.RequestHandler;
-import com.cb.geemvc.i18n.notice.Notices;
-import com.cb.geemvc.validation.Errors;
+public interface Notices {
+    void add(String field, String message, Object... args);
 
-public interface Interceptors {
-    Object intercept(RequestHandler targetRequestHandler, Map<String, Object> targetArgs, RequestContext requestCtx, Errors errors, Notices notices);
+    void add(String message, Object... args);
 
-    Object interceptLifecycle(Class<? extends Annotation> lifecycleAnnotation, LifecycleContext lifecycleContext);
+    boolean exist(String field);
+
+    Notice get(String field);
+
+    Set<Notice> globalNotices();
+
+    Set<Notice> allNotices();
+
+    Set<Notice> fieldNotices();
+
+    boolean isEmpty();
 }

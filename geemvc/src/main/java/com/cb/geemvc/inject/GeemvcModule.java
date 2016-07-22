@@ -36,6 +36,10 @@ import com.cb.geemvc.i18n.message.CompositeMessageResolver;
 import com.cb.geemvc.i18n.message.DefaultCompositeMessageResolver;
 import com.cb.geemvc.i18n.message.DefaultSimpleMessageResolver;
 import com.cb.geemvc.i18n.message.SimpleMessageResolver;
+import com.cb.geemvc.i18n.notice.DefaultNotice;
+import com.cb.geemvc.i18n.notice.DefaultNotices;
+import com.cb.geemvc.i18n.notice.Notice;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.intercept.*;
 import com.cb.geemvc.logging.DefaultLog;
 import com.cb.geemvc.logging.Log;
@@ -118,6 +122,8 @@ public class GeemvcModule extends AbstractModule {
 
         configureStreamViewHandler();
 
+        configureNotice();
+        configureNotices();
         configureError();
         configureErrors();
         configureValidator();
@@ -177,6 +183,14 @@ public class GeemvcModule extends AbstractModule {
 
     protected void configureError() {
         bind(com.cb.geemvc.validation.Error.class).to(DefaultError.class);
+    }
+
+    protected void configureNotices() {
+        bind(Notices.class).to(DefaultNotices.class);
+    }
+
+    protected void configureNotice() {
+        bind(Notice.class).to(DefaultNotice.class);
     }
 
     protected void configureStreamViewHandler() {

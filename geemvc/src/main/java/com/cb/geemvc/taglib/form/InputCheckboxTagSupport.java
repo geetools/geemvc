@@ -57,7 +57,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
         }
     }
 
-    public void writePreFieldBlock(String elementId, String name, Object value, String error) throws JspException, IOException {
+    public void writePreFieldBlock(String elementId, String name, Object value) throws JspException, IOException {
         if (fieldOnly)
             return;
 
@@ -74,8 +74,12 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             writer.write(getGroupClass());
         }
 
-        if (!Str.isEmpty(error)) {
+        if (hasError(name)) {
             writer.write(" has-error");
+        }
+
+        if (hasNotice(name)) {
+            writer.write(" has-notice");
         }
 
         writer.write("\">\n");
@@ -142,7 +146,10 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             writer.write("</p>\n");
         }
 
-        if (hasError(fieldName)) {
+        FormTagSupport formTag = formTag();
+        boolean displayFieldErrors = formTag != null && formTag.isFieldErrors();
+
+        if (displayFieldErrors && hasError(fieldName)) {
             writer.write("<small class=\"error");
 
             if (!Str.isEmpty(getErrorClass())) {
@@ -154,6 +161,22 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
             writer.write(errorMessage(fieldName));
             writer.write("</small>\n");
+        }
+
+        boolean displayFieldNotices = formTag != null && formTag.isFieldNotices();
+
+        if (displayFieldNotices && hasNotice(fieldName)) {
+            writer.write("<span class=\"notice");
+
+            if (!Str.isEmpty(getNoticeClass())) {
+                writer.write(Char.SPACE);
+                writer.write(getNoticeClass());
+            }
+
+            writer.write("\">\n");
+
+            writer.write(noticeMessage(fieldName));
+            writer.write("</span>\n");
         }
 
         writer.write("</div>\n");

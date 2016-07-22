@@ -19,13 +19,16 @@ package com.cb.geemvc.validation;
 import java.util.Map;
 
 import com.cb.geemvc.RequestContext;
+import com.cb.geemvc.i18n.notice.Notices;
 
 public interface ValidationContext {
-    ValidationContext build(RequestContext requestCtx, Map<String, Object> typedValues);
+    ValidationContext build(RequestContext requestCtx, Map<String, Object> typedValues, Notices notices);
 
     Map<String, Object> typedValues();
 
     RequestContext requestCtx();
+
+    Notices notices();
 
     Object value(String name);
 }

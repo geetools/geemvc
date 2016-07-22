@@ -33,5 +33,7 @@ public class GeemvcKey {
 
     public static final String VALIDATION_ERRORS = "__validationErrors";
 
+    public static final String NOTICES = "__notices";
+
     public static final String FLASH_VARS = "__flashVars";
 }

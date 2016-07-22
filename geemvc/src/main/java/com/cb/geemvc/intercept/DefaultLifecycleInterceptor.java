@@ -20,6 +20,7 @@ import com.cb.geemvc.Bindings;
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.Str;
 import com.cb.geemvc.helper.Annotations;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.intercept.annotation.*;
 import com.cb.geemvc.reflect.ReflectionProvider;
 import com.cb.geemvc.validation.Errors;
@@ -144,6 +145,8 @@ public class DefaultLifecycleInterceptor implements LifecycleInterceptor {
             return request.getLocale();
         } else if (Errors.class.isAssignableFrom(type)) {
             return lifecycleCtx.errors();
+        } else if (Notices.class.isAssignableFrom(type)) {
+            return lifecycleCtx.notices();
         } else if (Bindings.class.isAssignableFrom(type)) {
             return lifecycleCtx.bindings();
         } else if (View.class.isAssignableFrom(type)) {

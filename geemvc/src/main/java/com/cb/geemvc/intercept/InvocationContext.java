@@ -22,10 +22,11 @@ import java.util.Set;
 
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.handler.RequestHandler;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.validation.Errors;
 
 public interface InvocationContext {
-    InvocationContext build(RequestHandler targetHandler, Map<String, Object> targetArgs, Set<AroundHandler> interceptors, RequestContext requestContext, Errors errors);
+    InvocationContext build(RequestHandler targetHandler, Map<String, Object> targetArgs, Set<AroundHandler> interceptors, RequestContext requestContext, Errors errors, Notices notices);
 
     Object proceed();
 
@@ -40,4 +41,6 @@ public interface InvocationContext {
     RequestContext requestContext();
 
     Errors errors();
+
+    Notices notices();
 }

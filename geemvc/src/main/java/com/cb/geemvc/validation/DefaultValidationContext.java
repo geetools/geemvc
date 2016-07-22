@@ -22,17 +22,20 @@ import com.cb.geemvc.Char;
 import com.cb.geemvc.RequestContext;
 import com.cb.geemvc.Str;
 import com.cb.geemvc.bind.PropertyNode;
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.inject.Injectors;
 import com.google.inject.Injector;
 
 public class DefaultValidationContext implements ValidationContext {
     protected RequestContext requestCtx = null;
     protected Map<String, Object> typedValues = null;
+    protected Notices notices = null;
 
     @Override
-    public ValidationContext build(RequestContext requestCtx, Map<String, Object> typedValues) {
+    public ValidationContext build(RequestContext requestCtx, Map<String, Object> typedValues, Notices notices) {
         this.requestCtx = requestCtx;
         this.typedValues = typedValues;
+        this.notices = notices;
 
         return this;
     }
@@ -45,6 +48,11 @@ public class DefaultValidationContext implements ValidationContext {
     @Override
     public RequestContext requestCtx() {
         return requestCtx;
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
     }
 
     @Override

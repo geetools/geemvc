@@ -19,10 +19,11 @@ package com.cb.geemvc;
 import java.util.List;
 import java.util.Map;
 
+import com.cb.geemvc.i18n.notice.Notices;
 import com.cb.geemvc.validation.Errors;
 
 public interface Bindings {
-    Bindings build(Map<String, List<String>> requestValues, Map<String, Object> typedValues, Errors errors);
+    Bindings build(Map<String, List<String>> requestValues, Map<String, Object> typedValues, Errors errors, Notices notices);
 
     Map<String, List<String>> requestValues();
 
@@ -31,4 +32,8 @@ public interface Bindings {
     Errors errors();
 
     boolean hasErrors();
+
+    Notices notices();
+
+    boolean hasNotices();
 }
