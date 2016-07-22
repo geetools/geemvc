@@ -29,7 +29,6 @@ public class InputTagSupport extends FormFieldTagSupport {
 
     protected Object value;
 
-
     @Override
     public void doTag() throws JspException {
         String name = getName();
@@ -39,11 +38,11 @@ public class InputTagSupport extends FormFieldTagSupport {
             id = toElementId(name);
 
         try {
-            writePreFieldBlock(id, name, value, "");
+            writePreFieldBlock(id, name, value);
 
             writeTag(jspContext.getOut(), "input", false);
 
-            writePostFieldBlock(name, "");
+            writePostFieldBlock(name);
         } catch (JspException e) {
             throw e;
         } catch (Throwable t) {

@@ -38,9 +38,9 @@ public class TextareaTagSupport extends FormFieldTagSupport {
             id = toElementId(name);
 
         try {
-            writePreFieldBlock(id, name, value, "");
+            writePreFieldBlock(id, name, value);
             writeTag(jspContext.getOut(), "textarea", true);
-            writePostFieldBlock(name, "");
+            writePostFieldBlock(name);
         } catch (JspException e) {
             throw e;
         } catch (Throwable t) {

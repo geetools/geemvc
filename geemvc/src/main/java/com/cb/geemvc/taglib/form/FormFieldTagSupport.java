@@ -35,13 +35,14 @@ import java.text.MessageFormat;
  */
 public class FormFieldTagSupport extends HtmlTagSupport {
     protected String label;
+    protected String hint;
     protected String groupClass;
     protected String labelClass;
     protected String wrapperClass;
     protected String hintClass;
     protected String errorClass;
 
-    public void writePreFieldBlock(String elementId, String name, Object value, String error) throws JspException, IOException {
+    public void writePreFieldBlock(String elementId, String name, Object value) throws JspException, IOException {
         if (fieldOnly)
             return;
 
@@ -75,17 +76,18 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         }
 
         writer.write(">\n");
-
-        // wrappedField.append("<label class=\"control-label\" for=\"").append(elementId).append("\">").append(label).append("</label>\n")
-        // .append(formFieldHTML);
-
     }
 
-    public void writePostFieldBlock(String name, String hint) throws JspException, IOException {
+    public void writePostFieldBlock(String fieldName) throws JspException, IOException {
         if (fieldOnly)
             return;
 
         JspWriter writer = jspContext.getOut();
+
+        String hint = getHint();
+
+        if (hint == null)
+            hint = hint(fieldName);
 
         if (!Str.isEmpty(hint)) {
             writer.write("<p class=\"hint");
@@ -104,7 +106,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         FormTagSupport formTag = formTag();
         boolean displayFieldErrors = formTag != null && formTag.isFieldErrors();
 
-        if (displayFieldErrors && hasError(name)) {
+        if (displayFieldErrors && hasError(fieldName)) {
             writer.write("<small class=\"error");
 
             if (!Str.isEmpty(getErrorClass())) {
@@ -114,7 +116,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
             writer.write("\">\n");
 
-            writer.write(errorMessage(name));
+            writer.write(errorMessage(fieldName));
             writer.write("</small>\n");
         }
 
@@ -150,6 +152,14 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     public String getGroupClass() {
@@ -313,6 +323,27 @@ public class FormFieldTagSupport extends HtmlTagSupport {
             resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, error.args());
 
         return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
+    }
+
+    protected String hint(String fieldName) {
+        if (Str.isEmpty(fieldName))
+            return null;
+
+        FormTagSupport formTag = formTag();
+        String resolvedHintMessage = null;
+
+        String hintMsgKey = new StringBuilder(formTag.getName())
+                .append(Char.DOT).append(fieldName).append(".hint").toString();
+
+        resolvedHintMessage = messageResolver.resolve(hintMsgKey, requestContext(), true);
+
+        if (resolvedHintMessage == null) {
+            hintMsgKey = new StringBuilder(fieldName).append(".hint").toString();
+
+            resolvedHintMessage = messageResolver.resolve(hintMsgKey, requestContext(), true);
+        }
+
+        return resolvedHintMessage;
     }
 
     protected FormTagSupport formTag() {

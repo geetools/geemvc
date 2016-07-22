@@ -47,9 +47,9 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             id = toElementId(name);
 
         try {
-            writePreFieldBlock(id, name, value, "");
+            writePreFieldBlock(id, name, value);
             writeTag(jspContext.getOut(), "input", false);
-            writePostFieldBlock("", "");
+            writePostFieldBlock(name);
         } catch (JspException e) {
             throw e;
         } catch (Throwable t) {
@@ -110,7 +110,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
     }
 
     @Override
-    public void writePostFieldBlock(String name, String hint) throws JspException, IOException {
+    public void writePostFieldBlock(String fieldName) throws JspException, IOException {
         if (fieldOnly)
             return;
 
@@ -122,6 +122,11 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
         writer.write("</label>\n");
         writer.write("</div>\n");
+
+        String hint = getHint();
+
+        if (hint == null)
+            hint = hint(fieldName);
 
         if (!Str.isEmpty(hint)) {
             writer.write("<p class=\"hint");
@@ -137,7 +142,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             writer.write("</p>\n");
         }
 
-        if (hasError(name)) {
+        if (hasError(fieldName)) {
             writer.write("<small class=\"error");
 
             if (!Str.isEmpty(getErrorClass())) {
@@ -147,7 +152,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
             writer.write("\">\n");
 
-            writer.write(errorMessage(name));
+            writer.write(errorMessage(fieldName));
             writer.write("</small>\n");
         }
 
