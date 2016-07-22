@@ -37,7 +37,31 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>https</name>
+            <name>fieldGroupClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldLabelClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldWrapperClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldHintClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldErrorClass</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fieldErrors</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
@@ -262,7 +286,6 @@
     <tag>
         <name>error</name>
         <tag-class>com.cb.geemvc.taglib.form.ErrorTagSupport</tag-class>
-        <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>
@@ -287,4 +310,24 @@
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
+    <tag>
+        <name>errors</name>
+        <tag-class>com.cb.geemvc.taglib.form.ErrorsTagSupport</tag-class>
+        <attribute>
+            <name>show</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
+        <name>haserrors</name>
+        <tag-class>com.cb.geemvc.taglib.form.HasErrorsTagSupport</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>show</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+
 </taglib>

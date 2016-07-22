@@ -66,6 +66,11 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
     }
 
     @Override
+    public String resolve(String messageKey, RequestContext requestCtx, boolean failQuietly) {
+        return resolve(messageKey, null, requestCtx, failQuietly);
+    }
+
+    @Override
     public String resolve(String messageKey, Locale locale, RequestContext requestCtx) {
         return resolve(messageKey, locale, requestCtx, false);
     }

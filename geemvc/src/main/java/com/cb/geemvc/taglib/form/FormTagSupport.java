@@ -64,6 +64,8 @@ public class FormTagSupport extends HtmlTagSupport {
 
     protected String fieldErrorClass;
 
+    protected boolean fieldErrors = true;
+
     protected Pattern pathParameterPattern = Pattern.compile("(\\{[a-zA-Z0-9]+:?[^\\{\\}]+\\})");
 
     @Override
@@ -375,5 +377,13 @@ public class FormTagSupport extends HtmlTagSupport {
 
     public void setFieldErrorClass(String fieldErrorClass) {
         this.fieldErrorClass = fieldErrorClass;
+    }
+
+    public boolean isFieldErrors() {
+        return fieldErrors;
+    }
+
+    public void setFieldErrors(boolean fieldErrors) {
+        this.fieldErrors = fieldErrors;
     }
 }

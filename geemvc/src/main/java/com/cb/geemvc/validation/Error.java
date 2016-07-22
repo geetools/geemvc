@@ -25,7 +25,7 @@ public interface Error {
 
     Error build(String field, String message, Object... args);
 
-    String parameter();
+    String field();
 
     String message();
 

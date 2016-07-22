@@ -97,6 +97,36 @@ public class DefaultErrors implements Errors {
     }
 
     @Override
+    public Set<Error> allErrors() {
+        if (errors == null)
+            return null;
+
+        Set<Error> allErrors = new LinkedHashSet<>();
+
+        for (Map.Entry<String, Set<Error>> errorEntry : errors.entrySet()) {
+            allErrors.addAll(errorEntry.getValue());
+        }
+
+        return allErrors;
+    }
+
+    @Override
+    public Set<Error> fieldErrors() {
+        if (errors == null)
+            return null;
+
+        Set<Error> fieldErrors = new LinkedHashSet<>();
+
+        for (Map.Entry<String, Set<Error>> errorEntry : errors.entrySet()) {
+            if (!GLOBAL_ERROR_KEY.equals(errorEntry.getKey())) {
+                fieldErrors.addAll(errorEntry.getValue());
+            }
+        }
+
+        return fieldErrors;
+    }
+
+    @Override
     public boolean isEmpty() {
         return errors == null || errors.isEmpty();
     }

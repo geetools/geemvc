@@ -23,6 +23,8 @@ import com.cb.geemvc.RequestContext;
 public interface CompositeMessageResolver {
     String resolve(String messageKey, RequestContext requestCtx);
 
+    String resolve(String messageKey, RequestContext requestCtx, boolean failQuietly);
+
     String resolve(String messageKey, Locale locale, RequestContext requestCtx);
 
     String resolve(String messageKey, Locale locale, RequestContext requestCtx, boolean failQuietly);

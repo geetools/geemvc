@@ -29,5 +29,9 @@ public interface Errors {
 
     Set<Error> globalErrors();
 
+    Set<Error> allErrors();
+
+    Set<Error> fieldErrors();
+
     boolean isEmpty();
 }

@@ -101,7 +101,10 @@ public class FormFieldTagSupport extends HtmlTagSupport {
             writer.write("</p>\n");
         }
 
-        if (hasError(name)) {
+        FormTagSupport formTag = formTag();
+        boolean displayFieldErrors = formTag != null && formTag.isFieldErrors();
+
+        if (displayFieldErrors && hasError(name)) {
             writer.write("<small class=\"error");
 
             if (!Str.isEmpty(getErrorClass())) {
@@ -233,6 +236,9 @@ public class FormFieldTagSupport extends HtmlTagSupport {
     protected String errorMessage(String fieldName) {
         Errors errors = validationErrors();
 
+        if (Str.isEmpty(fieldName) || errors == null || errors.isEmpty())
+            return null;
+
         FormTagSupport formTag = formTag();
         Error error = errors.get(fieldName);
         String resolvedErrorMessage = null;
@@ -241,28 +247,16 @@ public class FormFieldTagSupport extends HtmlTagSupport {
             String errorMsgKey = new StringBuilder(formTag.getName())
                     .append(Char.DOT).append(fieldName).append(Char.DOT).append(error.message()).toString();
 
-            try {
-                resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext());
-            } catch (Throwable t) {
-
-            }
+            resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
 
             if (resolvedErrorMessage == null) {
                 errorMsgKey = new StringBuilder(fieldName)
                         .append(Char.DOT).append(error.message()).toString();
 
-                try {
-                    resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext());
-                } catch (Throwable t) {
-
-                }
+                resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
 
                 if (resolvedErrorMessage == null) {
-                    try {
-                        resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext());
-                    } catch (Throwable t) {
-
-                    }
+                    resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);
                 }
             }
 
@@ -296,12 +290,32 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
     }
 
+    protected String errorMessage(Error error) {
+        if (error == null)
+            return null;
+
+        if (!Str.isEmpty(error.field()))
+            return errorMessage(error.field());
+
+        FormTagSupport formTag = formTag();
+        String resolvedErrorMessage = null;
+
+        String errorMsgKey = new StringBuilder(formTag.getName())
+                .append(Char.DOT).append(error.message()).toString();
+
+        resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+
+        if (resolvedErrorMessage == null) {
+            resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);
+        }
+
+        if (resolvedErrorMessage != null && error.args() != null && error.args().length > 0)
+            resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, error.args());
+
+        return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
+    }
+
     protected FormTagSupport formTag() {
-//        JspTag parentTag = getParent();
-
-//        if(parentTag == null)
-//            return null;
-
         GeemvcTagSupport currentTagSupport = this;
         JspTag parentTag = null;
         FormTagSupport formTagSupport = null;
@@ -311,7 +325,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
                 formTagSupport = (FormTagSupport) parentTag;
                 break;
             } else if (parentTag instanceof GeemvcTagSupport) {
-                currentTagSupport = (GeemvcTagSupport) ((GeemvcTagSupport) parentTag).getParent();
+                currentTagSupport = (GeemvcTagSupport) parentTag;
             } else {
                 break;
             }

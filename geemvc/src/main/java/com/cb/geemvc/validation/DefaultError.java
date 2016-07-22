@@ -19,7 +19,7 @@ package com.cb.geemvc.validation;
 import java.util.Arrays;
 
 public class DefaultError implements Error {
-    protected String parameter;
+    protected String field;
     protected String message;
     protected Object[] args;
 
@@ -37,23 +37,23 @@ public class DefaultError implements Error {
     }
 
     @Override
-    public Error build(String parameter, String message) {
-        this.parameter = parameter;
+    public Error build(String field, String message) {
+        this.field = field;
         this.message = message;
         return this;
     }
 
     @Override
-    public Error build(String parameter, String message, Object... args) {
-        this.parameter = parameter;
+    public Error build(String field, String message, Object... args) {
+        this.field = field;
         this.message = message;
         this.args = args;
         return this;
     }
 
     @Override
-    public String parameter() {
-        return parameter;
+    public String field() {
+        return field;
     }
 
     @Override
@@ -68,6 +68,6 @@ public class DefaultError implements Error {
 
     @Override
     public String toString() {
-        return "DefaultError [parameter=" + parameter + ", message=" + message + ", args=" + Arrays.toString(args) + "]";
+        return "DefaultError [field=" + field + ", message=" + message + ", args=" + Arrays.toString(args) + "]";
     }
 }
