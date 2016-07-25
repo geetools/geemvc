@@ -58,8 +58,6 @@ public class HelloWorldController {
 Of course the same works for query parameters. Simply specify them in your method signature. The same goes for header, cookie or session values. Just use the respective annotations in your handler methods: @Header, @Cookie or @Session. 
 
 ```java
-    Of course you can also include 
-
     @Request("/world/{id}")
     public String helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
