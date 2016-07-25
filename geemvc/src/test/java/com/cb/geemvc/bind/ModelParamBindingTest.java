@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.cb.geemvc.i18n.notice.Notices;
 import jodd.typeconverter.TypeConverterManager;
 
 import org.junit.Test;
@@ -53,6 +54,7 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18a() {
         Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.forename", new String[]{"Michael"});
@@ -63,6 +65,7 @@ public class ModelParamBindingTest extends BaseTest {
 
         ThreadStash.prepare(reqCtx);
         ThreadStash.put(Errors.class, e);
+        ThreadStash.put(Notices.class, n);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
@@ -76,7 +79,7 @@ public class ModelParamBindingTest extends BaseTest {
         Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
         Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
 
-        ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(reqCtx, typedValues);
+        ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(reqCtx, typedValues, n);
 
         Object o = instance(Validator.class).validate(requestHandler, validationCtx, e);
         requestHandler.invoke(typedValues);
