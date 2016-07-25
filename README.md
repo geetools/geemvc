@@ -182,7 +182,7 @@ public class HelloWorldController {
     /**
      * Attempts to save the form. If a validation error occurs we go back to the form, otherwise we show the success page.
      */
-    @Request("save-world-form")
+    @Request(path = "save-world-form", method = HttpMethod.POST)
     public View saveWorld(@Valid WorldBean world, Bindings bindings, Errors errors) {
 
         // Lets check if validation errors exist.
