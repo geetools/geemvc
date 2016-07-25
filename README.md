@@ -82,7 +82,7 @@ public class HelloWorldController {
 ```
 
 ## Passing Parameters to the View
-Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page.
+Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing Geemvc where we want to forward the request to. In the following example we have exchanged the string for a Geemvc "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
 
 ```java
 @Controller
@@ -100,6 +100,7 @@ public class HelloWorldController {
     public View helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
+	// The Views class is simply a small helper that builds the view object for you.
         return Views.forward("/WEB-INF/jsp/hello-world.jsp")
                 .bind("myViewParam", someService.getById(id));
     }
