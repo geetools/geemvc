@@ -20,7 +20,7 @@ There are some very good MVC-frameworks out there - so why create another? When 
 * Replacing the standard framework cache with a context-specific caching mechanism so that entries from various Saas users did not overwrite each other.
 * Enabling custom binding and validation of an attribute based architecture so that attributes could automatically be validated and set in respective objects. 
 
-Some of these things are also possible to adapt in other frameworks, but quite often it felt heavy, required a lot of code or was not possible without a lot of copy&pasting due to the use of private or static fields and methods.
+Some of these things are also possible to adapt in other frameworks, but quite often it felt heavy, required a lot of code, complex configuration  or was not possible without a lot of copy&pasting due to the use of private or static fields and methods.
 
 ## Requirements
 
