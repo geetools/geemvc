@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.cb.geemvc" level="DEBUG"/>
+    <logger name="com.geemvc" level="DEBUG"/>
 
     <root level="debug">
         <appender-ref ref="STDOUT"/>
