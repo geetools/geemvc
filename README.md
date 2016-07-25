@@ -9,11 +9,16 @@ Geemvc is a fast lightweight MVC-framework written for Java8+. All classes withi
 * Integrate the usage of JSR-311 annotations (@Path, @GET, @Produces ...) to simplify the creation of REST APIs.
 * Make it fun and easy to create modern webapps.
 * Allow the framework itself to be very simple to extend by implementing adapter classes or by directly overriding functionality via Google-Guice injection.
-* Increase the flexibility by allowing routing and validation rules to be defined in either Javascript, Groovy or MVEL.
+* Increase the flexibility by allowing routing and validation rules to be defined in either a simple comparison syntax, Javascript, Groovy or MVEL.
 
 ## Motivation
 
-There are some very good MVC-frameworks out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our needs to a certain degree, there was always something that the framework lacked in order to completely fullfill our goals. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs.
+There are some very good MVC-frameworks out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
+
+* Instantiation of framework classes at runtime for a large dynamic multi tenancy SaaS application.
+* Easily being able to override the class-loading-mechanism (of contollers etc.) so that classes from external modules could be used.
+* Replacing the standard framework cache with a context-specific caching mechanism so that entries from various Saas users did not overwrite each other.
+* Enabling custom binding and validation of an attribute based architecture so that attributes could automatically be validated and set in respective objects. 
 
 ## Requirements
 
