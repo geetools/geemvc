@@ -120,3 +120,36 @@ public class HelloWorldController {
     }
 }
 ```
+
+## Checking for Errors in the Handler Method
+Geemvc automatically passes two objects to your handler method in order to let you check if any validation errors exist. For this simply add the "Bindings" and/or "Errors" object(s) to your method signature.
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    protected Service someService;
+
+    @Inject
+    protected HelloWorldController(Service someService) {
+        this.someService = someService;
+    }
+
+    @Request(path = "/world/{id}", onError = "/WEB-INF/jsp/hello-world.jsp")
+    public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam, Bindings bindings, Errors errors) {
+        // Lets check if validation errors exist.
+        if (bindings.hasErrors()) {
+            // Optionally we will add another message to the validation errors.
+            errors.add("Hey, I also want to add this error message!");
+            
+            // Now we tell Geemvc where to go in case of a validation error.
+            return Views.forward("/WEB-INF/jsp/some-other.jsp")
+                    .bind("myViewParam", someService.getById(id));
+        }
+
+        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+                .bind("myViewParam", someService.getById(id));
+    }
+}
+```
