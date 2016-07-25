@@ -295,9 +295,9 @@ public class WorldBean {
 				fieldErrorClass="help-block">
 
 			<!-- Global errors -->
-			<@f.haserrors>
-				<@f.errors />
-			</@f.haserrors>
+			<f:haserrors>
+				<f:errors />
+			</f:haserrors>
 
 			<!-- Input field -->
 			<f:text name="world.name" />
@@ -316,14 +316,14 @@ public class WorldBean {
 		</f:form>
 
 <!--
-        ### The generated HTML of a field will typically look like this (depending on the CSS classes that you define):
+        ### The generated HTML of a field will typically look like this (depending on the CSS classes that you define): ###
     
         <fieldset id="fs-el-world-name" class="form-field form-group row">
             <label for="el-world-name" class="col-xs-12 col-sm-6 col-md-6 col-lg-6 control-label">Name</label>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <input id="el-world-name" name="world.name" value="" class="form-el form-control" type="text">
                 
-                <! -- This line is added when a validation errors exists for the field. -- >
+                ### This line is added when a validation errors exists for the field. ###
                 <small class="error help-block">Please enter a value for the field 'email'.</small>            
             </div>
         </fieldset>
