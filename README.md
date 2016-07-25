@@ -262,4 +262,72 @@ public class WorldBean {
 
 ### The JSP Page
 
+```jsp
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://geetools.org/jsp/geemvc/form" prefix="f"%>
+<%@ taglib uri="http://geetools.org/jsp/geemvc/html" prefix="h"%>
 
+<html>
+	<head>
+		<title>Hello Work Example</title>
+
+        <!-- CSS and JS files ... -->
+
+	</head>
+	<body>
+    
+		<h1>Hello World Form</h1>
+
+		<!--
+			Geemvc form tag. Optionally we specify which CSS classes are to be used when generating the HTML for the form fields. This reduces a lot of boiler-plate-code
+			and saves us from having to specify them for each field, which is especially useful for larger forms. In this particular case we are automatically
+			creating bootstrap markup.
+			
+			We have left this example especially simple for you to quickly understand. Of course you can easily create much more complex forms.
+		-->
+		<f:form action="/save-world-form" method="post" class="form-horizontal"
+				fieldGroupClass="form-group row"
+				fieldLabelClass="col-xs-12 col-sm-6 col-md-6 col-lg-6 control-label"
+				fieldWrapperClass="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+				fieldClass="form-control"
+				fieldHintClass="help-block"
+				fieldErrorClass="help-block">
+
+			<!-- Global errors -->
+			<@f.haserrors>
+				<@f.errors />
+			</@f.haserrors>
+
+			<!-- Input field -->
+			<f:text name="world.name" />
+
+			<!-- Textarea field -->
+			<f:textarea name="world.description" />
+
+			<!-- Radio buttons -->
+			<f:radio name="world.isHumanLifeSupported" value="true" />
+			<f:radio name="world.isHumanLifeSupported" value="false" />
+
+			<f:button name="world.save" type="submit">
+				<h:message key="form.submit" />
+			</f:button>
+
+		</f:form>
+
+<!--
+        ### The generated HTML of a field will typically look like this (depending on the CSS classes that you define):
+    
+        <fieldset id="fs-el-world-name" class="form-field form-group row">
+            <label for="el-world-name" class="col-xs-12 col-sm-6 col-md-6 col-lg-6 control-label">Name</label>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <input id="el-world-name" name="world.name" value="" class="form-el form-control" type="text">
+                
+                <! -- This line is added when a validation errors exists for the field. -- >
+                <small class="error help-block">Please enter a value for the field 'email'.</small>            
+            </div>
+        </fieldset>
+-->
+	</body>
+</html>
+```
