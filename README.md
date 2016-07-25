@@ -280,11 +280,13 @@ public class WorldBean {
 		<h1>Hello World Form</h1>
 
 		<!--
-			Geemvc form tag. Optionally we specify which CSS classes are to be used when generating the HTML for the form fields. This reduces a lot of boiler-plate-code
-			and saves us from having to specify them for each field, which is especially useful for larger forms. In this particular case we are automatically
-			creating bootstrap markup.
+			Geemvc form tag. Optionally we specify which CSS classes are to be used when generating the HTML 
+			for the form fields. This reduces a lot of boiler-plate-code and saves us from having to specify 
+			them for each field, which is especially useful for larger forms. In this particular case we are 
+			automatically creating bootstrap markup.
 			
-			We have left this example especially simple for you to quickly understand. Of course you can easily create much more complex forms.
+			We have left this example especially simple for you to quickly understand. Of course you can easily 
+			create much more complex forms.
 		-->
 		<f:form action="/save-world-form" method="post" class="form-horizontal"
 				fieldGroupClass="form-group row"
