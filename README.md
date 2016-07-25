@@ -496,12 +496,50 @@ First we will start by introducing you to the available lifecycle stages that yo
 | PreBinding | The pre-binding lifecycle interceptor gets called before request parameters are converted to typed values. |
 | PostBinding | After type conversion has taken place. |
 | PreValidation | The pre-validation lifecycle interceptor is called before validation takes place. |
-| PostValidation | After validation takes place. |
+| PostValidation | After validation takes place, allowing you to intercept the Errors object. |
 | PreHandle | The pre-handle interceptor is called immediately before the actual request handler method is called. |
 | PostHandle | After the request handler method has been processed. |
 | PreView | The pre-view lifecycle interceptor is called immediately before the request is forwarded to the view. |
 | PostView | After the view has been processed. |
 
+#### Intercepting a Lifecycle Stage in a Class
 
+```java
+@PreView(on = {"/form-one", "/form-two", "/form-three"}, onView = OnView.EXISTS, when = When.NO_ERRORS)
+public class preViewInterceptor {
+    @Inject
+    protected Service someService;
 
-#### Intercepting a Lifecycle in a Class
+    /**
+     * Add countries and languages before forwarding to view.
+     */
+    public void intercept(View view) {
+        view.bind("countries", service.getCountries())
+                .bind("languages", service.getLnguages());
+    }
+}
+```
+
+#### Intercepting a Lifecycle Stage in a Controller Method
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    @Logger
+    protected Log log;
+
+    // ....
+
+    @PostValidation(on = {"/save-world-form"}, when = When.HAS_ERRORS)
+    public void afterValidation(LifecycleContext lifecycleCtx, Errors errors) {
+        log.trace("Validation has found {} errors.", () -> errors.allErrors().size());
+
+        // Do something ...
+    }
+    
+    // ....
+    
+}
+```
