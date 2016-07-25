@@ -450,3 +450,13 @@ public class HelloWorldController {
 ```
 
 ## Using Interceptors
+Geemvc offers two types of interceptors:
+
+| Interceptor Type | Description |
+| --- | --- |
+| Around Interceptor | The around interceptor wraps your handler method allowing you to make changes before and after it is called. |
+| Lifecycle Interceptor | The lifecycle interceptor lets you intercept various stages of the request lifecycle in Geemvc. |
+
+### The Around Interceptor
+
+### The Lifecycle Interceptor
