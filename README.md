@@ -67,3 +67,28 @@ Of course the same works for query parameters. Simply specify them in your metho
         return "forward: /WEB-INF/jsp/hello-world.jsp";
     }
 ```
+
+## Passing Parameters to the View
+Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page.
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    protected Service someService;
+
+    @Inject
+    protected HelloWorldController(Service someService) {
+        this.someService = someService;
+    }
+
+    @Request("/world/{id}")
+    public View helloWorld(@PathParam Long id, @Param String myQueryParam) {
+        System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
+
+        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+                .bind("myViewParam", someService.getById(id));
+    }
+}
+```
