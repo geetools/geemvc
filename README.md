@@ -122,7 +122,7 @@ public class HelloWorldController {
 ```
 
 ## Checking for Errors in your Handler Method
-Geemvc automatically passes two objects into your handler method in order to let you check if any validation errors exist. For this simply add the "Bindings" and/or "Errors" object(s) to your method signature.
+Geemvc automatically passes two objects into your handler method in order to let you check if any validation errors exist. For this, simply add the "Bindings" and/or "Errors" object(s) to your method signature.
 
 ```java
 @Controller
@@ -138,6 +138,7 @@ public class HelloWorldController {
 
     @Request(path = "/world/{id}", onError = "/WEB-INF/jsp/hello-world.jsp")
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam, Bindings bindings, Errors errors) {
+
         // Lets check if validation errors exist.
         if (bindings.hasErrors()) {
             // Optionally we will add another message to the validation errors.
