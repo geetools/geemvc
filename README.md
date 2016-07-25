@@ -21,6 +21,7 @@ There are some very good MVC-frameworks out there - so why create another? When 
 * Java8+ compatible servlet container.
 
 ## Example Controller
+Simply annotate your controller and handler method and Geemvc will automatically find it.
 
 ```java
 @Controller
