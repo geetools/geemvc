@@ -487,6 +487,21 @@ There are two ways of intercepting a lifecycle stage:
 * In a separate controller class.
 * As a method in your controller.
 
-As we are providing you with a short README here, we will only show two quick examples here. Feel free to check out the wiki pages for more inforation.
+As we are providing you with a short README here, we will only show two quick examples at this point. Feel free to check out the wiki pages for more information.
+
+First we will start by introducing you to the available lifecycle stages that you can intercept:
+
+| Lifecycle Interceptor Type | Description |
+| --- | --- |
+| PreBinding | The pre-binding lifecycle interceptor gets called before request parameters are converted to typed values. |
+| PostBinding | After type conversion has taken place. |
+| PreValidation | The pre-validation lifecycle interceptor is called before validation takes place. |
+| PostValidation | After validation takes place. |
+| PreHandle | The pre-handle interceptor is called immediately before the actual request handler method is called. |
+| PostHandle | After the request handler method has been processed. |
+| PreView | The pre-view lifecycle interceptor is called immediately before the request is forwarded to the view. |
+| PostView | After the view has been processed. |
+
+
 
 #### Intercepting a Lifecycle in a Class
