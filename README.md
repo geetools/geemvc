@@ -419,12 +419,34 @@ In earlier examples we saw two object types that you can inject into your handle
 | javax.servlet.ServletRequest | The current servlet request object. |
 | javax.servlet.ServletResponse | The current servlet response object. |
 | javax.servlet.ServletContext | The current servlet context object. |
-| java.util.Map<String, String[]> | The original request parameter map. |
+| java.util.Map&lt;String, String[]&gt; | The original request parameter map. |
 | javax.servlet.http.HttpSession | The current http session object. |
 | javax.servlet.http.Cookie[] | The current Cookie array retrieved from the servlet request object. |
 | java.util.Locale | The current locale derermined by locale string passed in from browser and the configured available locales. |
 | com.cb.geemvc.validation.Errors | Object where all validation errors of the current request are stored. |
 | com.cb.geemvc.i18n.notice.Notices | Object for passing informational messages to the view. |
 | com.cb.geemvc.Bindings | Object that holds all of the incoming bindings of the current request.|
+
+### Setting a Cookie Value using the Injected Response Object
+Injecting the above objects provide you with a number of possibilities. For example, by injecting the servlet response object you can send cookies to the client.
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    /**
+     * Automatically inject the response object into this handler method.
+     */
+    @Request("/cookie-test")
+    public String cookieTest(HttpServletResponse response) {
+        // Add the cookie to the response.
+        response.addCookie(new Cookie("my-key", "my-value"));
+
+        // Redirect to some URI.
+        return "redirect: /cookie-success";
+    }
+}
+```
 
 ## Using Interceptors
