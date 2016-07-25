@@ -208,3 +208,58 @@ public class HelloWorldController {
     }
 }
 ```
+
+### The Form Bean
+
+```java
+public class WorldBean {
+
+    protected Long id;
+
+    @Required
+    @On("/save-world-form")
+    protected String name;
+
+    @Check(required = true, minLength = 30, on = "/save-world-form")
+    protected String description;
+
+    @NotNull
+    protected boolean isHumanLifeSupported;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isHumanLifeSupported() {
+        return isHumanLifeSupported;
+    }
+
+    public void setHumanLifeSupported(boolean humanLifeSupported) {
+        isHumanLifeSupported = humanLifeSupported;
+    }
+}
+```
+
+### The JSP Page
+
+
