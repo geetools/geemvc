@@ -503,6 +503,15 @@ First we will start by introducing you to the available lifecycle stages that yo
 | PostView | After the view has been processed. |
 
 #### Intercepting a Lifecycle Stage in a Class
+In the following example we use the interceptor to bind countries and languages to the view before Geemvc forwards to it. There are 3 main annotations that tell Geemvc if the interceptor is to be activated or not:
+
+| Annotation Attribute | Description | Options |
+| --- | --- | --- |
+| on | Filters which request handler path mapping is to be included. | None |
+| onView | Only triggers the interceptor when the view is in a particular state. | EXISTS, NOT_EXISTS, ALWAYS |
+| when | Only triggers the interceptor when the Errors object is in a particular state. | NO_ERRORS, HAS_ERRORS, ALWAYS |
+
+Alternatively to the "on" attribute you can also filter the lifecycle interceptor by controller-class, handler-method or unique handler-name.
 
 ```java
 @PreView(on = {"/form-one", "/form-two", "/form-three"}, onView = OnView.EXISTS, when = When.NO_ERRORS)
@@ -515,7 +524,7 @@ public class preViewInterceptor {
      */
     public void intercept(View view) {
         view.bind("countries", service.getCountries())
-                .bind("languages", service.getLnguages());
+                .bind("languages", service.getLanguages());
     }
 }
 ```
