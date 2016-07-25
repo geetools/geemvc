@@ -2,11 +2,11 @@
     <tlib-version>1.0</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>Html</short-name>
-    <uri>http://www.geetools.org/jsp/geemvc/html</uri>
+    <uri>http://geetools.com/jsp/geemvc/html</uri>
     <description>Html TLD</description>
     <tag>
         <name>url</name>
-        <tag-class>com.cb.geemvc.taglib.html.UrlTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.html.UrlTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -56,7 +56,7 @@
     </tag>
     <tag>
         <name>message</name>
-        <tag-class>com.cb.geemvc.taglib.html.MessageTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.html.MessageTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>key</name>
@@ -116,13 +116,13 @@
     <!-- Layout -->
     <tag>
         <name>layout</name>
-        <tag-class>com.cb.geemvc.taglib.layout.LayoutTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.layout.LayoutTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
     <tag>
         <name>section</name>
-        <tag-class>com.cb.geemvc.taglib.layout.SectionTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.layout.SectionTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>
@@ -133,7 +133,7 @@
     </tag>
     <tag>
         <name>use</name>
-        <tag-class>com.cb.geemvc.taglib.layout.UseLayoutTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.layout.UseLayoutTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>layout</name>

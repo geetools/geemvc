@@ -5,7 +5,7 @@
     <persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/testDS</non-jta-data-source>
-        <class>com.cb.geemvc.mock.bean.Person</class>
+        <class>com.geemvc.mock.bean.Person</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.show_sql" value="true"/>

@@ -2,11 +2,11 @@
     <tlib-version>1.0</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>Input Text</short-name>
-    <uri>http://www.geetools.org/jsp/geemvc/form</uri>
+    <uri>http://geetools.com/jsp/geemvc/form</uri>
     <description>Form TLD</description>
     <tag>
         <name>form</name>
-        <tag-class>com.cb.geemvc.taglib.form.FormTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.FormTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -68,7 +68,7 @@
     </tag>
     <tag>
         <name>text</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputTextTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputTextTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -87,7 +87,7 @@
     </tag>
     <tag>
         <name>password</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputPasswordTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputPasswordTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -106,7 +106,7 @@
     </tag>
     <tag>
         <name>textarea</name>
-        <tag-class>com.cb.geemvc.taglib.form.TextareaTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.TextareaTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -125,7 +125,7 @@
     </tag>
     <tag>
         <name>select</name>
-        <tag-class>com.cb.geemvc.taglib.form.SelectTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.SelectTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -144,7 +144,7 @@
     </tag>
     <tag>
         <name>option</name>
-        <tag-class>com.cb.geemvc.taglib.form.OptionTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.OptionTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>value</name>
@@ -155,7 +155,7 @@
     </tag>
     <tag>
         <name>options</name>
-        <tag-class>com.cb.geemvc.taglib.form.OptionsTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.OptionsTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>values</name>
@@ -174,7 +174,7 @@
     </tag>
     <tag>
         <name>checkbox</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputCheckboxTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputCheckboxTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -194,7 +194,7 @@
     </tag>
     <tag>
         <name>radio</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputRadioTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputRadioTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -214,7 +214,7 @@
     </tag>
     <tag>
         <name>button</name>
-        <tag-class>com.cb.geemvc.taglib.form.ButtonTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.ButtonTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -233,7 +233,7 @@
     </tag>
     <tag>
         <name>image</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputImageTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputImageTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -252,7 +252,7 @@
     </tag>
     <tag>
         <name>submit</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputSubmitTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputSubmitTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>id</name>
@@ -271,7 +271,7 @@
     </tag>
     <tag>
         <name>label</name>
-        <tag-class>com.cb.geemvc.taglib.form.InputLabelTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.InputLabelTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>
@@ -285,7 +285,7 @@
     </tag>
     <tag>
         <name>error</name>
-        <tag-class>com.cb.geemvc.taglib.form.ErrorTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.ErrorTagSupport</tag-class>
         <attribute>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>
@@ -298,7 +298,7 @@
     </tag>
     <tag>
         <name>haserror</name>
-        <tag-class>com.cb.geemvc.taglib.form.HasErrorTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.HasErrorTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>
@@ -312,7 +312,7 @@
     </tag>
     <tag>
         <name>errors</name>
-        <tag-class>com.cb.geemvc.taglib.form.ErrorsTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.ErrorsTagSupport</tag-class>
         <attribute>
             <name>show</name>
             <rtexprvalue>true</rtexprvalue>
@@ -321,7 +321,7 @@
     </tag>
     <tag>
         <name>haserrors</name>
-        <tag-class>com.cb.geemvc.taglib.form.HasErrorsTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.HasErrorsTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>show</name>
@@ -331,7 +331,7 @@
     </tag>
     <tag>
         <name>notice</name>
-        <tag-class>com.cb.geemvc.taglib.form.NoticeTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.NoticeTagSupport</tag-class>
         <attribute>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>
@@ -344,7 +344,7 @@
     </tag>
     <tag>
         <name>hasnotice</name>
-        <tag-class>com.cb.geemvc.taglib.form.HasNoticeTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.HasNoticeTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>
@@ -358,7 +358,7 @@
     </tag>
     <tag>
         <name>notices</name>
-        <tag-class>com.cb.geemvc.taglib.form.NoticesTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.NoticesTagSupport</tag-class>
         <attribute>
             <name>show</name>
             <rtexprvalue>true</rtexprvalue>
@@ -367,7 +367,7 @@
     </tag>
     <tag>
         <name>hasnotices</name>
-        <tag-class>com.cb.geemvc.taglib.form.HasNoticesTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.HasNoticesTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>show</name>
