@@ -458,5 +458,26 @@ Geemvc offers two types of interceptors:
 | Lifecycle Interceptor | The lifecycle interceptor lets you intercept various stages of the request lifecycle in Geemvc. |
 
 ### The Around Interceptor
+As an example we will create an around interceptor that simply measures the time taken to process the handler method. Note that you must not forget to call "invocationCtx.proceed()" or you handler method will not get called. Also do not forget to return the result that your request handler has returned.
+
+```java
+@Intercept
+public class TimerInterceptor implements AroundHandler {
+
+    @Logger
+    protected Log log;
+
+    @Override
+    public Object invokeAround(InvocationContext invocationCtx) {
+        long start = System.currentTimeMillis();
+
+        Object o = invocationCtx.proceed();
+
+        log.trace("The request handler '{}' took {}ms.", () -> invocationCtx.requestHandler().toGenericString(), () -> System.currentTimeMillis() - start);
+
+        return o;
+    }
+}
+```
 
 ### The Lifecycle Interceptor
