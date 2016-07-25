@@ -58,12 +58,17 @@ public class HelloWorldController {
 Of course the same works for query parameters. Simply specify them in your method signature. The same goes for header, cookie or session values. Just use the respective annotations in your handler methods: @Header, @Cookie or @Session. 
 
 ```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
     @Request("/world/{id}")
     public String helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
 
         return "forward: /WEB-INF/jsp/hello-world.jsp";
     }
+}    
 ```
 
 ## Passing Parameters to the View
