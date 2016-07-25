@@ -55,7 +55,7 @@ public class HelloWorldController {
 ```
 
 ## Passing Query Parameters to your Controller
-Of course the same works for query parameters. Simply specify them in your method signature. The same goes for header, cookie or session values. Just use the respective annotations in your handler methods: @Header, @Cookie or @Session. Standard possibilities are:
+Of course the same works for query parameters. Simply specify them in your method signature. Additionally you can retrieve values from headers, cookies or the current session. Just use the respective annotations in your handler methods. Standard possibilities are:
 
 | Parameter Annotation | Description |
 | --- | --- |
