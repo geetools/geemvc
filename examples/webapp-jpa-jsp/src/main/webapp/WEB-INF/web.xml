@@ -21,7 +21,7 @@
 <!-- 
 	<servlet>
 		<servlet-name>Geemvc</servlet-name>
-		<servlet-class>com.cb.geemvc.DispatcherServlet</servlet-class>
+		<servlet-class>com.geemvc.DispatcherServlet</servlet-class>
 		<async-supported>true</async-supported>
 
 		<init-param>

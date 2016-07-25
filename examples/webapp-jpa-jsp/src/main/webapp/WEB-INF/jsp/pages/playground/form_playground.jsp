@@ -1,8 +1,8 @@
 <%@page import="com.cb.examples.jpajsp.geeticket.controller.FormPlaygroundController2"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://www.geetools.org/jsp/geemvc/form" prefix="f"%>
-<%@ taglib uri="http://www.geetools.org/jsp/geemvc/html" prefix="h"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/form" prefix="f"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/html" prefix="h"%>
 
 <h1>Form Playground</h1>
 

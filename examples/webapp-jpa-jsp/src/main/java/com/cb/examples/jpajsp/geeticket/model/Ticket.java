@@ -21,7 +21,7 @@ import com.cb.examples.jpajsp.geeticket.Priority;
 import com.cb.examples.jpajsp.geeticket.Status;
 import com.cb.examples.jpajsp.geeticket.Type;
 import com.cb.examples.jpajsp.geeticket.repository.Users;
-import com.cb.geemvc.inject.Injectors;
+import com.geemvc.inject.Injectors;
 
 @Entity
 @Table(name = "tickets")

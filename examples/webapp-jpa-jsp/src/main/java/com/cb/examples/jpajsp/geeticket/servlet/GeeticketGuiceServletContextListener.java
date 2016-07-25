@@ -7,11 +7,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
 import com.cb.examples.jpajsp.geeticket.inject.GeeticketModule;
-import com.cb.geemvc.DispatcherServlet;
-import com.cb.geemvc.config.Configuration;
-import com.cb.geemvc.inject.GeemvcModule;
-import com.cb.geemvc.inject.InjectorProvider;
-import com.cb.geemvc.inject.Injectors;
+import com.geemvc.DispatcherServlet;
+import com.geemvc.config.Configuration;
+import com.geemvc.inject.GeemvcModule;
+import com.geemvc.inject.InjectorProvider;
+import com.geemvc.inject.Injectors;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistFilter;

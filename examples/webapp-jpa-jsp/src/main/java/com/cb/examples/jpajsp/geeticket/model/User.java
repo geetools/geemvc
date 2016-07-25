@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cb.geemvc.Char;
+import com.geemvc.Char;
 
 @Entity
 @Table(name = "users")

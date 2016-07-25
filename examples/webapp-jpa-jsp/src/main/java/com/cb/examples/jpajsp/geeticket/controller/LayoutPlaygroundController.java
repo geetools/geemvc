@@ -1,10 +1,10 @@
 package com.cb.examples.jpajsp.geeticket.controller;
 
 import com.cb.examples.jpajsp.geeticket.App;
-import com.cb.geemvc.Views;
-import com.cb.geemvc.annotation.Controller;
-import com.cb.geemvc.annotation.Request;
-import com.cb.geemvc.view.bean.View;
+import com.geemvc.Views;
+import com.geemvc.annotation.Controller;
+import com.geemvc.annotation.Request;
+import com.geemvc.view.bean.View;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;

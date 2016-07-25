@@ -4,7 +4,7 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.cb.geemvc.examples</groupId>
+	<groupId>com.geetools.geemvc.examples</groupId>
 	<artifactId>geeticket-webapp-jpa-jsp</artifactId>
 	<version>0.9.1-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -13,7 +13,7 @@
     <description>Geemvc jpa and jsp example war.</description>
 	
 	<parent>
-		<groupId>com.commerceboard</groupId>
+		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
 		<version>0.9.1-SNAPSHOT</version>
 		<relativePath>../../</relativePath>
@@ -62,7 +62,7 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.commerceboard</groupId>
+			<groupId>com.geetools.geemvc</groupId>
 			<artifactId>geemvc</artifactId>
 			<version>0.9.1-SNAPSHOT</version>
 		</dependency>

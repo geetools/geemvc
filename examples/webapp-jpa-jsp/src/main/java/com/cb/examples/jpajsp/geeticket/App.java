@@ -8,7 +8,7 @@ import com.cb.examples.jpajsp.geeticket.model.User;
 import com.cb.examples.jpajsp.geeticket.repository.Comments;
 import com.cb.examples.jpajsp.geeticket.repository.Tickets;
 import com.cb.examples.jpajsp.geeticket.repository.Users;
-import com.cb.geemvc.inject.Injectors;
+import com.geemvc.inject.Injectors;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
