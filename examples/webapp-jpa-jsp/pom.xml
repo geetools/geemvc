@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geetools.geemvc.examples</groupId>
 	<artifactId>geeticket-webapp-jpa-jsp</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>${geemvc.version}</version>
 	<packaging>war</packaging>
 
 	<name>Geemvc Example Webapp</name>
@@ -15,14 +15,9 @@
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
-		<version>0.9.1-SNAPSHOT</version>
+		<version>${geemvc.version}</version>
 		<relativePath>../../</relativePath>
 	</parent>
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
 
 	<build>
 		<plugins>
@@ -64,7 +59,7 @@
 		<dependency>
 			<groupId>com.geetools.geemvc</groupId>
 			<artifactId>geemvc</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>${geemvc.version}</version>
 		</dependency>
 	</dependencies>
 
