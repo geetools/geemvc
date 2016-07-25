@@ -9,7 +9,7 @@ Geemvc is a fast lightweight MVC-framework written for Java8+. All classes withi
 * Integrate the usage of JSR-311 annotations (@Path, @GET, @Produces ...) to simplify the creation of REST APIs.
 * Make it fun and easy to create modern webapps.
 * Allow the framework itself to be very simple to extend by implementing adapter classes or by directly overriding functionality via Google-Guice injection.
-* Increase the flexibility by allowing routing and validation rules to be definded in either Javascript, Groovy or MVEL.
+* Increase the flexibility by allowing routing and validation rules to be defined in either Javascript, Groovy or MVEL.
 
 ## Motivation
 
