@@ -36,3 +36,20 @@ public class HelloWorldController {
     }
 }
 ```
+
+## Passing URI Parameters to your Controller
+Geemvc will automatically parse specified parameters out of the request URI and make them available to the handler method.
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    @Request("/world/{id}")
+    public String helloWorld(@PathParam Long id) {
+        System.out.println("Well done! You can now use the id path parameter in your code. The id is: " + id);
+
+        return "forward: /WEB-INF/jsp/hello-world.jsp";
+    }
+}
+```
