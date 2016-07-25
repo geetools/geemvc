@@ -122,6 +122,12 @@ public class HelloWorldController {
         this.someService = someService;
     }
 
+    /**
+     * Because we have specified the "onError" attribute in the @Request annotation, Geemvc will not enter this
+     * handler-method when it detects validation errors. If you want to check for further errors or dynamically
+     * forward the user to some view, do not use this. Make use of the "Bindings" object as shown in the example 
+     * following this one.
+     */
     @Request(path = "/world/{id}", onError="/WEB-INF/jsp/hello-world.jsp")
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
