@@ -154,3 +154,57 @@ public class HelloWorldController {
     }
 }
 ```
+
+## Form Example
+
+### The Controller
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    protected Service someService;
+
+    @Inject
+    protected HelloWorldController(Service someService) {
+        this.someService = someService;
+    }
+
+    /**
+     * Takes the user to the form page.
+     */
+    @Request("world-form")
+    public String helloWorld() {
+        return "forward: /WEB-INF/jsp/hello-world-form.jsp";
+    }
+
+    /**
+     * Attempts to save the form. If a validation error occurs we go back to the form, otherwise we show the success page.
+     */
+    @Request("save-world-form")
+    public View saveWorld(@Valid WorldBean world, Bindings bindings, Errors errors) {
+
+        // Lets check if validation errors exist.
+        if (bindings.hasErrors()) {
+
+            // Now we tell Geemvc where to go in case of a validation error.
+            return Views.forward("/WEB-INF/jsp/hello-world-form.jsp")
+                    .bind(bindings.typedValues()); // Re-bind values to view.
+        }
+
+        if (!worldIsValid(world)) {
+            errors.add("World is not valid, please check again.");
+
+            return Views.forward("/WEB-INF/jsp/hello-world-form.jsp")
+                    .bind(bindings.typedValues()); // Re-bind values to view.
+        }
+
+        // Save the bean.
+        WorldBean savedWorld = service.add(world);
+
+        return Views.forward("/WEB-INF/jsp/hello-world-success.jsp")
+                .bind("savedWorld", savedWorld);
+    }
+}
+```
