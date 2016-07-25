@@ -367,3 +367,53 @@ public class WorldBean {
 	</body>
 </html>
 ```
+
+## Injecting Geemvc Objects into your Controller
+Currently there are three useful helper objects that you can inject into your controller or any other injected class. These are:
+
+| Type | Description |
+| --- | --- |
+| @Inject Cache cache | Enables you to cache and retrieve data. The current caching implementation uses the Google cache from Google Guava. |
+| @Inject Injector injector | Injects the Google Guice injector for manually injecting objects. |
+| @Logger Log log | Injects the standard logging implementation. Geemvc uses SLF4J and Logback-classic behind the scenes. |
+
+Check out this example of how these objects can be automatically injected:
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    @Inject
+    protected Cache cache;
+
+    @Inject
+    protected Injector injector;
+
+    @Logger
+    protected Log log;
+    
+    // ...
+    
+    @Request("/world/{id}")
+    public String helloWorld(@PathParam Long id) {
+    	// Use the logger.
+        log.debug("Well done! You can now use the id path parameter in your code. The id is: {}", id);
+        
+        // Add or retrieve some value from the cache.
+        cache.put("my-key", "my-value");
+
+	// Inject your object.
+	WorldBean world = injector.getInstance(WorldBean.class);
+
+        return "forward: /WEB-INF/jsp/hello-world.jsp";
+    }
+}
+```
+
+
+
+## Injecting Geemvc Objects into your Handler Method
+
+
+## Using Interceptors
