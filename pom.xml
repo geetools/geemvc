@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geetools.geemvc</groupId>
 	<artifactId>geemvc-parent</artifactId>
-	<version>${geemvc.version}</version>
+	<version>${GEEMVC_VERSION}</version>
 	<packaging>pom</packaging>
 
 	<name>Geemvc Parent</name>
@@ -18,7 +18,8 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<geemvc.version>0.9.1-beta1</geemvc.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<GEEMVC_VERSION>0.9.1-beta1</GEEMVC_VERSION>
 	</properties>
 
 	<modules>

@@ -34,9 +34,6 @@ public class ThreadStash {
 
     /**
      * Adds a value for the provided key to the current local map.
-     *
-     * @param key
-     * @param value
      */
     public static void put(Object key, Object value) {
         localMap().put(key, value);
@@ -44,9 +41,6 @@ public class ThreadStash {
 
     /**
      * Return a value for the provided key using the current local map.
-     *
-     * @param key
-     * @return
      */
     public static Object get(Object key) {
         return localMap().get(key);
@@ -72,8 +66,6 @@ public class ThreadStash {
     /**
      * Adds a new element to the request stack. As more than 1 request can take place in a single Thread,
      * we give each one its own thread local space.
-     *
-     * @param requestCtx
      */
     public static void prepare(RequestContext requestCtx) {
         String requestURL = new StringBuilder(requestCtx.getMethod())
@@ -85,8 +77,6 @@ public class ThreadStash {
 
     /**
      * Returns the current request stack list, creating a new one if it does not exist yet.
-     *
-     * @return
      */
     protected static List<Integer> requestStack() {
         return requestStack(true);
@@ -94,9 +84,6 @@ public class ThreadStash {
 
     /**
      * Returns the current request stack list, optionally creating a new one if it does not exist yet.
-     *
-     * @param isCreate
-     * @return
      */
     protected static List<Integer> requestStack(boolean isCreate) {
         Map<Object, Object> globalMap = globalMap();
@@ -112,8 +99,6 @@ public class ThreadStash {
 
     /**
      * Returns a global map that is not specific to the current request.
-     *
-     * @return
      */
     protected static Map<Object, Object> globalMap() {
         Map<Integer, Map<Object, Object>> stackMaps = (Map<Integer, Map<Object, Object>>) STASH.get();
@@ -129,8 +114,6 @@ public class ThreadStash {
 
     /**
      * Returns a local map specific to the current request.
-     *
-     * @return
      */
     protected static Map<Object, Object> localMap() {
         List<Integer> reqStack = requestStack();
@@ -166,8 +149,6 @@ public class ThreadStash {
 
     /**
      * Checks if the stack is empty or if there are still local maps that exist for other requests.
-     *
-     * @return
      */
     protected static boolean requestStackIsEmpty() {
         List<Integer> reqStack = requestStack(false);

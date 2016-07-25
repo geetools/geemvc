@@ -1115,9 +1115,6 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
     /**
      * Sorts the map so that the handler with the most matched (request-mapping annotation) conditions is at position 0 and the one with the least
      * number of matches is at the end.
-     *
-     * @param numMatches
-     * @return sortedNumMatches
      */
     protected Map<RequestHandlerKey, Integer> sort(Map<RequestHandlerKey, Integer> numMatches) {
         return numMatches.entrySet().stream().sorted(Map.Entry.<RequestHandlerKey, Integer>comparingByValue().reversed()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
@@ -1128,11 +1125,6 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
     /**
      * Finds the maximum number of conditions that have been matched in a single request-mapping annotation. All request-handlers that have this
      * maximum number of matched conditions are collected in requestHandlerCollector.
-     *
-     * @param numMatchesMap
-     * @param requestHandlerMap
-     * @param requestHandlerCollector
-     * @return noOfMaxMatches
      */
     protected Integer countNoOfMaxMatches(Map<RequestHandlerKey, Integer> numMatchesMap, Map<RequestHandlerKey, RequestHandler> requestHandlerMap, List<RequestHandler> requestHandlerCollector) {
         Set<RequestHandlerKey> keys = numMatchesMap.keySet();

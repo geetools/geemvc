@@ -30,69 +30,69 @@ public interface ReflectionsWrapper {
 
     /**
      * gets all sub types in hierarchy of a given type
-     * <p/>
+     * 
      * depends on SubTypesScanner configured, otherwise an empty set is returned
      */
     public <T> Set<Class<? extends T>> getSubTypesOf(final Class<T> type);
 
     /**
      * get types annotated with a given annotation, both classes and annotations
-     * <p>
+     * 
      * {@link java.lang.annotation.Inherited} is honored.
-     * <p>
+     * 
      * when honoring @Inherited, meta-annotation should only effect annotated super classes and its sub types
-     * <p>
+     * 
      * <i>Note that this (@Inherited) meta-annotation type has no effect if the annotated type is used for anything other than a class. Also, this
      * meta-annotation causes annotations to be inherited only from superclasses; annotations on implemented interfaces have no effect.</i>
-     * <p/>
+     *
      * depends on TypeAnnotationsScanner and SubTypesScanner configured, otherwise an empty set is returned
      */
     public Set<Class<?>> getTypesAnnotatedWith(final Class<? extends Annotation> annotation);
 
     /**
      * get types annotated with a given annotation, both classes and annotations
-     * <p>
+     * 
      * {@link java.lang.annotation.Inherited} is honored according to given honorInherited.
-     * <p>
+     * 
      * when honoring @Inherited, meta-annotation should only effect annotated super classes and it's sub types
-     * <p>
+     * 
      * when not honoring @Inherited, meta annotation effects all subtypes, including annotations interfaces and classes
-     * <p>
+     * 
      * <i>Note that this (@Inherited) meta-annotation type has no effect if the annotated type is used for anything other than a class. Also, this
      * meta-annotation causes annotations to be inherited only from superclasses; annotations on implemented interfaces have no effect.</i>
-     * <p/>
+     *
      * depends on TypeAnnotationsScanner and SubTypesScanner configured, otherwise an empty set is returned
      */
     public Set<Class<?>> getTypesAnnotatedWith(final Class<? extends Annotation> annotation, boolean honorInherited);
 
     /**
      * get types annotated with a given annotation, both classes and annotations, including annotation member values matching
-     * <p>
+     * 
      * {@link java.lang.annotation.Inherited} is honored
-     * <p/>
+     *
      * depends on TypeAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Class<?>> getTypesAnnotatedWith(final Annotation annotation);
 
     /**
      * get types annotated with a given annotation, both classes and annotations, including annotation member values matching
-     * <p>
+     * 
      * {@link java.lang.annotation.Inherited} is honored according to given honorInherited
-     * <p/>
+     *
      * depends on TypeAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Class<?>> getTypesAnnotatedWith(final Annotation annotation, boolean honorInherited);
 
     /**
      * get all methods annotated with a given annotation
-     * <p/>
+     *
      * depends on MethodAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Method> getMethodsAnnotatedWith(final Class<? extends Annotation> annotation);
 
     /**
      * get all methods annotated with a given annotation, including annotation member values matching
-     * <p/>
+     *
      * depends on MethodAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Method> getMethodsAnnotatedWith(final Annotation annotation);
@@ -124,14 +124,14 @@ public interface ReflectionsWrapper {
 
     /**
      * get all constructors annotated with a given annotation
-     * <p/>
+     *
      * depends on MethodAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Constructor> getConstructorsAnnotatedWith(final Class<? extends Annotation> annotation);
 
     /**
      * get all constructors annotated with a given annotation, including annotation member values matching
-     * <p/>
+     *
      * depends on MethodAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Constructor> getConstructorsAnnotatedWith(final Annotation annotation);
@@ -153,30 +153,30 @@ public interface ReflectionsWrapper {
 
     /**
      * get all fields annotated with a given annotation
-     * <p/>
+     *
      * depends on FieldAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Field> getFieldsAnnotatedWith(final Class<? extends Annotation> annotation);
 
     /**
      * get all methods annotated with a given annotation, including annotation member values matching
-     * <p/>
+     *
      * depends on FieldAnnotationsScanner configured, otherwise an empty set is returned
      */
     public Set<Field> getFieldsAnnotatedWith(final Annotation annotation);
 
     /**
      * get resources relative paths where simple name (key) matches given namePredicate
-     * <p>
+     * 
      * depends on ResourcesScanner configured, otherwise an empty set is returned
      */
     public Set<String> getResources(final Predicate<String> namePredicate);
 
     /**
      * get resources relative paths where simple name (key) matches given regular expression
-     * <p>
+     * 
      * depends on ResourcesScanner configured, otherwise an empty set is returned
-     * <p>
+     * 
      * <pre>
      * Set&lt;String&gt; xmls = reflections.getResources(&quot;.*\\.xml&quot;);
      * </pre>
