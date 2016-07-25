@@ -411,9 +411,20 @@ public class HelloWorldController {
 }
 ```
 
-
-
 ## Injecting Geemvc Objects into your Handler Method
+In earlier examples we saw two object types that you can inject into your handler method. The following table shows all of the objects that can be included in the same fashion:
 
+| Type | Description |
+| --- | --- |
+| javax.servlet.ServletRequest | The current servlet request object. |
+| javax.servlet.ServletResponse | The current servlet response object. |
+| javax.servlet.ServletContext | The current servlet context object. |
+| java.util.Map<String, String[]> | The original request parameter map. |
+| javax.servlet.http.HttpSession | The current http session object. |
+| javax.servlet.http.Cookie[] | The current Cookie array retrieved from the servlet request object. |
+| java.util.Locale | The current locale derermined by locale string passed in from browser and the configured available locales. |
+| com.cb.geemvc.validation.Errors | Object where all validation errors of the current request are stored. |
+| com.cb.geemvc.i18n.notice.Notices | Object for passing informational messages to the view. |
+| com.cb.geemvc.Bindings | Object that holds all of the incoming bindings of the current request.|
 
 ## Using Interceptors
