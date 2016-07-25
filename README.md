@@ -403,8 +403,8 @@ public class HelloWorldController {
         // Add or retrieve some value from the cache.
         cache.put("my-key", "my-value");
 
-	// Inject your object.
-	WorldBean world = injector.getInstance(WorldBean.class);
+        // Inject your object.
+        WorldBean world = injector.getInstance(WorldBean.class);
 
         return "forward: /WEB-INF/jsp/hello-world.jsp";
     }
