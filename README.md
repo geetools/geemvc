@@ -55,7 +55,17 @@ public class HelloWorldController {
 ```
 
 ## Passing Query Parameters to your Controller
-Of course the same works for query parameters. Simply specify them in your method signature. The same goes for header, cookie or session values. Just use the respective annotations in your handler methods: @Header, @Cookie or @Session. 
+Of course the same works for query parameters. Simply specify them in your method signature. The same goes for header, cookie or session values. Just use the respective annotations in your handler methods: @Header, @Cookie or @Session. Standard possibilities are:
+
+| Parameter Annotation | Description |
+| --- | --- |
+| @PathParam | Parameter retrieved from the request URI. |
+| @Param | Parameter passed in via the query string. |
+| @Cookie | Value retrieved from a cookie. |
+| @Session | Value retrieved from the current session. |
+| @Header | Value retrieved from the request headers. |
+
+You can easily create your own annotations that are automatically evaluated by Geemvc. Please refer to the wiki page for more information.
 
 ```java
 @Controller
@@ -136,7 +146,7 @@ public class HelloWorldController {
         this.someService = someService;
     }
 
-    @Request(path = "/world/{id}", onError = "/WEB-INF/jsp/hello-world.jsp")
+    @Request(path = "/world/{id}")
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam, Bindings bindings, Errors errors) {
 
         // Lets check if validation errors exist.
@@ -206,6 +216,16 @@ public class HelloWorldController {
         return Views.forward("/WEB-INF/jsp/hello-world-success.jsp")
                 .bind("savedWorld", savedWorld);
     }
+    
+    /**
+     * Simple check method which could do some evaluation.
+     * @param world
+     * @return isValid
+     */
+    protected boolean worldIsValid(WorldBean world) {
+        // Some evaluation ...
+        return world == null ? false : true;
+    }
 }
 ```
 
@@ -270,7 +290,7 @@ public class WorldBean {
 
 <html>
 	<head>
-		<title>Hello Work Example</title>
+		<title>Hello World Example</title>
 
         <!-- CSS and JS files ... -->
 
