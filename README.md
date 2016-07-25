@@ -95,3 +95,28 @@ public class HelloWorldController {
     }
 }
 ```
+
+## Validating a Parameter
+The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by Geemvc (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells Geemvc where to go incase of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
+
+```java
+@Controller
+@Request("/hello")
+public class HelloWorldController {
+
+    protected Service someService;
+
+    @Inject
+    protected HelloWorldController(Service someService) {
+        this.someService = someService;
+    }
+
+    @Request(path = "/world/{id}", onError="/WEB-INF/jsp/hello-world.jsp")
+    public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
+        System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
+
+        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+                .bind("myViewParam", someService.getById(id));
+    }
+}
+```
