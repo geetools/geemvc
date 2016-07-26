@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geetools.geemvc</groupId>
 	<artifactId>geeticket-webapp-jpa-jsp</artifactId>
-	<version>0.9.1-beta3</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>Geemvc Example Webapp</name>
@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
-		<version>0.9.1-beta3</version>
+		<version>0.9.1-SNAPSHOT</version>
 		<relativePath>../../</relativePath>
 	</parent>
 
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>com.geetools.geemvc</groupId>
 			<artifactId>geemvc</artifactId>
-			<version>0.9.1-beta3</version>
+			<version>0.9.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
