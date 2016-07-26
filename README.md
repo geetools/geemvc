@@ -28,7 +28,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 * Java8+ compatible servlet container.
 
 ## Quick Start Guide
-1) Add the following lines to the POM of your webapp.
+1) Add the following lines to the pom.xml of your webapp.
 
 ```xml
 <dependency>
