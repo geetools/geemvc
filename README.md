@@ -1,6 +1,6 @@
-# Geemvc
+# Geemvc Java 8+ MVC-framework
 
-Geemvc is a fast lightweight MVC-framework written for Java8+. All classes within Geemvc have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending Geemvc we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by Geemvc.
+Geemvc is a fast lightweight **MVC-framework** written for **Java 8+**. All classes within Geemvc have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending Geemvc we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by Geemvc.
 
 ## Goals
 
@@ -13,7 +13,7 @@ Geemvc is a fast lightweight MVC-framework written for Java8+. All classes withi
 
 ## Motivation
 
-There are some very good MVC-frameworks out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
+There are some very good **MVC-frameworks** out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
 
 * Instantiating framework classes at runtime for a large dynamic multi tenancy SaaS application.
 * Easily being able to override the class-loading-mechanism (of contollers etc.) so that classes from external modules could be used.
@@ -24,8 +24,8 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 
 ## Requirements
 
-* Java8+.
-* Java8+ compatible servlet container.
+* **Java 8+.**
+* Java 8+ compatible servlet container.
 
 ## Quick Start Guide
 1) Add the following lines to the pom.xml of your webapp.
