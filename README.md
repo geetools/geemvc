@@ -90,7 +90,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 
 4) Enter the new URL into your browser. This will most likely be something like http://localhost:8080/hello/world if you have copied the example controller underneath.
 
-> This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the example webapp and our extensive WIKI (currently in progress!) for more information.
+> This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the [example webapp](https://github.com/commerceboard/geemvc/tree/master/examples/webapp-jpa-jsp) and our extensive WIKI (currently in progress!) for more information.
 
 ## Example Controller
 Simply annotate your controller and handler method and Geemvc will automatically find it.
