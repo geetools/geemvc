@@ -25,7 +25,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 ## Requirements
 
 * **Java 8+.**
-* Java 8+ compatible servlet container.
+* **Java 8+ compatible servlet container.**
 
 ## Quick Start Guide
 1) Add the following lines to the pom.xml of your webapp.
