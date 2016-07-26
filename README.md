@@ -38,7 +38,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 </dependency>
 ```
 
-2) Add the following servlet configuration to your web.xml
+2) Add the following servlet configuration to your web.xml.
 ```xml
 	<servlet>
 		<servlet-name>Geemvc-Servlet</servlet-name>
