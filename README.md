@@ -34,7 +34,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 <dependency>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc</artifactId>
-    <version>0.9.1-beta2</version>
+    <version>0.9.1-beta3</version>
 </dependency>
 ```
 
