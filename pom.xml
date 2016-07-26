@@ -19,7 +19,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<GEEMVC_VERSION>0.9.1-beta1</GEEMVC_VERSION>
+		<GEEMVC_VERSION>0.9.1-SNAPSHOT</GEEMVC_VERSION>
 	</properties>
 
 	<modules>
