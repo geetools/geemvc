@@ -28,7 +28,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 * Java8+ compatible servlet container.
 
 ## Quick Start Guide
--- Add the following lines to the POM of your webapp.
+1. Add the following lines to the POM of your webapp.
 
 ```xml
 <dependency>
@@ -38,7 +38,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 </dependency>
 ```
 
--- Add the following servlet configuration to your web.xml
+2. Add the following servlet configuration to your web.xml
 ```xml
 	<servlet>
 		<servlet-name>Geemvc-Servlet</servlet-name>
@@ -85,6 +85,10 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 ```
+3. Create your first controller by following the next step.
+4. Enter the new URL into your browser. This will most likely be something like http://localhost:8080/hello/world if you have copied the controller underneath.
+
+> This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the example webapp and our extensive WIKI (currently in progress!) for more information.
 
 ## Example Controller
 Simply annotate your controller and handler method and Geemvc will automatically find it.
