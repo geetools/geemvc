@@ -10,9 +10,30 @@
     <description>Geemvc framework parent project.</description>
 	
 	<organization>
-		<name>Geemvc</name>
+		<name>Geetools</name>
 		<url>http://geetools.com/geemvc</url>
 	</organization>
+
+	<developers>
+		<developer>
+			<name>Michael Delamere</name>
+			<email>md@geetools.com</email>
+			<url>https://github.com/orgs/commerceboard/people/mdelamere</url>
+			<id>mdelamere</id>
+		</developer>
+		<developer>
+			<name>Dmitriy Paramoshkin</name>
+			<email>dp@geetools.com</email>
+			<url>https://github.com/orgs/commerceboard/people/HostClubKea</url>
+			<id>HostClubKea</id>
+		</developer>
+		<developer>
+			<name>Sergey Zavarzin</name>
+			<email>sz@geetools.com</email>
+			<url>https://github.com/orgs/commerceboard/people/szavarzin</url>
+			<id>szavarzin</id>
+		</developer>
+	</developers>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
