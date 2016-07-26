@@ -364,8 +364,8 @@ public class WorldBean {
 ```jsp
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://geetools.org/jsp/geemvc/form" prefix="f"%>
-<%@ taglib uri="http://geetools.org/jsp/geemvc/html" prefix="h"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/form" prefix="f"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/html" prefix="h"%>
 
 <html>
 	<head>
