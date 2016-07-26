@@ -9,7 +9,12 @@
 
 	<name>Geemvc Example Webapp</name>
     <description>Geemvc jpa and jsp example war.</description>
-	
+
+	<organization>
+		<name>Geemvc</name>
+		<url>http://geetools.com/geemvc</url>
+	</organization>
+
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
