@@ -27,6 +27,65 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 * Java8+.
 * Java8+ compatible servlet container.
 
+## Quick Start Guide
+-- Add the following lines to the POM of your webapp.
+
+```xml
+<dependency>
+    <groupId>com.geetools.geemvc</groupId>
+    <artifactId>geemvc</artifactId>
+    <version>0.9.1-beta2</version>
+</dependency>
+```
+
+-- Add the following servlet configuration to your web.xml
+```xml
+	<servlet>
+		<servlet-name>Geemvc-Servlet</servlet-name>
+		<servlet-class>com.geemvc.DispatcherServlet</servlet-class>
+		<!-- Base location of the jsp pages or templates. -->
+		<init-param>
+			<param-name>view-prefix</param-name>
+			<param-value>/jsp/pages</param-value>
+		</init-param>
+		<!-- File suffix of the jsp pages or templates. -->
+		<init-param>
+			<param-name>view-suffix</param-name>
+			<param-value>.jsp</param-value>
+		</init-param>
+		<!-- Comma-separated list of supported locales. -->
+		<init-param>
+			<param-name>supported-locales</param-name>
+			<param-value>en, de</param-value>
+		</init-param>
+		<!-- Default character encoding. -->
+		<init-param>
+			<param-name>default-character-encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<!-- Default content-type of response body. -->
+		<init-param>
+			<param-name>default-content-type</param-name>
+			<param-value>text/html</param-value>
+		</init-param>
+		<!-- Custom Guice Injector for finding controllers and other objects etc. -->
+		<init-param>
+			<param-name>injector-provider</param-name>
+			<param-value>com.custom.project.inject.MyInjectorProvider</param-value>
+		</init-param>
+		<!-- Optionally exclude paths from Geemvc servlet -->
+		<init-param>
+			<param-name>exclude-path-mapping</param-name>
+			<param-value>/path-to-exclude/**</param-value>
+		</init-param>
+		<load-on-startup>10</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Geemvc-Servlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+```
+
 ## Example Controller
 Simply annotate your controller and handler method and Geemvc will automatically find it.
 
