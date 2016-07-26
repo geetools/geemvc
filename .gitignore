@@ -13,6 +13,7 @@ target
 build/
 .gradle/
 *.log
+pom.xml.versionsBackup
 **/WEB-INF/classes/*
 **/WEB-INF/lib/*
 
