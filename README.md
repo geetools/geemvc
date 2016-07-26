@@ -1,6 +1,6 @@
-# Geemvc
+# Geemvc Java 8+ MVC-framework
 
-Geemvc is a fast lightweight MVC-framework written for Java8+. All classes within Geemvc have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending Geemvc we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by Geemvc.
+Geemvc is a fast lightweight **MVC-framework** written for **Java 8+**. All classes within Geemvc have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending Geemvc we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by Geemvc.
 
 ## Goals
 
@@ -13,7 +13,7 @@ Geemvc is a fast lightweight MVC-framework written for Java8+. All classes withi
 
 ## Motivation
 
-There are some very good MVC-frameworks out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
+There are some very good **MVC-frameworks** out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
 
 * Instantiating framework classes at runtime for a large dynamic multi tenancy SaaS application.
 * Easily being able to override the class-loading-mechanism (of contollers etc.) so that classes from external modules could be used.
@@ -24,8 +24,73 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 
 ## Requirements
 
-* Java8+.
-* Java8+ compatible servlet container.
+* **Java 8+.**
+* **Java 8+ compatible servlet container.**
+
+## Quick Start Guide
+1) Add the following lines to the pom.xml of your webapp.
+
+```xml
+<dependency>
+    <groupId>com.geetools.geemvc</groupId>
+    <artifactId>geemvc</artifactId>
+    <version>0.9.1-beta2</version>
+</dependency>
+```
+
+2) Add the following servlet configuration to your web.xml.
+```xml
+	<servlet>
+		<servlet-name>Geemvc-Servlet</servlet-name>
+		<servlet-class>com.geemvc.DispatcherServlet</servlet-class>
+		<!-- Base location of the jsp pages or templates. -->
+		<init-param>
+			<param-name>view-prefix</param-name>
+			<param-value>/jsp/pages</param-value>
+		</init-param>
+		<!-- File suffix of the jsp pages or templates. -->
+		<init-param>
+			<param-name>view-suffix</param-name>
+			<param-value>.jsp</param-value>
+		</init-param>
+		<!-- Comma-separated list of supported locales. -->
+		<init-param>
+			<param-name>supported-locales</param-name>
+			<param-value>en, de</param-value>
+		</init-param>
+		<!-- Default character encoding. -->
+		<init-param>
+			<param-name>default-character-encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<!-- Default content-type of response body. -->
+		<init-param>
+			<param-name>default-content-type</param-name>
+			<param-value>text/html</param-value>
+		</init-param>
+		<!-- Optionally use a custom Guice Injector for finding controllers and other objects etc. -->
+		<init-param>
+			<param-name>injector-provider</param-name>
+			<param-value>com.custom.project.inject.MyInjectorProvider</param-value>
+		</init-param>
+		<!-- Optionally exclude paths from Geemvc servlet -->
+		<init-param>
+			<param-name>exclude-path-mapping</param-name>
+			<param-value>/path-to-exclude/**</param-value>
+		</init-param>
+		<load-on-startup>10</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Geemvc-Servlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+```
+3) Create your first controller by following the next step.
+
+4) Enter the new URL into your browser. This will most likely be something like http://localhost:8080/hello/world if you have copied the example controller underneath.
+
+> This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the [example webapp](https://github.com/commerceboard/geemvc/tree/master/examples/webapp-jpa-jsp) and our extensive WIKI (currently in progress!) for more information.
 
 ## Example Controller
 Simply annotate your controller and handler method and Geemvc will automatically find it.
@@ -299,8 +364,8 @@ public class WorldBean {
 ```jsp
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://geetools.org/jsp/geemvc/form" prefix="f"%>
-<%@ taglib uri="http://geetools.org/jsp/geemvc/html" prefix="h"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/form" prefix="f"%>
+<%@ taglib uri="http://geetools.com/jsp/geemvc/html" prefix="h"%>
 
 <html>
 	<head>
