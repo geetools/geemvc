@@ -68,7 +68,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 			<param-name>default-content-type</param-name>
 			<param-value>text/html</param-value>
 		</init-param>
-		<!-- Custom Guice Injector for finding controllers and other objects etc. -->
+		<!-- Optionally use a custom Guice Injector for finding controllers and other objects etc. -->
 		<init-param>
 			<param-name>injector-provider</param-name>
 			<param-value>com.custom.project.inject.MyInjectorProvider</param-value>
