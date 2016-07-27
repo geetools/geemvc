@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/commerceboard/geemvc.svg?branch=master)](https://travis-ci.org/commerceboard/geemvc)
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Geemvc Java 8+ MVC-framework
 
