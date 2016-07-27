@@ -1,4 +1,4 @@
-[[https://travis-ci.org/commerceboard/geemvc.svg?branch=master]]
+[[https://travis-ci.org/commerceboard/geemvc.svg?branch=master|alt=Build Status]]
 
 # Geemvc Java 8+ MVC-framework
 
