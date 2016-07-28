@@ -22,6 +22,7 @@ import com.geemvc.bind.MethodParams;
 import com.geemvc.config.Configuration;
 import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
+import com.geemvc.handler.HandlerNotFoundException;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.notice.Notices;
@@ -93,8 +94,15 @@ public class DefaultRequestRunner implements RequestRunner {
         ThreadStash.put(Errors.class, errors);
         ThreadStash.put(Notices.class, notices);
 
-        // Find the request handler for the current request.
-        RequestHandler requestHandler = resolveHandler(requestCtx);
+        RequestHandler requestHandler = null;
+
+        try {
+            // Find the request handler for the current request.
+            requestHandler = resolveHandler(requestCtx);
+        } catch (HandlerNotFoundException e) {
+            handle404(requestCtx);
+            return;
+        }
 
         // Process the locale for this request and set the character encoding.
         processLocale(requestCtx);
@@ -236,7 +244,7 @@ public class DefaultRequestRunner implements RequestRunner {
         return null;
     }
 
-    protected RequestHandler resolveHandler(RequestContext requestCtx) {
+    protected RequestHandler resolveHandler(RequestContext requestCtx) throws HandlerNotFoundException {
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(requestCtx);
 
         if (controllers == null || controllers.isEmpty())
@@ -271,11 +279,8 @@ public class DefaultRequestRunner implements RequestRunner {
             }
 
             log.debug(message.toString());
-            
+
             throw new HandlerNotFoundException();
-
-
-            throw new IllegalStateException(message.toString());
         }
 
         requestCtx.requestHandler(requestHandler);
@@ -367,5 +372,9 @@ public class DefaultRequestRunner implements RequestRunner {
                 }
             }
         }
+    }
+
+    protected void handle404(RequestContext requestCtx) throws ServletException, IOException {
+        ((HttpServletResponse) requestCtx.getResponse()).sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 }
