@@ -23,7 +23,7 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 ## Prerequisites
 
 * **Java 8+.**
-* **Java 8+ compatible servlet container. **
+* **Java 8+ compatible servlet container.**
 
 ## Quick Start Guide
 1) Add the following lines to the pom.xml of your webapp.
