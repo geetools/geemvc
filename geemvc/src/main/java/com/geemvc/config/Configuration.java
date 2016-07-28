@@ -16,6 +16,7 @@
 
 package com.geemvc.config;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -40,6 +41,8 @@ public interface Configuration {
 
     static final String EXCLUDE_PATH_MAPPING_KEY = "exclude-path-mapping";
 
+    static final String SUPPORTED_URI_SUFFIXES_KEY = "supported-uri-suffixes";
+
     Configuration build(ServletConfig servletConfig);
 
     String viewPrefix();
@@ -57,4 +60,6 @@ public interface Configuration {
     InjectorProvider injectorProvider();
 
     Set<String> excludePathMappinig();
+
+    List<String> supportedUriSuffixes();
 }

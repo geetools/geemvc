@@ -7,9 +7,9 @@
         </encoder>
     </appender>
 
-    <logger name="com.geemvc" level="DEBUG"/>
+    <logger name="com.geemvc" level="WARN"/>
 
-    <root level="debug">
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
 

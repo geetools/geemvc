@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geetools.geemvc</groupId>
 	<artifactId>geemvc</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>0.9.1-beta4</version>
 	<packaging>jar</packaging>
 
 	<name>Geemvc</name>
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
-		<version>0.9.1-SNAPSHOT</version>
+		<version>0.9.1-beta4</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -135,7 +135,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-catalina</artifactId>
-			<version>8.0.35</version>
+			<version>8.0.36</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>

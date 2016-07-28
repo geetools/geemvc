@@ -66,6 +66,6 @@ public class JspViewAdapter implements ViewAdapter {
     @Override
     public void forward(String path, RequestContext requestCtx) throws ServletException, IOException {
         RequestDispatcher requestDispatcher = requestCtx.getRequest().getRequestDispatcher(path);
-        requestDispatcher.include(requestCtx.getRequest(), requestCtx.getResponse());
+        requestDispatcher.forward(requestCtx.getRequest(), requestCtx.getResponse());
     }
 }

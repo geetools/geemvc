@@ -16,20 +16,14 @@
 
 package com.geemvc.config;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import javax.servlet.ServletConfig;
-
 import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.inject.DefaultInjectorProvider;
 import com.geemvc.inject.InjectorProvider;
 import com.google.inject.Singleton;
+
+import javax.servlet.ServletConfig;
+import java.util.*;
 
 @Singleton
 public class DefaultConfiguration implements Configuration {
@@ -40,6 +34,10 @@ public class DefaultConfiguration implements Configuration {
     protected String defaultContentType = "text/html";
 
     protected Map<Locale, String> supportedLocaleEncodingMap = new LinkedHashMap<>();
+
+    protected String defaultSupportedUriSuffixes = ".htm, .html, .json, .txt, .xml, .jsp";
+
+    protected List<String> supportedUriSuffixesList = new ArrayList<>();
 
     protected InjectorProvider ínjectorProvider = new DefaultInjectorProvider();
 
@@ -158,6 +156,32 @@ public class DefaultConfiguration implements Configuration {
         }
 
         return excludeMappings;
+    }
+
+    @Override
+    public List<String> supportedUriSuffixes() {
+        if (supportedUriSuffixesList.isEmpty()) {
+            String supportedUriSuffixes = null;
+
+            if (servletConfig != null)
+                supportedUriSuffixes = servletConfig.getInitParameter(SUPPORTED_URI_SUFFIXES_KEY);
+
+            if (Str.isEmpty(supportedUriSuffixes)) {
+                supportedUriSuffixes = defaultSupportedUriSuffixes;
+            }
+
+            StringTokenizer st = new StringTokenizer(supportedUriSuffixes, Str.COMMA);
+
+            while (st.hasMoreTokens()) {
+                String suffix = st.nextToken();
+
+                if (!Str.isEmpty(suffix)) {
+                    supportedUriSuffixesList.add(suffix);
+                }
+            }
+        }
+
+        return supportedUriSuffixesList;
     }
 
     @Override

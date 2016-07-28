@@ -16,17 +16,8 @@
 
 package com.geemvc.reflect;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-
 import com.geemvc.Str;
+import com.geemvc.ThreadStash;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.ResourcesScanner;
@@ -34,13 +25,23 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
-import com.geemvc.ThreadStash;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DefaultReflectionsProvider implements ReflectionsProvider {
-    protected String GEEMVC_JAR_PREFIX = "geemvc";
     protected String WEBAPP_CLASSES_DIR = "/WEB-INF/classes";
     protected String WEBAPP_LIB_DIR = "/WEB-INF/lib/";
-    protected String GEEMVC_MVN_TARGET_DIR = "/geemvc/target/"; // For jetty-embedded.
+    protected String GEEMVC_MVN_TARGET_DIR = "/target/classes"; // For jetty-embedded.
+
+    protected Pattern geemvcJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
 
     @Override
     public Reflections provide() {
@@ -109,7 +110,10 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
 
         if (libJars != null && !libJars.isEmpty()) {
             for (String jar : libJars) {
-                if (jar.startsWith(new StringBuilder(WEBAPP_LIB_DIR).append(GEEMVC_JAR_PREFIX).toString())) {
+
+                Matcher m = geemvcJarPattern.matcher(jar);
+
+                if (m.matches()) {
                     File f = new File(servletContext.getRealPath(jar));
 
                     if (f.exists()) {

@@ -16,21 +16,17 @@
 
 package com.geemvc.matcher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.geemvc.Char;
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
+import com.geemvc.config.Configuration;
 import com.geemvc.script.Regex;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DefaultPathMatcher implements PathMatcher {
     private static final long serialVersionUID = 8682403475843946688L;
@@ -55,6 +51,9 @@ public class DefaultPathMatcher implements PathMatcher {
 
     @Inject
     protected Injector injector;
+
+    @Inject
+    protected Configuration configuration;
 
     @Override
     public PathMatcher build(String path) {
@@ -155,9 +154,29 @@ public class DefaultPathMatcher implements PathMatcher {
             return pathRegex.matches(path);
         } else if (this.mappedPath != null) {
             if (isCompletePath) {
-                return path.equals(this.mappedPath);
+                boolean matches = path.equals(this.mappedPath);
+
+                if (!matches && path.indexOf(Char.DOT) != -1) {
+                    matches = matchesWithSuffix(path);
+                }
+
+                return matches;
             } else {
                 return path.startsWith(this.mappedPath);
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean matchesWithSuffix(String path) {
+        List<String> supportedUriSuffixes = configuration.supportedUriSuffixes();
+
+        if (supportedUriSuffixes != null && !supportedUriSuffixes.isEmpty()) {
+            for (String suffix : supportedUriSuffixes) {
+                if (path.equals(new StringBuilder(this.mappedPath).append(suffix).toString())) {
+                    return true;
+                }
             }
         }
 

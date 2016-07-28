@@ -91,19 +91,17 @@ public class DefaultRequestContext implements RequestContext {
 
         String path = null;
 
-        if (pathInfo == null) {
-            path = requestURI;
-        } else {
-            path = pathInfo;
-        }
+//        if (pathInfo == null) {
+        path = new String(requestURI);
+//        } else {
+//            path = pathInfo;
+//        }
 
-        // String path = requestURI;
-        //
-        // if (contextPath != null)
-        // path = path.substring(contextPath.length());
-        //
-        // if (servletPath != null)
-        // path = path.substring(servletPath.length());
+        if (contextPath != null)
+            path = path.substring(contextPath.length());
+
+        if (servletPath != null && !path.equals(servletPath))
+            path = path.substring(servletPath.length());
 
         return normalizePath(path);
     }

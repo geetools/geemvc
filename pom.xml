@@ -1,145 +1,158 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.geetools.geemvc</groupId>
-	<artifactId>geemvc-parent</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.geetools.geemvc</groupId>
+    <artifactId>geemvc-parent</artifactId>
+    <version>0.9.1-beta4</version>
+    <packaging>pom</packaging>
 
-	<name>Geemvc Parent</name>
+    <name>Geemvc Parent</name>
     <url>http://geetools.com/geemvc</url>
     <description>Geemvc framework parent project.</description>
-	
-	<organization>
-		<name>Geetools</name>
-		<url>http://geetools.com/geemvc</url>
-	</organization>
 
-	<developers>
-		<developer>
-			<name>Michael Delamere</name>
-			<email>md@geetools.com</email>
-			<url>https://github.com/orgs/commerceboard/people/mdelamere</url>
-			<id>mdelamere</id>
-		</developer>
-		<developer>
-			<name>Dmitriy Paramoshkin</name>
-			<email>dp@geetools.com</email>
-			<url>https://github.com/orgs/commerceboard/people/HostClubKea</url>
-			<id>HostClubKea</id>
-		</developer>
-		<developer>
-			<name>Sergey Zavarzin</name>
-			<email>sz@geetools.com</email>
-			<url>https://github.com/orgs/commerceboard/people/szavarzin</url>
-			<id>szavarzin</id>
-		</developer>
-	</developers>
+    <organization>
+        <name>Geetools</name>
+        <url>http://geetools.com/geemvc</url>
+    </organization>
 
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <developers>
+        <developer>
+            <name>Michael Delamere</name>
+            <email>md@geetools.com</email>
+            <url>https://github.com/orgs/commerceboard/people/mdelamere</url>
+            <id>mdelamere</id>
+        </developer>
+        <developer>
+            <name>Dmitriy Paramoshkin</name>
+            <email>dp@geetools.com</email>
+            <url>https://github.com/orgs/commerceboard/people/HostClubKea</url>
+            <id>HostClubKea</id>
+        </developer>
+        <developer>
+            <name>Sergey Zavarzin</name>
+            <email>sz@geetools.com</email>
+            <url>https://github.com/orgs/commerceboard/people/szavarzin</url>
+            <id>szavarzin</id>
+        </developer>
+    </developers>
 
-	<modules>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
         <module>geemvc</module>
         <module>examples/webapp-jpa-jsp</module>
+        <module>extras/tomcat-boot</module>
     </modules>
-	
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
-	<scm>
-		<url>https://github.com/commerceboard/geemvc</url>
-		<connection>scm:git:https://github.com/commerceboard/geemvc.git</connection>
-		<developerConnection>scm:git:https://github.com/commerceboard/geemvc.git</developerConnection>
-	</scm>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <scm>
+        <url>https://github.com/commerceboard/geemvc</url>
+        <connection>scm:git:https://github.com/commerceboard/geemvc.git</connection>
+        <developerConnection>scm:git:https://github.com/commerceboard/geemvc.git</developerConnection>
+    </scm>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>4.1.0</version>
-		</dependency>
-	</dependencies>
+    <profiles>
+        <profile>
+            <id>geemvc-public-deployment</id>
+            <activation>
+                <property>
+                    <name>publicRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
