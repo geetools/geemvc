@@ -4,32 +4,26 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-geeMVC is a fast lightweight **MVC-framework** written for **Java 8+**. All classes within geeMVC have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending geeMVC we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by geeMVC.
+geeMVC is a fast lightweight **MVC-framework** written for **Java 8+**. Its main focus is to be fast, simple to use and easy to extend. All classes within geeMVC have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending geeMVC we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice, not only for webapp developers, but also for framework developers that need a good starting point. 
 
-## Goals
+geeMVC allows you to create webapps quickly, ranging from simple CRUD websites to large dynamic multi tenancy SaaS applications.
 
-* Make it very easy to map requests to controller handler methods.
-* Simplify validation and enable the usage of javax.validation checks (JSR-303).
-* Integrate the usage of JSR-311 annotations (@Path, @GET, @Produces ...) to simplify the creation of REST APIs.
-* Make it fun and easy to create modern webapps.
-* Allow the framework itself to be very simple to extend by implementing adapter classes or by directly overriding functionality via Google-Guice injection.
-* Increase the flexibility by allowing routing and validation rules to be defined in either a simple comparison syntax, Javascript, Groovy or MVEL.
+Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the ["Getting Started"](https://github.com/commerceboard/geemvc/wiki/Getting-Started) section.
 
-## Motivation
+## Why geeMVC?
 
-There are some very good **MVC-frameworks** out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using geeMVC, we were able to solve:
+* Because it is very simple to use and learn.
+* Because there is no complex XML-configuration required. 
+* Because geeMVC is very easy to extend with minimal fuss.
+* Because it is fun to use and lets you get your work done fast.
+* Because it comes with a very flexible routing and validation mechanism that is still easy to use.
+* Because geeMVC allows you to use scripting languages like javascript, groovy or MVEL for even more flexibility.
+* Because over 200 test-cases prove that it works reliably.
 
-* Instantiating framework classes at runtime for a large dynamic multi tenancy SaaS application.
-* Easily being able to override the class-loading-mechanism (of contollers etc.) so that classes from external modules could be used.
-* Replacing the standard framework cache with a context-specific caching mechanism so that entries from various Saas users did not overwrite each other.
-* Enabling custom binding and validation of an attribute based architecture so that attributes could automatically be validated and set in respective objects. 
-
-Some of these things are also possible to adapt in other frameworks, but quite often it felt heavy, required a lot of code, complex configuration  or was not possible without a lot of copy&pasting due to the use of private or static fields and methods.
-
-## Requirements
+## Prerequisites
 
 * **Java 8+.**
-* **Java 8+ compatible servlet container.**
+* **Java 8+ compatible servlet container. **
 
 ## Quick Start Guide
 1) Add the following lines to the pom.xml of your webapp.
