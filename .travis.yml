@@ -5,4 +5,4 @@ jdk:
   - oraclejdk8
 
 install: true
-script: mvn test -DskipAssembly
+script: mvn test -DskipAssembly -DrunTests=true
