@@ -270,6 +270,11 @@ public class DefaultRequestRunner implements RequestRunner {
                 message.append("Please check your annotated controller classes as none of them seem to match your requestURI.");
             }
 
+            log.debug(message.toString());
+            
+            throw new HandlerNotFoundException();
+
+
             throw new IllegalStateException(message.toString());
         }
 
