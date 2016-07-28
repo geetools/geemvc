@@ -1,32 +1,26 @@
-# Geemvc Java 8+ MVC-framework
+# geeMVC Java 8+ MVC-framework
 
 [![Build Status](https://travis-ci.org/commerceboard/geemvc.svg?branch=master)](https://travis-ci.org/commerceboard/geemvc)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-Geemvc is a fast lightweight **MVC-framework** written for **Java 8+**. All classes within Geemvc have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending Geemvc we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice for framework developers that need a good starting point. In many cases however it is not necessary to extend and override classes with Google-Guice. Instead, you simply create your own adapters that are automatically loaded by Geemvc.
+geeMVC is a fast lightweight **MVC-framework** written for **Java 8+**. Its main focus is to be fast, simple to use and easy to extend. All classes within geeMVC have been injected by Google-Guice, making it the most adaptable and flexible Java MVC-framework. In order to simplify extending geeMVC we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice, not only for webapp developers, but also for framework developers that need a good starting point. 
 
-## Goals
+geeMVC allows you to create webapps quickly, ranging from simple CRUD websites to large dynamic multi tenancy SaaS applications.
 
-* Make it very easy to map requests to controller handler methods.
-* Simplify validation and enable the usage of javax.validation checks (JSR-303).
-* Integrate the usage of JSR-311 annotations (@Path, @GET, @Produces ...) to simplify the creation of REST APIs.
-* Make it fun and easy to create modern webapps.
-* Allow the framework itself to be very simple to extend by implementing adapter classes or by directly overriding functionality via Google-Guice injection.
-* Increase the flexibility by allowing routing and validation rules to be defined in either a simple comparison syntax, Javascript, Groovy or MVEL.
+Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the ["Getting Started"](https://github.com/commerceboard/geemvc/wiki/Getting-Started) section.
 
-## Motivation
+## Why geeMVC?
 
-There are some very good **MVC-frameworks** out there - so why create another? When testing various MVC-frameworks for a large and very flexible E-Commerce platform we noticed that, although most of them meet our requirements to a certain degree, there was always something that the framework lacked in order to completely fullfill our needs. And although the main frameworks offer good extension points, like adapter classes etc, or to override certain classes by configuration, there always seemed to be some caveat like private or static fields and methods, which made it impossible to extend the functionlity as needed. After a year of creating workarounds in order to make the required changes we made the decision to create our own MVC-framework, which is fun and simple to use and enables you to change practically any class to your needs. Specifically, using Geemvc, we were able to solve:
+* Because it is very simple to use and learn.
+* Because there is no complex XML-configuration required. 
+* Because geeMVC is very easy to extend with minimal fuss.
+* Because it is fun to use and lets you get your work done fast.
+* Because it comes with a very flexible routing and validation mechanism that is still easy to use.
+* Because geeMVC allows you to use scripting languages like javascript, groovy or MVEL for even more flexibility.
+* Because over 200 test-cases prove that it works reliably.
 
-* Instantiating framework classes at runtime for a large dynamic multi tenancy SaaS application.
-* Easily being able to override the class-loading-mechanism (of contollers etc.) so that classes from external modules could be used.
-* Replacing the standard framework cache with a context-specific caching mechanism so that entries from various Saas users did not overwrite each other.
-* Enabling custom binding and validation of an attribute based architecture so that attributes could automatically be validated and set in respective objects. 
-
-Some of these things are also possible to adapt in other frameworks, but quite often it felt heavy, required a lot of code, complex configuration  or was not possible without a lot of copy&pasting due to the use of private or static fields and methods.
-
-## Requirements
+## Prerequisites
 
 * **Java 8+.**
 * **Java 8+ compatible servlet container.**
@@ -38,14 +32,14 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 <dependency>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc</artifactId>
-    <version>0.9.1-beta3</version>
+    <version>0.9.1-beta4</version>
 </dependency>
 ```
 
 2) Add the following servlet configuration to your web.xml.
 ```xml
 	<servlet>
-		<servlet-name>Geemvc-Servlet</servlet-name>
+		<servlet-name>geeMVC-Servlet</servlet-name>
 		<servlet-class>com.geemvc.DispatcherServlet</servlet-class>
 		<!-- Base location of the jsp pages or templates. -->
 		<init-param>
@@ -77,7 +71,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 			<param-name>injector-provider</param-name>
 			<param-value>com.custom.project.inject.MyInjectorProvider</param-value>
 		</init-param>
-		<!-- Optionally exclude paths from Geemvc servlet -->
+		<!-- Optionally exclude paths from geeMVC servlet -->
 		<init-param>
 			<param-name>exclude-path-mapping</param-name>
 			<param-value>/path-to-exclude/**</param-value>
@@ -86,7 +80,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 	</servlet>
 	
 	<servlet-mapping>
-		<servlet-name>Geemvc-Servlet</servlet-name>
+		<servlet-name>geeMVC-Servlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 ```
@@ -97,7 +91,7 @@ Some of these things are also possible to adapt in other frameworks, but quite o
 > This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the [example webapp](https://github.com/commerceboard/geemvc/tree/master/examples/webapp-jpa-jsp) and our extensive WIKI (currently in progress!) for more information.
 
 ## Example Controller
-Simply annotate your controller and handler method and Geemvc will automatically find it.
+Simply annotate your controller and handler method and geeMVC will automatically find it.
 
 ```java
 @Controller
@@ -114,7 +108,7 @@ public class HelloWorldController {
 ```
 
 ## Passing URI Parameters to your Controller
-Geemvc will automatically parse specified parameters out of the request URI and make them available to the handler method.
+geeMVC will automatically parse specified parameters out of the request URI and make them available to the handler method.
 
 ```java
 @Controller
@@ -141,7 +135,7 @@ Of course the same works for query parameters. Simply specify them in your metho
 | @Session | Value retrieved from the current session. |
 | @Header | Value retrieved from the request headers. |
 
-You can easily create your own annotations that are automatically evaluated by Geemvc. Please refer to the wiki page for more information.
+You can easily create your own annotations that are automatically evaluated by geeMVC. Please refer to the wiki page for more information.
 
 ```java
 @Controller
@@ -158,7 +152,7 @@ public class HelloWorldController {
 ```
 
 ## Passing Parameters to the View
-Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing Geemvc where we want to forward the request to. In the following example we have exchanged the string for a Geemvc "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
+Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
 
 ```java
 @Controller
@@ -184,7 +178,7 @@ public class HelloWorldController {
 ```
 
 ## Validating a Parameter
-The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by Geemvc (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells Geemvc where to go incase of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
+The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by geeMVC (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells geeMVC where to go incase of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
 
 ```java
 @Controller
@@ -199,7 +193,7 @@ public class HelloWorldController {
     }
 
     /**
-     * Because we have specified the "onError" attribute in the @Request annotation, Geemvc will not enter this
+     * Because we have specified the "onError" attribute in the @Request annotation, geeMVC will not enter this
      * handler-method when it detects validation errors. If you want to check for further errors or dynamically
      * forward the user to some view, do not use this. Make use of the "Bindings" object as shown in the example 
      * following this one.
@@ -215,7 +209,7 @@ public class HelloWorldController {
 ```
 
 ## Checking for Errors in your Handler Method
-Geemvc automatically passes two objects into your handler method in order to let you check if any validation errors exist. For this, simply add the "Bindings" and/or "Errors" object(s) to your method signature.
+geeMVC automatically passes two objects into your handler method in order to let you check if any validation errors exist. For this, simply add the "Bindings" and/or "Errors" object(s) to your method signature.
 
 ```java
 @Controller
@@ -237,7 +231,7 @@ public class HelloWorldController {
             // Optionally we will add another message to the validation errors.
             errors.add("Hey, I also want to add this error message!");
             
-            // Now we tell Geemvc where to go in case of a validation error.
+            // Now we tell geeMVC where to go in case of a validation error.
             return Views.forward("/WEB-INF/jsp/some-other.jsp")
                     .bind("myViewParam", someService.getById(id));
         }
@@ -281,7 +275,7 @@ public class HelloWorldController {
         // Lets check if validation errors exist.
         if (bindings.hasErrors()) {
 
-            // Now we tell Geemvc where to go in case of a validation error.
+            // Now we tell geeMVC where to go in case of a validation error.
             return Views.forward("/WEB-INF/jsp/hello-world-form.jsp")
                     .bind(bindings.typedValues()); // Re-bind values to view.
         }
@@ -383,7 +377,7 @@ public class WorldBean {
 		<h1>Hello World Form</h1>
 
 		<!--
-			Geemvc form tag. Optionally we specify which CSS classes are to be used when generating the HTML 
+			geeMVC form tag. Optionally we specify which CSS classes are to be used when generating the HTML 
 			for the form fields. This reduces a lot of boiler-plate-code and saves us from having to specify 
 			them for each field, which is especially useful for larger forms. In this particular case we are 
 			automatically creating bootstrap markup.
@@ -437,14 +431,14 @@ public class WorldBean {
 </html>
 ```
 
-## Injecting Geemvc Objects into your Controller
+## Injecting geeMVC Objects into your Controller
 Currently there are three useful helper objects that you can inject into your controller or any other injected class. These are:
 
 | Type | Description |
 | --- | --- |
 | @Inject Cache cache | Enables you to cache and retrieve data. The current caching implementation uses the Google cache from Google Guava. |
 | @Inject Injector injector | Injects the Google Guice injector for manually injecting objects. |
-| @Logger Log log | Injects the standard logging implementation. Geemvc uses SLF4J and Logback-classic behind the scenes. |
+| @Logger Log log | Injects the standard logging implementation. geeMVC uses SLF4J and Logback-classic behind the scenes. |
 
 Check out this example of how these objects can be automatically injected:
 
@@ -480,7 +474,7 @@ public class HelloWorldController {
 }
 ```
 
-## Injecting Geemvc Objects into your Handler Method
+## Injecting geeMVC Objects into your Handler Method
 In earlier examples we saw two object types that you can inject into your handler method. The following table shows all of the objects that can be included in the same fashion:
 
 | Type | Description |
@@ -519,12 +513,12 @@ public class HelloWorldController {
 ```
 
 ## Using Interceptors
-Geemvc offers two types of interceptors:
+geeMVC offers two types of interceptors:
 
 | Interceptor Type | Description |
 | --- | --- |
 | Around Interceptor | The around interceptor wraps your handler method allowing you to make changes before and after it is called. |
-| Lifecycle Interceptor | The lifecycle interceptor lets you intercept various stages of the request lifecycle in Geemvc. |
+| Lifecycle Interceptor | The lifecycle interceptor lets you intercept various stages of the request lifecycle in geeMVC. |
 
 ### The Around Interceptor
 As an example we will create an around interceptor that simply measures the time taken to process the handler method. Note that you must not forget to call "invocationCtx.proceed()" or your handler method will not get called. Also do not forget to return the result that your request handler has provided.
@@ -572,7 +566,7 @@ First we will start by introducing you to the available lifecycle stages that yo
 | PostView | After the view has been processed. |
 
 #### Intercepting a Lifecycle Stage in a Class
-In the following example we use the interceptor to bind countries and languages to the view before Geemvc forwards to it. There are 3 main annotations that tell Geemvc if the interceptor is to be activated or not:
+In the following example we use the interceptor to bind countries and languages to the view before geeMVC forwards to it. There are 3 main annotations that tell geeMVC if the interceptor is to be activated or not:
 
 | Annotation Attribute | Description | Options |
 | --- | --- | --- |
