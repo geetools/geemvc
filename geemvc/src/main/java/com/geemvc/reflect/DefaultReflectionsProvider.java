@@ -39,9 +39,11 @@ import java.util.regex.Pattern;
 public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected String WEBAPP_CLASSES_DIR = "/WEB-INF/classes";
     protected String WEBAPP_LIB_DIR = "/WEB-INF/lib/";
-    protected String GEEMVC_MVN_TARGET_DIR = "/target/classes"; // For jetty-embedded.
+    protected String MVN_TARGET_DIR = "/target/classes"; // For jetty-embedded.
+    protected String GEEMVC_PROJECT_NAME = "geemvc";
 
-    protected Pattern geemvcJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
+    protected Pattern webGeemvcJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
+    protected Pattern appGeemvcJarPattern = Pattern.compile(".*geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
 
     @Override
     public Reflections provide() {
@@ -58,7 +60,11 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
             // Give the developer a chance to add his own URLs.
             Set<URL> urls = appendURLs();
             if (urls != null && !urls.isEmpty()) {
-                cb.addUrls(urls);
+                for (URL url : urls) {
+                    if (url != null) {
+                        cb.addUrls(url);
+                    }
+                }
             }
 
             // Give the developer a chance to add his own class-loaders.
@@ -88,13 +94,17 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
 
         List<URL> urls = Collections.list(mainClassLoader().getResources(Str.EMPTY));
 
-        for (URL url : urls) {
-            if (url.getPath().contains(WEBAPP_CLASSES_DIR)) {
-                webappClassesPath = url;
-            }
+        if (urls != null && !urls.isEmpty()) {
+            for (URL url : urls) {
+                if (url.getPath().contains(WEBAPP_CLASSES_DIR)) {
+                    webappClassesPath = url;
+                    break;
+                }
 
-            if (url.getPath().contains(GEEMVC_MVN_TARGET_DIR)) {
-                webappClassesPath = url;
+                if (url.getPath().contains(MVN_TARGET_DIR)) {
+                    webappClassesPath = url;
+                    break;
+                }
             }
         }
 
@@ -106,24 +116,69 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
 
         ServletContext servletContext = servletContext();
 
-        Set<String> libJars = servletContext.getResourcePaths(WEBAPP_LIB_DIR);
+        // ----------------------------------------------------------------------------------------
+        // First we'll try to find the geeMVC jar in the WEB-INF/lib directory.
+        // ----------------------------------------------------------------------------------------
+        if (servletContext != null) {
+            Set<String> libJars = servletContext.getResourcePaths(WEBAPP_LIB_DIR);
 
-        if (libJars != null && !libJars.isEmpty()) {
-            for (String jar : libJars) {
+            if (libJars != null && !libJars.isEmpty()) {
+                if (libJars != null && !libJars.isEmpty()) {
+                    for (String jar : libJars) {
 
-                Matcher m = geemvcJarPattern.matcher(jar);
+                        Matcher m = webGeemvcJarPattern.matcher(jar);
+
+                        if (m.matches()) {
+                            File f = new File(servletContext.getRealPath(jar));
+
+                            if (f.exists()) {
+                                geemvcLibPath = f.toURI().toURL();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ----------------------------------------------------------------------------------------
+            // If we could not find it in web-scope, we will try the classpath.
+            // ----------------------------------------------------------------------------------------
+        } else {
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(File.pathSeparator);
+
+            for (String classpathEntry : classpathEntries) {
+                Matcher m = appGeemvcJarPattern.matcher(classpathEntry);
 
                 if (m.matches()) {
-                    File f = new File(servletContext.getRealPath(jar));
+                    File f = new File(classpathEntry);
 
                     if (f.exists()) {
                         geemvcLibPath = f.toURI().toURL();
                         break;
-                    } else {
-                        throw new IllegalStateException("File not found: " + f.getAbsolutePath());
                     }
                 }
             }
+        }
+
+        // ----------------------------------------------------------------------------------------
+        // If the geemMVC-lib path is still null, see if there is a geeMVC target/classes entry.
+        // ----------------------------------------------------------------------------------------
+        if (geemvcLibPath == null) {
+            List<URL> urls = Collections.list(mainClassLoader().getResources(Str.EMPTY));
+
+            if (urls != null && !urls.isEmpty()) {
+                for (URL url : urls) {
+                    if (url.getPath().contains(MVN_TARGET_DIR) && url.getPath().contains(GEEMVC_PROJECT_NAME)) {
+                        geemvcLibPath = url;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (geemvcLibPath == null) {
+            throw new IllegalStateException("geeMVC library could not be found in the classpath");
         }
 
         return geemvcLibPath;
