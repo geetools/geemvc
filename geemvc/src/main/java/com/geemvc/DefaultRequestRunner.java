@@ -122,11 +122,17 @@ public class DefaultRequestRunner implements RequestRunner {
         if (view != null) {
             // Process the view that resulted from invoking the request-handler method.
             processView(view, requestCtx);
+        } else {
+            processEmptyView(requestCtx);
         }
     }
 
     protected void processView(View view, RequestContext requestCtx) throws ServletException, IOException {
         viewHandler.handle(view, requestCtx);
+    }
+
+    protected void processEmptyView(RequestContext requestCtx) throws ServletException, IOException {
+        ((HttpServletResponse) requestCtx.getResponse()).setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     protected View processRequestHandler(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices) {
@@ -299,6 +305,9 @@ public class DefaultRequestRunner implements RequestRunner {
                 return Views.forward(result.substring(8).trim());
             } else if (result.trim().startsWith("redirect:")) {
                 return Views.redirect(result.substring(9).trim());
+            } else {
+                // Content-type is set automatically later.
+                return Views.stream(null, result);
             }
         }
 
@@ -334,7 +343,7 @@ public class DefaultRequestRunner implements RequestRunner {
         } else if (!Str.isEmpty(requestHandler.produces())) {
             log.debug("Using contentType '{}' from mapped 'produces'.", () -> requestHandler.produces());
             response.setContentType(requestHandler.produces());
-        } else {
+        } else if (view != null) {
             log.debug("Using contentType '{}' from configuration'.", () -> configuration.defaultContentType());
             response.setContentType(configuration.defaultContentType());
         }
