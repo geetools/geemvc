@@ -189,10 +189,10 @@ public class DefaultSimpleHandlerResolver implements SimpleHandlerResolver {
         log.trace("Using pre-filtered request handlers {}.", () -> logPreFilteredHandlers);
 
         // As the first filtering stage has already returned a unique result, no need to continue filtering.
-        if (preFilteredHandlers.size() == 1) {
-            log.trace("As only 1 pre-filtered request handler was found, we will simply use that one ({}).", () -> logPreFilteredHandlers.get(0));
-            return preFilteredHandlers.get(0);
-        }
+//        if (preFilteredHandlers.size() == 1) {
+//            log.trace("As only 1 pre-filtered request handler was found, we will simply use that one ({}).", () -> logPreFilteredHandlers.get(0));
+//            return preFilteredHandlers.get(0);
+//        }
 
         List<RequestHandler> foundHandlers = new ArrayList<>();
 
