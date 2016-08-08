@@ -91,11 +91,7 @@ public class DefaultRequestContext implements RequestContext {
 
         String path = null;
 
-//        if (pathInfo == null) {
-        path = new String(requestURI);
-//        } else {
-//            path = pathInfo;
-//        }
+        path = new String(normalizeSlashes(requestURI));
 
         if (contextPath != null)
             path = path.substring(contextPath.length());
@@ -110,9 +106,11 @@ public class DefaultRequestContext implements RequestContext {
         return requestHandler.pathMatcher().parameters(this);
     }
 
-    protected String normalizePath(String path) {
-        path = path.trim().replaceAll("\\/+", Str.SLASH);
+    protected String normalizeSlashes(String path) {
+        return path.trim().replaceAll("\\/+", Str.SLASH);
+    }
 
+    protected String normalizePath(String path) {
         if (path.endsWith(Str.SLASH))
             path = path.substring(0, path.length() - 1);
 

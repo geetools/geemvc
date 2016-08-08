@@ -254,7 +254,7 @@ public class DefaultRequestRunner implements RequestRunner {
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(requestCtx);
 
         if (controllers == null || controllers.isEmpty())
-            throw new IllegalStateException("No controller found for path '" + requestCtx.getPath() + "'");
+            throw new HandlerNotFoundException("No controller found for path '" + requestCtx.getPath() + "'");
 
         RequestHandler requestHandler = handlerResolver.resolve(requestCtx, controllers.values());
 

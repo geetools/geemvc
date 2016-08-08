@@ -20,4 +20,23 @@ package com.geemvc.handler;
  * Created by Michael on 28.07.2016.
  */
 public class HandlerNotFoundException extends Exception {
+    public HandlerNotFoundException() {
+        super();
+    }
+
+    public HandlerNotFoundException(String message) {
+        super(message);
+    }
+
+    public HandlerNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public HandlerNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    protected HandlerNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }
