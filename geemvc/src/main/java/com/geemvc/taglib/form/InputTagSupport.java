@@ -82,12 +82,17 @@ public class InputTagSupport extends FormFieldTagSupport {
                 val = beanPropertyValue(validExpression(name), beanInstance);
             }
 
-            writer.write(Char.SPACE);
-            writer.write("value");
-            writer.write(Char.EQUALS);
-            writer.write(Char.DOUBLE_QUOTE);
-            writer.write(val == null ? Str.EMPTY : String.valueOf(val));
-            writer.write(Char.DOUBLE_QUOTE);
+            String fieldType = (String) dynamicAttributes.get("type");
+
+            // We do not want to output password in plain text in html field.
+            if (!fieldType.equalsIgnoreCase("password")) {
+                writer.write(Char.SPACE);
+                writer.write("value");
+                writer.write(Char.EQUALS);
+                writer.write(Char.DOUBLE_QUOTE);
+                writer.write(val == null ? Str.EMPTY : String.valueOf(val));
+                writer.write(Char.DOUBLE_QUOTE);
+            }
 
             String classValue = (String) dynamicAttributes.get("class");
 
