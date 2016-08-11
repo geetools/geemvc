@@ -221,11 +221,23 @@ public class DefaultRequestRunner implements RequestRunner {
         Request controllerRequestMapping = requestHandler.controllerRequestMapping();
         Request handlerRequestMapping = requestHandler.handlerRequestMapping();
 
-        if (!Str.isEmpty(handlerRequestMapping.onError()))
-            return handlerRequestMapping.onError();
+        if (!Str.isEmpty(handlerRequestMapping.onError())) {
+            String onError = handlerRequestMapping.onError().trim();
 
-        if (!Str.isEmpty(controllerRequestMapping.onError()))
-            return controllerRequestMapping.onError();
+            if (!onError.startsWith("forward:")) {
+                onError = "forward:" + onError;
+            }
+            return onError;
+        }
+
+        if (!Str.isEmpty(controllerRequestMapping.onError())) {
+            String onError = controllerRequestMapping.onError().trim();
+
+            if (!onError.startsWith("forward:")) {
+                onError = "forward:" + onError;
+            }
+            return onError;
+        }
 
         return null;
     }

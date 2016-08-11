@@ -18,8 +18,11 @@ package com.geemvc.validation;
 
 import com.geemvc.Char;
 import com.geemvc.bind.MethodParam;
+import com.geemvc.cache.Cache;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.helper.Annotations;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.geemvc.reflect.ReflectionProvider;
 import com.geemvc.validation.annotation.On;
 import com.google.inject.Inject;
@@ -40,7 +43,15 @@ public class DefaultValidations implements Validations {
     protected final Annotations annotations;
 
     @Inject
+    protected Cache cache;
+
+    @Inject
     protected Injector injector;
+
+    @Logger
+    protected Log log;
+
+    protected static final String HANDLER_VALIDATIONS_CACHE_KEY = "geemvc/handlerValidations/%s";
 
     @Inject
     public DefaultValidations(ValidationAdapterFactory validationAdapterFactory, ReflectionProvider reflectionProvider, Annotations annotations) {
@@ -51,23 +62,25 @@ public class DefaultValidations implements Validations {
 
     @Override
     public List<Validation> forHandler(RequestHandler requestHandler) {
-        Map<ValidationAdapterKey, ValidationAdapter<? extends Annotation>> validationAdapters = reflectionProvider.locateValidationAdapters();
+        String cacheKey = String.format(HANDLER_VALIDATIONS_CACHE_KEY, requestHandler.toGenericString());
 
-        Class<?> controllerClass = requestHandler.controllerClass();
-        Method handlerMethod = requestHandler.handlerMethod();
+        return (List<Validation>) cache.get(DefaultValidations.class, cacheKey, () -> {
+            Map<ValidationAdapterKey, ValidationAdapter<? extends Annotation>> validationAdapters = reflectionProvider.locateValidationAdapters();
 
-        List<Validation> allValidations = new ArrayList<>();
-        List<Annotation> allAnnotations = new ArrayList<>();
+            Class<?> controllerClass = requestHandler.controllerClass();
+            Method handlerMethod = requestHandler.handlerMethod();
 
-        if (controllerClass.getAnnotations().length > 0)
-            allAnnotations.addAll(annotations.explodeAnnotations(controllerClass.getAnnotations()));
+            List<Validation> allValidations = new ArrayList<>();
+            List<Annotation> allAnnotations = new ArrayList<>();
 
-        if (handlerMethod.getAnnotations().length > 0)
-            allAnnotations.addAll(annotations.explodeAnnotations(handlerMethod.getAnnotations()));
+            if (controllerClass.getAnnotations().length > 0)
+                allAnnotations.addAll(annotations.explodeAnnotations(controllerClass.getAnnotations()));
 
-        List<Validation> validations = toValidations(allAnnotations.toArray(new Annotation[allAnnotations.size()]), null, null);
+            if (handlerMethod.getAnnotations().length > 0)
+                allAnnotations.addAll(annotations.explodeAnnotations(handlerMethod.getAnnotations()));
 
-        return allValidations;
+            return toValidations(allAnnotations.toArray(new Annotation[allAnnotations.size()]), null, null);
+        });
     }
 
     @Override

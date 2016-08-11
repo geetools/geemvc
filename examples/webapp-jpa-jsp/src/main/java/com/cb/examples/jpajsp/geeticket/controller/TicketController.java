@@ -36,90 +36,90 @@ public class TicketController {
 
     @Inject
     private TicketController(App app, TicketService ticketService, Users users, Comments comments) {
-	this.app = app;
-	this.ticketService = ticketService;
-	this.users = users;
-	this.comments = comments;
+        this.app = app;
+        this.ticketService = ticketService;
+        this.users = users;
+        this.comments = comments;
     }
 
     @Request("/")
     public View viewTickets() {
-	List<Ticket> tickets = ticketService.getTickets();
-	return Views.forward("ticket/list")
-		.bind("tickets", tickets);
+        List<Ticket> tickets = ticketService.getTickets();
+        return Views.forward("ticket/list")
+                .bind("tickets", tickets);
     }
 
     @Request("/details/{id}")
     public View viewTicketDetails(@PathParam("id") Long ticketId) {
-	Ticket ticket = ticketService.getTicket(ticketId);
-	return Views.forward("ticket/details")
-		.bind("ticket", ticket)
-		.bind("users", users.all());
+        Ticket ticket = ticketService.getTicket(ticketId);
+        return Views.forward("ticket/details")
+                .bind("ticket", ticket)
+                .bind("users", users.all());
     }
 
     @Request("/edit/{id}")
     public View editTicketForm(@PathParam("id") Long ticketId) {
-	Ticket ticket = ticketService.getTicket(ticketId);
-	
-	return Views.forward("ticket/edit_form")
-		.bind("ticket", ticket)
-		.bind("users", users.all());
+        Ticket ticket = ticketService.getTicket(ticketId);
+
+        return Views.forward("ticket/edit_form")
+                .bind("ticket", ticket)
+                .bind("users", users.all());
     }
 
     @Request(value = "/update/{id}", method = HttpMethod.POST)
     public View updateTicket(@PathParam("id") Long ticketId, @Data Ticket ticket) {
-	Ticket updatedTicket = ticketService.save(ticket);
-	
-	return Views.forward("ticket/details")
-		.bind("ticket", updatedTicket);
+        Ticket updatedTicket = ticketService.save(ticket);
+
+        return Views.forward("ticket/details")
+                .bind("ticket", updatedTicket);
     }
 
     @Request(value = "/new-ticket")
     public View newTicketForm() {
-	return Views.forward("ticket/new_form")
-		.bind("users", users.all());
+        return Views.forward("ticket/new_form")
+                .bind("users", users.all());
     }
 
     @Request(value = "/create-ticket", method = HttpMethod.POST)
     public View createTicket(Ticket ticket) {
 
-	if (ticket != null) {
-	    User assignee = users.havingId(ticket.getAssignee().getId());
-	    User reporter = users.havingId(ticket.getReporter().getId());
-	    ticket.setAssignee(assignee);
-	    ticket.setReporter(reporter);
-	    ticket.setCreatedOn(new Date());
-	    ticketService.save(ticket);
-	}
+        if (ticket != null) {
+            User assignee = users.havingId(ticket.getAssignee().getId());
+            User reporter = users.havingId(ticket.getReporter().getId());
+            ticket.setAssignee(assignee);
+            ticket.setReporter(reporter);
+            ticket.setCreatedOn(new Date());
+            ticketService.save(ticket);
+        }
 
-	return Views.redirect("/tickets");
+        return Views.redirect("/tickets");
     }
 
     @Request("/delete/{id}")
     public View deleteTicket(@Data Ticket ticket) {
-	ticketService.remove(ticket);
-	return Views.redirect("/tickets");
+        ticketService.remove(ticket);
+        return Views.redirect("/tickets");
     }
 
     @Request(value = "/comment/add/{id}", method = HttpMethod.POST)
     public View addComment(@PathParam("id") Long ticketId, @Param("comment") String comment, @Param("userId") Long userId) {
-	Ticket ticket = ticketService.getTicket(ticketId);
+        Ticket ticket = ticketService.getTicket(ticketId);
 
-	Comment c = injector.getInstance(Comment.class);
+        Comment c = injector.getInstance(Comment.class);
 
-	if (userId != null) {
-	    User author = users.havingId(userId);
-	    if (author != null) {
-		c.setUser(author);
-		c.setComment(comment);
-		c.setCreatedOn(new Date());
-		ticket.addComment(c);
-		comments.add(c);
-		ticketService.save(ticket);
-	    }
-	}
+        if (userId != null) {
+            User author = users.havingId(userId);
+            if (author != null) {
+                c.setUser(author);
+                c.setComment(comment);
+                c.setCreatedOn(new Date());
+                ticket.addComment(c);
+                comments.add(c);
+                ticketService.save(ticket);
+            }
+        }
 
-	return Views.redirect("/tickets/details/" + ticketId);
+        return Views.redirect("/tickets/details/" + ticketId);
     }
 
 }
