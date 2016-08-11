@@ -20,6 +20,13 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 * Because geeMVC allows you to use scripting languages like javascript, groovy or MVEL for even more flexibility.
 * Because over 200 test-cases prove that it works reliably.
 
+### Contact the geeMVC Team
+
+* Write us an [issue via GitHub](https://github.com/commerceboard/geemvc/issues).
+* Write to us in our [Google Group](https://groups.google.com/d/forum/geemvc).
+* Write an email to our [mailing list](geemvc@googlegroups.com).
+* Ask questions via [Stackoverflow](http://stackoverflow.com/questions/ask?tags=geemvc)(Do not forget to tag your question with geemvc!).
+
 ## Prerequisites
 
 * **Java 8+.**
