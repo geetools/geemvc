@@ -109,7 +109,8 @@ public class HelloWorldController {
     public String helloWorld() {
         System.out.println("Well done! You have successfully called the /hello/world controller.");        
         
-        return "forward: /WEB-INF/jsp/hello-world.jsp";
+        // Located in /WEB-INF/jsp/pages/hello-world.jsp.
+        return "forward: hello-world";
     }
 }
 ```
