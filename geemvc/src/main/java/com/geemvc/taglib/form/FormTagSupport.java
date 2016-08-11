@@ -131,12 +131,14 @@ public class FormTagSupport extends HtmlTagSupport {
             writer.write(injector.getInstance(Requests.class).toRequestURL(action, https == null ? request.isSecure() : https, request));
             writer.write(Char.DOUBLE_QUOTE);
 
-            writer.write(Char.SPACE);
-            writer.write("method");
-            writer.write(Char.EQUALS);
-            writer.write(Char.DOUBLE_QUOTE);
-            writer.write(method);
-            writer.write(Char.DOUBLE_QUOTE);
+            if (!Str.isEmpty(method)) {
+                writer.write(Char.SPACE);
+                writer.write("method");
+                writer.write(Char.EQUALS);
+                writer.write(Char.DOUBLE_QUOTE);
+                writer.write(method);
+                writer.write(Char.DOUBLE_QUOTE);
+            }
         } catch (Throwable t) {
             throw new JspException(t);
         }

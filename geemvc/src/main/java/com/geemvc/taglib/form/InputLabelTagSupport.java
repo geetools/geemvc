@@ -87,7 +87,6 @@ public class InputLabelTagSupport extends HtmlTagSupport {
 
     @Override
     protected void appendTagBody(JspWriter writer) throws JspException {
-
         StringWriter bodyWriter = null;
 
         try {

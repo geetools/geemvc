@@ -16,10 +16,10 @@
 
 package com.geemvc.i18n.message;
 
+import com.google.inject.Singleton;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import com.google.inject.Singleton;
 
 @Singleton
 public class DefaultSimpleMessageResolver implements SimpleMessageResolver {
@@ -29,7 +29,7 @@ public class DefaultSimpleMessageResolver implements SimpleMessageResolver {
     @Override
     public String resolve(String messageKey, String bundleName, Locale locale) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(PATH_PREFIX + bundleName, locale);
+            ResourceBundle bundle = ResourceBundle.getBundle(PATH_PREFIX + bundleName, locale, ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
             return bundle.getString(messageKey);
         } catch (Throwable t) {
 
