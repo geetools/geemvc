@@ -109,7 +109,7 @@ public class HelloWorldController {
     public String helloWorld() {
         System.out.println("Well done! You have successfully called the /hello/world controller.");        
         
-        // Located in /WEB-INF/jsp/pages/hello-world.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
         return "forward: hello-world";
     }
 }
@@ -127,7 +127,7 @@ public class HelloWorldController {
     public String helloWorld(@PathParam Long id) {
         System.out.println("Well done! You can now use the id path parameter in your code. The id is: " + id);
 
-        // Located in /WEB-INF/jsp/pages/hello-world.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
         return "forward: hello-world";
     }
 }
@@ -155,7 +155,7 @@ public class HelloWorldController {
     public String helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
 
-        // Located in /WEB-INF/jsp/pages/hello-world.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
         return "forward: hello-world";
     }
 }    
@@ -212,7 +212,7 @@ public class HelloWorldController {
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
-        // Located in /WEB-INF/jsp/pages/hello-world.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
         return Views.forward("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
@@ -243,11 +243,11 @@ public class HelloWorldController {
             errors.add("Hey, I also want to add this error message!");
             
             // Now we tell geeMVC where to go in case of a validation error.
-            return Views.forward("some-other") // Located in /WEB-INF/jsp/pages/some-other.jsp
+            return Views.forward("some-other") // Located at /WEB-INF/jsp/pages/some-other.jsp
                     .bind("myViewParam", someService.getById(id));
         }
 
-        // Located in /WEB-INF/jsp/pages/hello-world.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
         return Views.forward("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
@@ -275,7 +275,7 @@ public class HelloWorldController {
      */
     @Request("world-form")
     public String helloWorld() {
-        // Located in /WEB-INF/jsp/pages/hello-world-form.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world-form.jsp
         return "forward: hello-world-form";
     }
 
@@ -303,7 +303,7 @@ public class HelloWorldController {
         // Save the bean.
         WorldBean savedWorld = service.add(world);
 
-        // Located in /WEB-INF/jsp/pages/hello-world-success.jsp
+        // Located at /WEB-INF/jsp/pages/hello-world-success.jsp
         return Views.forward("hello-world-success")
                 .bind("savedWorld", savedWorld);
     }
