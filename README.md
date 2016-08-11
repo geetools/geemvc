@@ -208,7 +208,7 @@ public class HelloWorldController {
      * forward the user to some view, do not use this. Make use of the "Bindings" object as shown in the example 
      * following this one.
      */
-    @Request(path = "/world/{id}", onError="/WEB-INF/jsp/hello-world.jsp")
+    @Request(path = "/world/{id}", onError="hello-world")
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
