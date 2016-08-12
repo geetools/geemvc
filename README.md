@@ -93,7 +93,7 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 ```
 3) Create your first controller by following the next step.
 
-4) Enter the new URL into your browser. This will most likely be something like http://localhost:8080/hello/world if you have copied the example controller underneath.
+4) Enter the new URL into your browser. This will most likely be something like _http://localhost:8080/hello/world_ if you have copied the example controller underneath.
 
 > This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the [example webapp](https://github.com/commerceboard/geemvc/tree/master/examples/webapp-jpa-jsp) and our [extensive wiki](https://github.com/commerceboard/geemvc/wiki) for more information.
 
