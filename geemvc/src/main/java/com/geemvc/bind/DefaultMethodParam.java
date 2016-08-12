@@ -35,6 +35,7 @@ import javax.ws.rs.core.Context;
 import com.geemvc.Bindings;
 import com.geemvc.bind.param.ParamAdapterFactory;
 import com.geemvc.bind.param.annotation.Model;
+import com.geemvc.i18n.notice.Notices;
 import com.geemvc.reflect.ReflectionProvider;
 import com.geemvc.validation.Errors;
 import com.google.inject.Inject;
@@ -148,6 +149,7 @@ public class DefaultMethodParam implements MethodParam {
                 || Cookie[].class.isAssignableFrom(type)
                 || Locale.class.isAssignableFrom(type)
                 || Errors.class.isAssignableFrom(type)
+                || Notices.class.isAssignableFrom(type)
                 || Bindings.class.isAssignableFrom(type)
                 || (Map.class.isAssignableFrom(type) && genericType != null && genericType.size() == 2 && String.class == genericType.get(0) && String[].class == genericType.get(1))) {
             return true;

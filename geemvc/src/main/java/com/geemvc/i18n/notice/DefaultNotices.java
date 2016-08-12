@@ -29,8 +29,6 @@ public class DefaultNotices implements Notices {
 
     protected Map<String, Set<Notice>> notices = null;
 
-    protected static final String GLOBAL_NOTICE_KEY = "__globalNotices";
-
     @Inject
     protected Injector injector;
 

@@ -292,27 +292,32 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         String resolvedErrorMessage = null;
 
         if (error != null) {
-            String errorMsgKey = new StringBuilder(formTag.getName())
-                    .append(Char.DOT).append(fieldName).append(Char.DOT).append(error.message()).toString();
+            String errorMsgKey = null;
 
-            resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+            if (formTag != null && !Errors.GLOBAL_ERROR_KEY.equals(fieldName)) {
+                errorMsgKey = new StringBuilder(formTag.getName())
+                        .append(Char.DOT).append(fieldName).append(Char.DOT).append(error.message()).toString();
 
-            if (resolvedErrorMessage == null) {
+                resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+            }
+
+            if (resolvedErrorMessage == null && !Errors.GLOBAL_ERROR_KEY.equals(fieldName)) {
                 errorMsgKey = new StringBuilder(fieldName)
                         .append(Char.DOT).append(error.message()).toString();
 
                 resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+            }
 
-                if (resolvedErrorMessage == null) {
-                    resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);
-                }
+
+            if (resolvedErrorMessage == null) {
+                resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);
             }
 
             String resolvedFieldName = null;
 
             if (label != null) {
                 resolvedFieldName = label;
-            } else {
+            } else if (!Errors.GLOBAL_ERROR_KEY.equals(fieldName)) {
                 try {
                     resolvedFieldName = messageResolver.resolve(fieldName, requestContext());
                 } catch (Throwable t) {
@@ -333,6 +338,9 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
             if (resolvedErrorMessage != null && args != null && args.length > 0)
                 resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, args);
+
+            if (resolvedErrorMessage == null && args != null && args.length > 0)
+                resolvedErrorMessage = MessageFormat.format(error.message(), args);
         }
 
         return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
@@ -342,16 +350,20 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         if (error == null)
             return null;
 
-        if (!Str.isEmpty(error.field()))
+        if (!Str.isEmpty(error.field()) && !Errors.GLOBAL_ERROR_KEY.equals(error.field()))
             return errorMessage(error.field());
 
         FormTagSupport formTag = formTag();
         String resolvedErrorMessage = null;
 
-        String errorMsgKey = new StringBuilder(formTag.getName())
-                .append(Char.DOT).append(error.message()).toString();
+        String errorMsgKey = null;
 
-        resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+        if (formTag != null) {
+            errorMsgKey = new StringBuilder(formTag.getName())
+                    .append(Char.DOT).append(error.message()).toString();
+
+            resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
+        }
 
         if (resolvedErrorMessage == null) {
             resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);
@@ -360,6 +372,9 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         if (resolvedErrorMessage != null && error.args() != null && error.args().length > 0)
             resolvedErrorMessage = MessageFormat.format(resolvedErrorMessage, error.args());
 
+        if (resolvedErrorMessage == null && error.args() != null && error.args().length > 0)
+            resolvedErrorMessage = MessageFormat.format(error.message(), error.args());
+        
         return resolvedErrorMessage == null ? error.message() : resolvedErrorMessage;
     }
 
@@ -379,24 +394,31 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         String resolvedNoticeMessage = null;
 
         if (notice != null) {
-            String noticeMsgKey = new StringBuilder(formTag.getName())
-                    .append(Char.DOT).append(fieldName).append(Char.DOT).append(notice.message()).toString();
+            String noticeMsgKey = null;
 
-            resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+            if (formTag != null && !Notices.GLOBAL_NOTICE_KEY.equals(fieldName)) {
+                noticeMsgKey = new StringBuilder(formTag.getName())
+                        .append(Char.DOT).append(fieldName).append(Char.DOT).append(notice.message()).toString();
 
-            if (resolvedNoticeMessage == null) {
+                resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+            }
+
+            if (resolvedNoticeMessage == null && !Notices.GLOBAL_NOTICE_KEY.equals(fieldName)) {
                 noticeMsgKey = new StringBuilder(fieldName)
                         .append(Char.DOT).append(notice.message()).toString();
 
                 resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+            }
 
-                if (resolvedNoticeMessage == null) {
-                    resolvedNoticeMessage = messageResolver.resolve(notice.message(), requestContext(), true);
-                }
+            if (resolvedNoticeMessage == null) {
+                resolvedNoticeMessage = messageResolver.resolve(notice.message(), requestContext(), true);
             }
 
             if (resolvedNoticeMessage != null && notice.args() != null && notice.args().length > 0)
                 resolvedNoticeMessage = MessageFormat.format(resolvedNoticeMessage, notice.args());
+
+            if (resolvedNoticeMessage == null && notice.args() != null && notice.args().length > 0)
+                resolvedNoticeMessage = MessageFormat.format(notice.message(), notice.args());
         }
 
         return resolvedNoticeMessage == null ? notice.message() : resolvedNoticeMessage;
@@ -406,16 +428,20 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         if (notice == null)
             return null;
 
-        if (!Str.isEmpty(notice.field()))
+        if (!Str.isEmpty(notice.field()) && !Notices.GLOBAL_NOTICE_KEY.equals(notice.field()))
             return noticeMessage(notice.field());
 
         FormTagSupport formTag = formTag();
         String resolvedNoticeMessage = null;
 
-        String noticeMsgKey = new StringBuilder(formTag.getName())
-                .append(Char.DOT).append(notice.message()).toString();
+        String noticeMsgKey = null;
 
-        resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+        if (formTag != null) {
+            noticeMsgKey = new StringBuilder(formTag.getName())
+                    .append(Char.DOT).append(notice.message()).toString();
+
+            resolvedNoticeMessage = messageResolver.resolve(noticeMsgKey, requestContext(), true);
+        }
 
         if (resolvedNoticeMessage == null) {
             resolvedNoticeMessage = messageResolver.resolve(notice.message(), requestContext(), true);
@@ -423,6 +449,9 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
         if (resolvedNoticeMessage != null && notice.args() != null && notice.args().length > 0)
             resolvedNoticeMessage = MessageFormat.format(resolvedNoticeMessage, notice.args());
+
+        if (resolvedNoticeMessage == null && notice.args() != null && notice.args().length > 0)
+            resolvedNoticeMessage = MessageFormat.format(notice.message(), notice.args());
 
         return resolvedNoticeMessage == null ? notice.message() : resolvedNoticeMessage;
     }

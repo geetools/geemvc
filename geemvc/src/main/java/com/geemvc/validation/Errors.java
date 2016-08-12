@@ -35,4 +35,6 @@ public interface Errors {
     Set<Error> fieldErrors();
 
     boolean isEmpty();
+
+    static final String GLOBAL_ERROR_KEY = "__globalErrors";
 }

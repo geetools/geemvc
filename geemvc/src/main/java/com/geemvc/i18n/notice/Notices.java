@@ -34,4 +34,6 @@ public interface Notices {
     Set<Notice> fieldNotices();
 
     boolean isEmpty();
+
+    static final String GLOBAL_NOTICE_KEY = "__globalNotices";
 }

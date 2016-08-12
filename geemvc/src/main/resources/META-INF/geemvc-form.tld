@@ -482,6 +482,7 @@
     <tag>
         <name>error</name>
         <tag-class>com.geemvc.taglib.form.ErrorTagSupport</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>
@@ -509,6 +510,7 @@
     <tag>
         <name>errors</name>
         <tag-class>com.geemvc.taglib.form.ErrorsTagSupport</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>show</name>
             <rtexprvalue>true</rtexprvalue>
@@ -528,6 +530,7 @@
     <tag>
         <name>notice</name>
         <tag-class>com.geemvc.taglib.form.NoticeTagSupport</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>
@@ -555,6 +558,7 @@
     <tag>
         <name>notices</name>
         <tag-class>com.geemvc.taglib.form.NoticesTagSupport</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>show</name>
             <rtexprvalue>true</rtexprvalue>

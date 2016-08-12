@@ -30,8 +30,6 @@ public class DefaultErrors implements Errors {
 
     protected Map<String, Set<Error>> errors = null;
 
-    protected static final String GLOBAL_ERROR_KEY = "__globalErrors";
-
     @Inject
     protected Injector injector;
 
