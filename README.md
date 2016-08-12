@@ -8,7 +8,7 @@ geeMVC is a fast lightweight **MVC framework** written for **Java 8+**. Its main
 
 geeMVC allows you to create webapps quickly, ranging from simple CRUD websites to large dynamic multi tenancy SaaS applications.
 
-Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the ["Getting Started"](https://github.com/commerceboard/geemvc/wiki/Getting-Started) section.
+Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the "[Getting Started](https://github.com/commerceboard/geemvc/wiki/Getting-Started)" section. If you want to generally learn more about what an MVC framework is, check out our wiki page [Java 8 MVC Framework](https://github.com/commerceboard/geemvc/wiki/Java-8-MVC-Framework).
 
 ## Why geeMVC?
 
@@ -17,8 +17,15 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 * Because geeMVC is very easy to extend with minimal fuss.
 * Because it is fun to use and lets you get your work done fast.
 * Because it comes with a very flexible routing and validation mechanism that is still easy to use.
-* Because geeMVC allows you to use scripting languages like javascript, groovy or MVEL for even more flexibility.
+* Because geeMVC allows you to use scripting languages like JavaScript, Groovy or MVEL for even more flexibility.
 * Because over 200 test-cases prove that it works reliably.
+
+### Contact the geeMVC Team
+
+* Write us an [issue via GitHub](https://github.com/commerceboard/geemvc/issues).
+* Write to us in our [Google Group](https://groups.google.com/d/forum/geemvc).
+* Write an email to our [mailing list](geemvc@googlegroups.com).
+* Ask questions via [Stackoverflow](http://stackoverflow.com/questions/ask?tags=geemvc) (Do not forget to tag your question with _geemvc_!).
 
 ## Prerequisites
 
@@ -32,7 +39,7 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 <dependency>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc</artifactId>
-    <version>0.9.1-rc2</version>
+    <version>0.9.1-rc3</version>
 </dependency>
 ```
 
@@ -86,7 +93,7 @@ Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivati
 ```
 3) Create your first controller by following the next step.
 
-4) Enter the new URL into your browser. This will most likely be something like http://localhost:8080/hello/world if you have copied the example controller underneath.
+4) Enter the new URL into your browser. This will most likely be something like _http://localhost:8080/hello/world_ if you have copied the example controller underneath.
 
 > This README is kept especially simple so that you can get a quick overview. It is therefore highly recommended that you referr to the [example webapp](https://github.com/commerceboard/geemvc/tree/master/examples/webapp-jpa-jsp) and our [extensive wiki](https://github.com/commerceboard/geemvc/wiki) for more information.
 
@@ -102,7 +109,8 @@ public class HelloWorldController {
     public String helloWorld() {
         System.out.println("Well done! You have successfully called the /hello/world controller.");        
         
-        return "forward: /WEB-INF/jsp/hello-world.jsp";
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
+        return "forward: hello-world";
     }
 }
 ```
@@ -119,7 +127,8 @@ public class HelloWorldController {
     public String helloWorld(@PathParam Long id) {
         System.out.println("Well done! You can now use the id path parameter in your code. The id is: " + id);
 
-        return "forward: /WEB-INF/jsp/hello-world.jsp";
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
+        return "forward: hello-world";
     }
 }
 ```
@@ -146,7 +155,8 @@ public class HelloWorldController {
     public String helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
 
-        return "forward: /WEB-INF/jsp/hello-world.jsp";
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
+        return "forward: hello-world";
     }
 }    
 ```
@@ -171,7 +181,7 @@ public class HelloWorldController {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
 	// The Views class is simply a small helper that builds the view object for you.
-        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+        return Views.forward("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -198,11 +208,12 @@ public class HelloWorldController {
      * forward the user to some view, do not use this. Make use of the "Bindings" object as shown in the example 
      * following this one.
      */
-    @Request(path = "/world/{id}", onError="/WEB-INF/jsp/hello-world.jsp")
+    @Request(path = "/world/{id}", onError="hello-world")
     public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
-        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
+        return Views.forward("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -232,11 +243,12 @@ public class HelloWorldController {
             errors.add("Hey, I also want to add this error message!");
             
             // Now we tell geeMVC where to go in case of a validation error.
-            return Views.forward("/WEB-INF/jsp/some-other.jsp")
+            return Views.forward("some-other") // Located at /WEB-INF/jsp/pages/some-other.jsp
                     .bind("myViewParam", someService.getById(id));
         }
 
-        return Views.forward("/WEB-INF/jsp/hello-world.jsp")
+        // Located at /WEB-INF/jsp/pages/hello-world.jsp
+        return Views.forward("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -263,7 +275,8 @@ public class HelloWorldController {
      */
     @Request("world-form")
     public String helloWorld() {
-        return "forward: /WEB-INF/jsp/hello-world-form.jsp";
+        // Located at /WEB-INF/jsp/pages/hello-world-form.jsp
+        return "forward: hello-world-form";
     }
 
     /**
@@ -276,21 +289,22 @@ public class HelloWorldController {
         if (bindings.hasErrors()) {
 
             // Now we tell geeMVC where to go in case of a validation error.
-            return Views.forward("/WEB-INF/jsp/hello-world-form.jsp")
+            return Views.forward("hello-world-form")
                     .bind(bindings.typedValues()); // Re-bind values to view.
         }
 
         if (!worldIsValid(world)) {
             errors.add("World is not valid, please check again.");
 
-            return Views.forward("/WEB-INF/jsp/hello-world-form.jsp")
+            return Views.forward("hello-world-form")
                     .bind(bindings.typedValues()); // Re-bind values to view.
         }
 
         // Save the bean.
         WorldBean savedWorld = service.add(world);
 
-        return Views.forward("/WEB-INF/jsp/hello-world-success.jsp")
+        // Located at /WEB-INF/jsp/pages/hello-world-success.jsp
+        return Views.forward("hello-world-success")
                 .bind("savedWorld", savedWorld);
     }
     
@@ -469,7 +483,7 @@ public class HelloWorldController {
         // Inject your object.
         WorldBean world = injector.getInstance(WorldBean.class);
 
-        return "forward: /WEB-INF/jsp/hello-world.jsp";
+        return "forward: hello-world";
     }
 }
 ```
