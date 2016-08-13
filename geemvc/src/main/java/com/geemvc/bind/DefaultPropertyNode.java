@@ -304,11 +304,11 @@ public class DefaultPropertyNode implements PropertyNode {
         if (!targetType.isPrimitive())
             return value;
 
-        if (value != null && !Str.NULL_STRING.equals(value))
+        if (value instanceof String && !Str.isEmpty((String) value) && !Str.NULL_STRING.equals(value)) {
             return value;
-
-        if (value instanceof String && !Str.isEmpty((String) value) && !Str.NULL_STRING.equals(value))
+        } else if (value != null && !(value instanceof String)) {
             return value;
+        }
 
         if (targetType == byte.class) {
             return Val.DEFAULT_BYTE;
