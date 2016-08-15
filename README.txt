@@ -25,6 +25,7 @@ XML-configuration (apart from web.xml when used).
 - JSR-311 REST annotations.
 
 ### License
+
 Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0
 
 ### Contact
