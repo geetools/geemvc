@@ -125,7 +125,7 @@ public class MessageTagSupport extends HtmlTagSupport {
                 Matcher m = parameterPattern.matcher(entry.getKey());
 
                 if (m.matches())
-                    parameterMap.put(Integer.valueOf(entry.getKey().substring(1)), entry.getValue());
+                    parameterMap.put(Integer.valueOf(entry.getKey().substring(1)) - 1, entry.getValue());
             }
 
             Map<Integer, Object> sortedParameters = parameterMap.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));

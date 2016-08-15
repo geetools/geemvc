@@ -443,6 +443,21 @@
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
     <tag>
+        <name>hidden</name>
+        <tag-class>com.geemvc.taglib.form.InputHiddenTagSupport</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>id</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+    </tag>
+    <tag>
         <name>submit</name>
         <tag-class>com.geemvc.taglib.form.InputSubmitTagSupport</tag-class>
         <body-content>scriptless</body-content>

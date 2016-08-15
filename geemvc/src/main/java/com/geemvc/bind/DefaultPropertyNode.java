@@ -16,31 +16,19 @@
 
 package com.geemvc.bind;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import jodd.bean.BeanUtil;
-
 import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.Val;
 import com.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import jodd.bean.BeanUtil;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DefaultPropertyNode implements PropertyNode {
     protected String name;
@@ -231,8 +219,8 @@ public class DefaultPropertyNode implements PropertyNode {
 
                 String extendedName = extendedName(expression);
 
-                if (extendedName.endsWith("[]"))
-                    extendedName = extendedName.replace("[]", new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
+                if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
+                    extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
                 Object nodeBean = BeanUtil.getPropertySilently(bean, extendedName);
 
@@ -247,8 +235,8 @@ public class DefaultPropertyNode implements PropertyNode {
 
                 String extendedName = extendedName(expression);
 
-                if (extendedName.endsWith("[]"))
-                    extendedName = extendedName.replace("[]", new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
+                if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
+                    extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
                 Object nodeBean = BeanUtil.getPropertySilently(bean, extendedName);
 
@@ -281,8 +269,8 @@ public class DefaultPropertyNode implements PropertyNode {
 
                 String extendedName = extendedName(expression);
 
-                if (extendedName.endsWith("[]"))
-                    extendedName = extendedName.replace("[]", new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(Array.getLength(array)).append(Char.SQUARE_BRACKET_CLOSE).toString());
+                if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
+                    extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(Array.getLength(array)).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
                 BeanUtil.setPropertyForced(bean, extendedName, validValue(value, type));
             } else if (Collection.class.isAssignableFrom(type)) {
@@ -290,8 +278,8 @@ public class DefaultPropertyNode implements PropertyNode {
 
                 String extendedName = extendedName(expression);
 
-                if (extendedName.endsWith("[]"))
-                    extendedName = extendedName.replace("[]", new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
+                if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
+                    extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
                 BeanUtil.setPropertyForced(bean, extendedName, validValue(value, type));
             } else {

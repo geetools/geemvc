@@ -91,6 +91,7 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
             Set<String> attemptBundleBaseNames = new LinkedHashSet<>();
             attemptBundleBaseNames.add(controllerBundle(requestCtx));
+            attemptBundleBaseNames.add(defaultAppBundle());
             attemptBundleBaseNames.add(defaultBundle());
 
             Set<String> attemptContextPrefixes = new LinkedHashSet<>();
@@ -131,6 +132,10 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
     }
 
     protected String defaultBundle() {
+        return "_messages";
+    }
+
+    protected String defaultAppBundle() {
         return "messages";
     }
 
@@ -144,10 +149,10 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
         String name = controllerClass.getSimpleName();
 
-        if (name.endsWith(controllerSuffix)) {
-            name = name.replace(controllerSuffix, Str.EMPTY);
-        } else if (name.endsWith(actionSuffix)) {
-            name = name.replace(actionSuffix, Str.EMPTY);
+            if (name.endsWith(controllerSuffix)) {
+                name = name.replace(controllerSuffix, Str.EMPTY);
+            } else if (name.endsWith(actionSuffix)) {
+                name = name.replace(actionSuffix, Str.EMPTY);
         }
 
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);

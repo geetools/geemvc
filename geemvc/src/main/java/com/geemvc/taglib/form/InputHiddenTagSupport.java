@@ -16,8 +16,21 @@
 
 package com.geemvc.taglib.form;
 
+import javax.servlet.jsp.JspException;
+import java.io.IOException;
+
 public class InputHiddenTagSupport extends InputTagSupport {
     public InputHiddenTagSupport() {
         dynamicAttributes.put("type", "hidden");
+    }
+
+    @Override
+    public void writePostFieldBlock(String fieldName) throws JspException, IOException {
+        // Do nothing.
+    }
+
+    @Override
+    public void writePreFieldBlock(String elementId, String name, Object value) throws JspException, IOException {
+        // Do nothing.
     }
 }

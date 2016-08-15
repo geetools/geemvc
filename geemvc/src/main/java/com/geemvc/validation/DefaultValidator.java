@@ -97,7 +97,7 @@ public class DefaultValidator extends AbstractValidator implements Validator {
                     continue;
                 }
 
-                Set<Validator> beanValidators = validations.forBean(methodParam.getClass());
+                Set<Validator> beanValidators = validations.forBean(methodParam.type());
 
                 log.debug("Found {} bean validators for validating type '{}'.", () -> beanValidators == null ? 0 : beanValidators.size(), () -> methodParam.type().getName());
 

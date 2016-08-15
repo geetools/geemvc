@@ -62,8 +62,10 @@ public class Str {
     public static final String BRACKET_OPEN_CLOSE = "()";
     public static final String SQUARE_BRACKET_OPEN = String.valueOf(Char.SQUARE_BRACKET_OPEN);
     public static final String SQUARE_BRACKET_CLOSE = String.valueOf(Char.SQUARE_BRACKET_CLOSE);
+    public static final String SQUARE_BRACKET_OPEN_CLOSE = "[]";
     public static final String CURLY_BRACKET_OPEN = String.valueOf(Char.CURLY_BRACKET_OPEN);
     public static final String CURLY_BRACKET_CLOSE = String.valueOf(Char.CURLY_BRACKET_CLOSE);
+    public static final String CURLY_BRACKET_OPEN_CLOSE = "{}";
     public static final String PIPE = String.valueOf(Char.PIPE);
     public static final String NEWLINE = String.valueOf(Char.NEWLINE);
     public static final String PROTOCOL_SUFFIX = "://";

@@ -250,16 +250,24 @@ public class DefaultRequestRunner implements RequestRunner {
         ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(requestCtx, typedValues, notices);
         Object view = validator.validate(requestHandler, validationCtx, errors);
 
-        if (view != null) {
-            return view(view);
-        } else if (!errors.isEmpty() && onErrorViewExists(requestHandler)) {
-            View errorView = view(onErrorView(requestHandler));
-            errorView.bind(typedValues);
+        View errorView = null;
 
-            return errorView;
+        if (view != null) {
+            errorView = view(view);
+        } else if (!errors.isEmpty() && onErrorViewExists(requestHandler)) {
+            errorView = view(onErrorView(requestHandler));
         }
 
-        return null;
+        // If view and errors exist, re-bind values to the view if they do not exist yet.
+        if (errorView != null && !errors.isEmpty()) {
+            for (Map.Entry<String, Object> entry : typedValues.entrySet()) {
+                if (!errorView.containsKey(entry.getKey())) {
+                    errorView.bind(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        return errorView;
     }
 
     protected RequestHandler resolveHandler(RequestContext requestCtx) throws HandlerNotFoundException {
