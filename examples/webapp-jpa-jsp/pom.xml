@@ -7,8 +7,8 @@
 	<version>0.9.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>Geemvc Example Webapp</name>
-    <description>Geemvc jpa and jsp example war.</description>
+	<name>geeMVC Example Webapp</name>
+    <description>geeMVC jpa and jsp example war.</description>
 
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>

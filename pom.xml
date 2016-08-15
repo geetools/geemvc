@@ -6,12 +6,12 @@
     <version>0.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Geemvc Parent</name>
+    <name>geeMVC Parent</name>
     <url>http://geetools.com/geemvc</url>
-    <description>Geemvc framework parent project.</description>
+    <description>geeMVC framework parent project.</description>
 
     <organization>
-        <name>Geetools</name>
+        <name>geeTools</name>
         <url>http://geetools.com/geemvc</url>
     </organization>
 
