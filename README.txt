@@ -24,6 +24,9 @@ XML-configuration (apart from web.xml when used).
 - JSR-303 javax.validation.contraints annotations.
 - JSR-311 REST annotations.
 
+### License
+Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0
+
 ### Contact
 
 - Write us an issue via GitHub: https://github.com/commerceboard/geemvc/issues.
