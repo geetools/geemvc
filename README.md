@@ -8,7 +8,7 @@ geeMVC is a fast lightweight **MVC framework** written for **Java 8+**. Its main
 
 geeMVC allows you to create webapps quickly, ranging from simple CRUD websites to large dynamic multi tenancy SaaS applications.
 
-Check out our [motivation](https://github.com/commerceboard/geemvc/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the "[Getting Started](https://github.com/commerceboard/geemvc/wiki/Getting-Started)" section. If you want to generally learn more about what an MVC framework is, check out our wiki page [Java 8 MVC Framework](https://github.com/commerceboard/geemvc/wiki/Java-8-MVC-Framework).
+Check out our [motivation](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the "[Getting Started](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Getting-Started)" section. If you want to generally learn more about what an MVC framework is, check out our wiki page [Java 8 MVC Framework](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Java-8-MVC-Framework).
 
 ## Why geeMVC?
 
