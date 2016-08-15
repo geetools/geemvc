@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc-parent</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.1-rc5</version>
     <packaging>pom</packaging>
 
     <name>Geemvc Parent</name>
