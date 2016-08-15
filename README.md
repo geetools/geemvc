@@ -1,6 +1,6 @@
 # geeMVC Java 8+ MVC framework
 
-[![Build Status](https://travis-ci.org/commerceboard/geemvc.svg?branch=master)](https://travis-ci.org/commerceboard/geemvc)
+[![Build Status](https://travis-ci.org/commerceboard/geeMVC-Java-MVC-Framework.svg?branch=master)](https://travis-ci.org/commerceboard/geeMVC-Java-MVC-Framework)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.geetools.geemvc/geemvc/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
