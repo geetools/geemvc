@@ -16,9 +16,10 @@ Check out our [motivation](https://github.com/commerceboard/geeMVC-Java-MVC-Fram
 * Because there is no complex XML-configuration required. 
 * Because geeMVC is very easy to extend with minimal fuss.
 * Because it is fun to use and lets you get your work done fast.
-* Because it comes with a very flexible routing and validation mechanism that is still easy to use.
+* Because it comes with a very flexible routing and validation mechanism that is easy to use.
 * Because geeMVC allows you to use scripting languages like JavaScript, Groovy or MVEL for even more flexibility.
-* Because over 200 test-cases prove that it works reliably.
+* Because geeMVC supports an increasing number of JAX-RS features.
+* Because over 230 test-cases prove that it works reliably.
 
 ### Contact the geeMVC Team
 
