@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.rest.jaxrs;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.lang.reflect.Type;
 
-public class DefaultInjectorProvider implements InjectorProvider {
+import javax.ws.rs.core.MediaType;
 
-    protected final Injector injector;
+public interface ProviderKey<T> extends Comparable {
+    ProviderKey build(Class<?> providerType, Class<?> providerImplType, Class<T> forType, Type forGenericType, MediaType forMediaType, int relevance);
 
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
+    Class<?> providerType();
 
-    @Override
-    public Injector provide() {
-        return injector;
-    }
+    Class<?> providerImplType();
+
+    Class<T> forType();
+
+    Type forGenericType();
+
+    MediaType forMediaType();
+
+    int relevance();
 }

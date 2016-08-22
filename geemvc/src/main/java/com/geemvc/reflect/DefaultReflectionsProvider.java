@@ -16,17 +16,6 @@
 
 package com.geemvc.reflect;
 
-import com.geemvc.Str;
-import com.geemvc.ThreadStash;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ConfigurationBuilder;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +25,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ConfigurationBuilder;
+
+import com.geemvc.Str;
+import com.geemvc.ThreadStash;
+
 public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected String WEBAPP_CLASSES_DIR = "/WEB-INF/classes";
     protected String WEBAPP_LIB_DIR = "/WEB-INF/lib/";
@@ -43,7 +45,9 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected String GEEMVC_PROJECT_NAME = "geemvc";
 
     protected Pattern webGeemvcJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
+    protected Pattern webGensonJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/genson\\-\\d\\.\\d\\.*\\.jar$");
     protected Pattern appGeemvcJarPattern = Pattern.compile(".*geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
+    protected Pattern appGensonJarPattern = Pattern.compile(".*geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
 
     @Override
     public Reflections provide() {
@@ -55,14 +59,21 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
             URL webappClassesPath = webappClassesPath();
             URL geemvcLibPath = geemvcLibPath();
 
+            // TODO: Offer configuration for extra libs.
+            URL gensonLibPath = gensonLibPath();
+
             cb = cb.addUrls(webappClassesPath, geemvcLibPath).addClassLoader(mainClassLoader());
+
+            if (gensonLibPath != null) {
+                cb = cb.addUrls(gensonLibPath);
+            }
 
             // Give the developer a chance to add his own URLs.
             Set<URL> urls = appendURLs();
             if (urls != null && !urls.isEmpty()) {
                 for (URL url : urls) {
                     if (url != null) {
-                        cb.addUrls(url);
+                        cb = cb.addUrls(url);
                     }
                 }
             }
@@ -70,7 +81,7 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
             // Give the developer a chance to add his own class-loaders.
             Set<ClassLoader> classLoaders = appendClassLoaders();
             if (classLoaders != null && !classLoaders.isEmpty()) {
-                cb.addClassLoaders(classLoaders);
+                cb = cb.addClassLoaders(classLoaders);
             }
 
             // Set all scanners. Can be changed in the extend() method if necessary.
@@ -182,6 +193,63 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
         }
 
         return geemvcLibPath;
+    }
+
+    protected URL gensonLibPath() throws Exception {
+        URL gensonLibPath = null;
+
+        ServletContext servletContext = servletContext();
+
+        // ----------------------------------------------------------------------------------------
+        // First we'll try to find the genson jar in the WEB-INF/lib directory.
+        // ----------------------------------------------------------------------------------------
+        if (servletContext != null) {
+            Set<String> libJars = servletContext.getResourcePaths(WEBAPP_LIB_DIR);
+
+            if (libJars != null && !libJars.isEmpty()) {
+                if (libJars != null && !libJars.isEmpty()) {
+                    for (String jar : libJars) {
+
+                        Matcher m = webGensonJarPattern.matcher(jar);
+
+                        if (m.matches()) {
+                            File f = new File(servletContext.getRealPath(jar));
+
+                            if (f.exists()) {
+                                gensonLibPath = f.toURI().toURL();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ----------------------------------------------------------------------------------------
+            // If we could not find it in web-scope, we will try the classpath.
+            // ----------------------------------------------------------------------------------------
+        } else {
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(File.pathSeparator);
+
+            for (String classpathEntry : classpathEntries) {
+                Matcher m = appGensonJarPattern.matcher(classpathEntry);
+
+                if (m.matches()) {
+                    File f = new File(classpathEntry);
+
+                    if (f.exists()) {
+                        gensonLibPath = f.toURI().toURL();
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (gensonLibPath == null) {
+            System.out.println("Genson library could not be found for org.reflections.");
+        }
+
+        return gensonLibPath;
     }
 
     protected void extend(ConfigurationBuilder cb) {

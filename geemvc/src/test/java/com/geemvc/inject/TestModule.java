@@ -31,7 +31,7 @@ import com.geemvc.mock.bean.RootFluentBeanImpl;
 import com.geemvc.reflect.ReflectionsWrapper;
 import com.geemvc.reflect.TestReflectionsWrapper;
 
-public class TestModule extends GeemvcModule {
+public class TestModule extends GeeMvcModule {
     @Override
     protected void configure() {
         super.configure();

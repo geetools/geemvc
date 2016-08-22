@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
-import com.cb.examples.jpajsp.geeticket.inject.GeeticketModule;
+import com.cb.examples.jpajsp.geeticket.inject.GeeTicketModule;
 import com.geemvc.DispatcherServlet;
 import com.geemvc.config.Configuration;
-import com.geemvc.inject.GeemvcModule;
+import com.geemvc.inject.GeeMvcModule;
 import com.geemvc.inject.InjectorProvider;
 import com.geemvc.inject.Injectors;
 import com.google.inject.Guice;
@@ -26,7 +26,7 @@ public class GeeticketGuiceServletContextListener extends GuiceServletContextLis
     @Override
     protected Injector getInjector() {
         try {
-            injector = Guice.createInjector(new GeemvcModule(), new GeeticketModule(), new ServletModule() {
+            injector = Guice.createInjector(new GeeMvcModule(), new GeeTicketModule(), new ServletModule() {
                 @Override
                 protected void configureServlets() {
                     install(new JpaPersistModule("geeticketPU"));
@@ -67,7 +67,6 @@ public class GeeticketGuiceServletContextListener extends GuiceServletContextLis
                 return injector;
             }
         };
-
 
         Injectors.set(ip);
 

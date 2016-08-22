@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.rest.jaxrs.delegate;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
-public class DefaultInjectorProvider implements InjectorProvider {
+public interface MediaTypeHeaderDelegate extends HeaderDelegate<MediaType> {
 
-    protected final Injector injector;
-
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
-    @Override
-    public Injector provide() {
-        return injector;
-    }
 }

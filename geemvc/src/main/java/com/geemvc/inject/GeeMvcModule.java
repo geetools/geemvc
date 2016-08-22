@@ -16,20 +16,82 @@
 
 package com.geemvc.inject;
 
-import com.geemvc.*;
-import com.geemvc.bind.*;
-import com.geemvc.bind.param.*;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.ext.Providers;
+import javax.ws.rs.ext.RuntimeDelegate;
+
+import com.geemvc.Bindings;
+import com.geemvc.DefaultBindings;
+import com.geemvc.DefaultPathOnlyRequestContext;
+import com.geemvc.DefaultRequestContext;
+import com.geemvc.DefaultRequestRunner;
+import com.geemvc.PathOnlyRequestContext;
+import com.geemvc.RequestContext;
+import com.geemvc.RequestRunner;
+import com.geemvc.bind.DefaultMethodParam;
+import com.geemvc.bind.DefaultMethodParams;
+import com.geemvc.bind.DefaultPropertyNode;
+import com.geemvc.bind.MethodParam;
+import com.geemvc.bind.MethodParams;
+import com.geemvc.bind.PropertyNode;
+import com.geemvc.bind.param.DefaultParamAdapterFactory;
+import com.geemvc.bind.param.DefaultParamAdapterKey;
+import com.geemvc.bind.param.DefaultParamAdapters;
+import com.geemvc.bind.param.DefaultParamContext;
+import com.geemvc.bind.param.ParamAdapterFactory;
+import com.geemvc.bind.param.ParamAdapterKey;
+import com.geemvc.bind.param.ParamAdapters;
+import com.geemvc.bind.param.ParamContext;
 import com.geemvc.cache.Cache;
 import com.geemvc.cache.CacheEntry;
 import com.geemvc.cache.DefaultCache;
 import com.geemvc.cache.DefaultCacheEntry;
 import com.geemvc.config.Configuration;
 import com.geemvc.config.DefaultConfiguration;
-import com.geemvc.converter.*;
+import com.geemvc.converter.BeanConverter;
+import com.geemvc.converter.ConverterAdapterFactory;
+import com.geemvc.converter.ConverterAdapterKey;
+import com.geemvc.converter.ConverterContext;
+import com.geemvc.converter.DefaultBeanConverter;
+import com.geemvc.converter.DefaultConverterAdapterFactory;
+import com.geemvc.converter.DefaultConverterAdapterKey;
+import com.geemvc.converter.DefaultConverterContext;
+import com.geemvc.converter.DefaultSimpleConverter;
+import com.geemvc.converter.SimpleConverter;
 import com.geemvc.data.DataAdapterFactory;
 import com.geemvc.data.DefaultDataAdapterFactory;
-import com.geemvc.handler.*;
-import com.geemvc.helper.*;
+import com.geemvc.handler.CompositeControllerResolver;
+import com.geemvc.handler.CompositeHandlerResolver;
+import com.geemvc.handler.DefaultCompositeControllerResolver;
+import com.geemvc.handler.DefaultCompositeHandlerResolver;
+import com.geemvc.handler.DefaultHandlerResolverStats;
+import com.geemvc.handler.DefaultRequestHandler;
+import com.geemvc.handler.DefaultRequestHandlerKey;
+import com.geemvc.handler.DefaultRequestMappingKey;
+import com.geemvc.handler.DefaultSimpleControllerResolver;
+import com.geemvc.handler.DefaultSimpleHandlerResolver;
+import com.geemvc.handler.HandlerResolverStats;
+import com.geemvc.handler.RequestHandler;
+import com.geemvc.handler.RequestHandlerKey;
+import com.geemvc.handler.RequestMappingKey;
+import com.geemvc.handler.SimpleControllerResolver;
+import com.geemvc.handler.SimpleHandlerResolver;
+import com.geemvc.helper.Annotations;
+import com.geemvc.helper.Controllers;
+import com.geemvc.helper.DefaultAnnotations;
+import com.geemvc.helper.DefaultControllers;
+import com.geemvc.helper.DefaultMimeTypes;
+import com.geemvc.helper.DefaultPaths;
+import com.geemvc.helper.DefaultRequests;
+import com.geemvc.helper.DefaultStrings;
+import com.geemvc.helper.MimeTypes;
+import com.geemvc.helper.Paths;
+import com.geemvc.helper.Requests;
+import com.geemvc.helper.Strings;
 import com.geemvc.i18n.locale.DefaultLocaleResolver;
 import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.message.CompositeMessageResolver;
@@ -40,25 +102,90 @@ import com.geemvc.i18n.notice.DefaultNotice;
 import com.geemvc.i18n.notice.DefaultNotices;
 import com.geemvc.i18n.notice.Notice;
 import com.geemvc.i18n.notice.Notices;
-import com.geemvc.intercept.*;
+import com.geemvc.intercept.DefaultInterceptorResolver;
+import com.geemvc.intercept.DefaultInterceptors;
+import com.geemvc.intercept.DefaultInvocationContext;
+import com.geemvc.intercept.DefaultLifecycleContext;
+import com.geemvc.intercept.DefaultLifecycleInterceptor;
+import com.geemvc.intercept.InterceptorResolver;
+import com.geemvc.intercept.Interceptors;
+import com.geemvc.intercept.InvocationContext;
+import com.geemvc.intercept.LifecycleContext;
+import com.geemvc.intercept.LifecycleInterceptor;
 import com.geemvc.logging.DefaultLog;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.LoggerTypeListener;
-import com.geemvc.matcher.*;
+import com.geemvc.matcher.CookieMatcher;
+import com.geemvc.matcher.DefaultCookieMatcher;
+import com.geemvc.matcher.DefaultHandlesMatcher;
+import com.geemvc.matcher.DefaultHeaderMatcher;
+import com.geemvc.matcher.DefaultMatcherContext;
+import com.geemvc.matcher.DefaultParamMatcher;
+import com.geemvc.matcher.DefaultPathMatcher;
+import com.geemvc.matcher.DefaultPathMatcherKey;
+import com.geemvc.matcher.HandlesMatcher;
+import com.geemvc.matcher.HeaderMatcher;
+import com.geemvc.matcher.MatcherContext;
+import com.geemvc.matcher.ParamMatcher;
+import com.geemvc.matcher.PathMatcher;
+import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.reflect.DefaultReflectionProvider;
 import com.geemvc.reflect.DefaultReflectionsWrapper;
 import com.geemvc.reflect.ReflectionProvider;
 import com.geemvc.reflect.ReflectionsWrapper;
-import com.geemvc.script.*;
-import com.geemvc.validation.*;
+import com.geemvc.rest.jaxrs.DefaultProviderFilter;
+import com.geemvc.rest.jaxrs.DefaultProviderKey;
+import com.geemvc.rest.jaxrs.DefaultProviders;
+import com.geemvc.rest.jaxrs.JaxRsApplication;
+import com.geemvc.rest.jaxrs.ProviderFilter;
+import com.geemvc.rest.jaxrs.ProviderKey;
+import com.geemvc.rest.jaxrs.context.DefaultHttpHeaders;
+import com.geemvc.rest.jaxrs.context.DefaultResponse;
+import com.geemvc.rest.jaxrs.context.DefaultUriInfo;
+import com.geemvc.rest.jaxrs.context.GeeMvcResponse;
+import com.geemvc.rest.jaxrs.delegate.DefaultMediaTypeHeaderDelegate;
+import com.geemvc.rest.jaxrs.delegate.DefaultResponseBuilder;
+import com.geemvc.rest.jaxrs.delegate.DefaultRuntimeDelegate;
+import com.geemvc.rest.jaxrs.delegate.MediaTypeHeaderDelegate;
+import com.geemvc.rest.jaxrs.util.DefaultMultivaluedMap;
+import com.geemvc.rest.jaxrs.util.DefaultObjectFactory;
+import com.geemvc.rest.jaxrs.util.ObjectFactory;
+import com.geemvc.script.DefaultEvaluatorContext;
+import com.geemvc.script.DefaultEvaluatorFactory;
+import com.geemvc.script.DefaultRegex;
+import com.geemvc.script.EvaluatorContext;
+import com.geemvc.script.EvaluatorFactory;
+import com.geemvc.script.Regex;
+import com.geemvc.validation.DefaultError;
+import com.geemvc.validation.DefaultErrors;
+import com.geemvc.validation.DefaultValidation;
+import com.geemvc.validation.DefaultValidationAdapterFactory;
+import com.geemvc.validation.DefaultValidationAdapterKey;
+import com.geemvc.validation.DefaultValidationContext;
+import com.geemvc.validation.DefaultValidations;
+import com.geemvc.validation.DefaultValidator;
+import com.geemvc.validation.DefaultViewOnlyRequestHandler;
 import com.geemvc.validation.Error;
-import com.geemvc.view.*;
+import com.geemvc.validation.Errors;
+import com.geemvc.validation.Validation;
+import com.geemvc.validation.ValidationAdapterFactory;
+import com.geemvc.validation.ValidationAdapterKey;
+import com.geemvc.validation.ValidationContext;
+import com.geemvc.validation.Validations;
+import com.geemvc.validation.Validator;
+import com.geemvc.validation.ViewOnlyRequestHandler;
+import com.geemvc.view.DefaultStreamViewHandler;
+import com.geemvc.view.DefaultViewAdapterFactory;
+import com.geemvc.view.DefaultViewHandler;
+import com.geemvc.view.StreamViewHandler;
+import com.geemvc.view.ViewAdapterFactory;
+import com.geemvc.view.ViewHandler;
 import com.geemvc.view.bean.DefaultView;
 import com.geemvc.view.bean.View;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
-public class GeemvcModule extends AbstractModule {
+public class GeeMvcModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -135,8 +262,69 @@ public class GeemvcModule extends AbstractModule {
         configureValidationAdapterFactory();
         configureBindings();
         configureViewOnlyRequestHandler();
+
+        // Jax-RS
+        configureJaxRSRuntimeDelegate();
+        configureJaxRSApplication();
+        configureJaxRSProviders();
+        configureJaxRSProviderFilter();
+        configureJaxRSProviderKey();
+        configureJaxRSMultivaluedMap();
+        configureJaxRSHttpHeaders();
+        configureJaxRSUriInfo();
+        configureJaxRSObjectFactory();
+        configureJaxRSResponse();
+        configureJaxRSResponseBuilder();
+        configureJaxRSMediaTypeHeaderDelegate();
     }
 
+    protected void configureJaxRSResponse() {
+        bind(GeeMvcResponse.class).to(DefaultResponse.class);
+    }
+
+    protected void configureJaxRSResponseBuilder() {
+        bind(ResponseBuilder.class).to(DefaultResponseBuilder.class);
+    }
+
+    protected void configureJaxRSMediaTypeHeaderDelegate() {
+        bind(MediaTypeHeaderDelegate.class).to(DefaultMediaTypeHeaderDelegate.class);
+    }
+
+    protected void configureJaxRSRuntimeDelegate() {
+        bind(RuntimeDelegate.class).to(DefaultRuntimeDelegate.class);
+    }
+
+    protected void configureJaxRSApplication() {
+        bind(Application.class).to(JaxRsApplication.class);
+    }
+
+    protected void configureJaxRSProviders() {
+        bind(Providers.class).to(DefaultProviders.class);
+    }
+
+    protected void configureJaxRSProviderFilter() {
+        bind(ProviderFilter.class).to(DefaultProviderFilter.class);
+    }
+
+    protected void configureJaxRSProviderKey() {
+        bind(ProviderKey.class).to(DefaultProviderKey.class);
+    }
+
+    protected void configureJaxRSMultivaluedMap() {
+        bind(MultivaluedMap.class).to(DefaultMultivaluedMap.class);
+    }
+
+    protected void configureJaxRSHttpHeaders() {
+        bind(HttpHeaders.class).to(DefaultHttpHeaders.class);
+    }
+
+    protected void configureJaxRSUriInfo() {
+        bind(UriInfo.class).to(DefaultUriInfo.class);
+    }
+
+    protected void configureJaxRSObjectFactory() {
+        bind(ObjectFactory.class).to(DefaultObjectFactory.class);
+    }
 
     protected void configureLog() {
         bind(Log.class).to(DefaultLog.class);

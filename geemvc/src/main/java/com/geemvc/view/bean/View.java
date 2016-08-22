@@ -45,6 +45,8 @@ public interface View extends Map<String, Object> {
 
     View stream(String contentType, String output);
 
+    View stream(String contentType, Object result);
+
     String contentType();
 
     InputStream stream();
@@ -56,6 +58,10 @@ public interface View extends Map<String, Object> {
     View filename(String filename);
 
     String filename();
+
+    Object result();
+
+    void result(Object result);
 
     View characterEncoding(String characterEncoding);
 
@@ -76,5 +82,4 @@ public interface View extends Map<String, Object> {
     View rangeSupport(boolean rangeSupport);
 
     boolean rangeSupport();
-
 }

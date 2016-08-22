@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.rest.jaxrs.util;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
-public class DefaultInjectorProvider implements InjectorProvider {
-
-    protected final Injector injector;
-
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
-    @Override
-    public Injector provide() {
-        return injector;
-    }
+public interface ObjectFactory {
+    <T> T newInstance(Class<T> type);
 }

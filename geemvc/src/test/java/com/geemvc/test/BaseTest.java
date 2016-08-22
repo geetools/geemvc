@@ -36,8 +36,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.apache.naming.java.javaURLContextFactory;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+
 import com.geemvc.RequestContext;
+import com.geemvc.ThreadStash;
 import com.geemvc.annotation.Request;
+import com.geemvc.helper.Annotations;
 import com.geemvc.helper.TestHelper;
 import com.geemvc.inject.InjectorProvider;
 import com.geemvc.inject.Injectors;
@@ -46,14 +55,6 @@ import com.geemvc.matcher.PathMatcher;
 import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.mock.bean.Person;
 import com.geemvc.reflect.ReflectionsWrapper;
-import org.apache.derby.jdbc.EmbeddedDataSource;
-import org.apache.naming.java.javaURLContextFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-
-import com.geemvc.helper.Annotations;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
@@ -333,10 +334,12 @@ public class BaseTest {
 
     @Before
     public void setUp() throws Exception {
+        ThreadStash.prepare(newRequestContext("/webapp", "/servlet", "/webapp/servlet/test"));
     }
 
     @After
     public void tearDown() throws Exception {
+        ThreadStash.clear();
     }
 
     @BeforeClass

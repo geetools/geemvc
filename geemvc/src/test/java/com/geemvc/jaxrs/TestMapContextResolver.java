@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.jaxrs;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.geemvc.mock.bean.Person;
 
-public class DefaultInjectorProvider implements InjectorProvider {
+import javax.inject.Singleton;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+import java.util.Map;
 
-    protected final Injector injector;
-
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
+/**
+ * Created by Michael on 16.08.2016.
+ */
+@Provider
+@Singleton
+public class TestMapContextResolver implements ContextResolver<Map<String, Person>> {
     @Override
-    public Injector provide() {
-        return injector;
+    public Map<String, Person> getContext(Class<?> type) {
+        return null;
     }
 }

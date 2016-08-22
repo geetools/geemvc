@@ -19,7 +19,7 @@ package com.geemvc.jpa;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.geemvc.inject.GeemvcModule;
+import com.geemvc.inject.GeeMvcModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.persist.jpa.JpaPersistModule;
@@ -27,7 +27,7 @@ import com.google.inject.persist.jpa.JpaPersistModule;
 public class JpaServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        Injector injector = Guice.createInjector(new GeemvcModule(), new JpaPersistModule("testPU"));
+        Injector injector = Guice.createInjector(new GeeMvcModule(), new JpaPersistModule("testPU"));
     }
 
     @Override

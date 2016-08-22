@@ -28,47 +28,47 @@ import javax.ws.rs.core.MediaType;
 public class TestControllerJSR311 {
     @GET
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public void handlerJSR311a() {
 
     }
 
     @DELETE
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public void handlerJSR311b() {
 
     }
 
     @Path("/handlerC/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON })
     public void handlerJSR311c() {
 
     }
 
     @Path("/handlerC/{id}")
-    @Consumes({MediaType.APPLICATION_XML})
+    @Consumes({ MediaType.APPLICATION_XML })
     public void handlerJSR311d() {
 
     }
 
     @Path("/handlerE/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
     public void handlerJSR311e() {
 
     }
 
     @Path("/handlerE/{id}")
-    @Produces({MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_XML })
     public void handlerJSR311f() {
 
     }
 
     @POST
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public void handlerJSR311g() {
 
     }

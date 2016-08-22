@@ -42,6 +42,8 @@ public class DefaultView implements View {
 
     protected String filename = null;
 
+    protected Object result = null;
+
     protected String characterEncoding = null;
 
     protected long lastModified;
@@ -217,6 +219,14 @@ public class DefaultView implements View {
     }
 
     @Override
+    public View stream(String contentType, Object result) {
+        this.contentType = contentType;
+        this.result = result;
+
+        return this;
+    }
+
+    @Override
     public String contentType() {
         return contentType;
     }
@@ -245,6 +255,16 @@ public class DefaultView implements View {
     @Override
     public String filename() {
         return filename;
+    }
+
+    @Override
+    public Object result() {
+        return result;
+    }
+
+    @Override
+    public void result(Object result) {
+        this.result = result;
     }
 
     @Override

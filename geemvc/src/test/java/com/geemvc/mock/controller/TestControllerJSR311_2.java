@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.mock.controller;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.ws.rs.Path;
 
-public class DefaultInjectorProvider implements InjectorProvider {
+@Path("/jsr311-test-2")
+public class TestControllerJSR311_2 {
+    @Path("/test")
+    public void handlerJSR311a() {
 
-    protected final Injector injector;
-
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
-    @Override
-    public Injector provide() {
-        return injector;
     }
 }

@@ -42,4 +42,8 @@ public class Views {
     public static View stream(String contentType, String output) {
         return Injectors.provide().getInstance(View.class).stream(contentType, output);
     }
+
+    public static View stream(String contentType, Object result) {
+        return Injectors.provide().getInstance(View.class).stream(contentType, result);
+    }
 }

@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.rest.jaxrs.context;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
-public class DefaultInjectorProvider implements InjectorProvider {
+public abstract class GeeMvcResponse extends Response {
+    public abstract Response build(int status);
 
-    protected final Injector injector;
+    public abstract Response build(int status, Object entity);
 
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
-    @Override
-    public Injector provide() {
-        return injector;
-    }
+    public abstract Response build(int status, Object entity, MultivaluedMap metaData);
 }

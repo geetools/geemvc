@@ -16,6 +16,18 @@
 
 package com.geemvc;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.ext.RuntimeDelegate;
+
 import com.geemvc.annotation.Request;
 import com.geemvc.bind.MethodParam;
 import com.geemvc.bind.MethodParams;
@@ -28,7 +40,12 @@ import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.intercept.Interceptors;
 import com.geemvc.intercept.LifecycleContext;
-import com.geemvc.intercept.annotation.*;
+import com.geemvc.intercept.annotation.PostBinding;
+import com.geemvc.intercept.annotation.PostHandle;
+import com.geemvc.intercept.annotation.PostValidation;
+import com.geemvc.intercept.annotation.PreBinding;
+import com.geemvc.intercept.annotation.PreHandle;
+import com.geemvc.intercept.annotation.PreValidation;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.annotation.Logger;
 import com.geemvc.matcher.PathMatcher;
@@ -42,16 +59,6 @@ import com.geemvc.view.ViewHandler;
 import com.geemvc.view.bean.View;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class DefaultRequestRunner implements RequestRunner {
     protected final Configuration configuration;
@@ -71,7 +78,7 @@ public class DefaultRequestRunner implements RequestRunner {
 
     @Inject
     public DefaultRequestRunner(Configuration configuration, CompositeControllerResolver controllerResolver, CompositeHandlerResolver handlerResolver, LocaleResolver localeResolver, Interceptors interceptors,
-                                MethodParams methodParams, Validator Validator, ViewHandler viewHandler) {
+            MethodParams methodParams, Validator Validator, ViewHandler viewHandler) {
 
         this.configuration = configuration;
         this.controllerResolver = controllerResolver;
@@ -85,6 +92,9 @@ public class DefaultRequestRunner implements RequestRunner {
 
     @Override
     public void process(RequestContext requestCtx) throws Exception {
+        // JAX-RS runtime delegate. TODO: Configure somewhere else.
+        RuntimeDelegate.setInstance(injector.getInstance(RuntimeDelegate.class));
+
         // Create a new Error instance for collecting errors.
         Errors errors = injector.getInstance(Errors.class);
         // Create a new Notices instance for collecting notice information.
@@ -329,9 +339,9 @@ public class DefaultRequestRunner implements RequestRunner {
                 // Content-type is set automatically later.
                 return Views.stream(null, result);
             }
+        } else {
+            return Views.stream(null, handlerResult);
         }
-
-        return null;
     }
 
     protected void processLocale(RequestContext requestCtx) {

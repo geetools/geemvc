@@ -17,16 +17,34 @@
 package com.geemvc.view;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Providers;
 
-import com.geemvc.view.bean.View;
 import org.apache.commons.io.IOUtils;
 
 import com.geemvc.RequestContext;
+import com.geemvc.handler.RequestHandler;
+import com.geemvc.view.bean.View;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class DefaultStreamViewHandler implements StreamViewHandler {
+    // Use JAX-RS functionality for converting and streaming data in other formats, such as JSON or XML.
+    protected final Providers providers;
+
+    @Inject
+    protected Injector injector;
+
+    @Inject
+    public DefaultStreamViewHandler(Providers providers) {
+        this.providers = providers;
+    }
 
     @Override
     public void handle(View view, RequestContext requestCtx) throws ServletException, IOException {
@@ -50,6 +68,24 @@ public class DefaultStreamViewHandler implements StreamViewHandler {
 
         if (view.rangeSupport()) {
             // TODO: range-support
+        }
+
+        if (view.result() != null) {
+            RequestHandler requestHandler = requestCtx.requestHandler();
+            Method handlerMethod = requestHandler.handlerMethod();
+
+            MessageBodyWriter mbw = providers.getMessageBodyWriter(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()));
+
+            if (mbw != null && mbw.isWriteable(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()))) {
+                MultivaluedMap<String, Object> httpResponseHeaders = injector.getInstance(MultivaluedMap.class);
+
+                mbw.writeTo(view.result(), handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(),
+                        MediaType.valueOf(response.getContentType()), httpResponseHeaders, response.getOutputStream());
+            } else {
+                response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+            }
+
+            return;
         }
 
         if (view.stream() != null) {

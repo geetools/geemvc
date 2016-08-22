@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package com.geemvc.inject;
+package com.geemvc.mock.bean;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+public abstract class AbstractModel {
 
-public class DefaultInjectorProvider implements InjectorProvider {
-
-    protected final Injector injector;
-
-    public DefaultInjectorProvider() {
-        injector = Guice.createInjector(new GeeMvcModule());
-    }
-
-    @Override
-    public Injector provide() {
-        return injector;
-    }
 }

@@ -16,23 +16,18 @@
 
 package com.geemvc.reflect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.geemvc.TestEnum;
+import com.geemvc.mock.bean.Person;
+import com.geemvc.test.BaseTest;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import com.geemvc.TestEnum;
-import com.geemvc.mock.bean.Person;
-import org.junit.Test;
-
-import com.geemvc.test.BaseTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReflectionProviderTest extends BaseTest {
     private String field1 = null;

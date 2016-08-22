@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "person")
-public class Person implements Serializable {
+public class Person extends AbstractModel implements Model, Serializable {
     private static final long serialVersionUID = 1770546091807001672L;
 
     @NotNull
