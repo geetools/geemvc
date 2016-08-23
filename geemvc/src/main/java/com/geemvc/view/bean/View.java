@@ -82,4 +82,12 @@ public interface View extends Map<String, Object> {
     View rangeSupport(boolean rangeSupport);
 
     boolean rangeSupport();
+
+    Integer status();
+
+    String message();
+
+    View status(Integer status);
+
+    View status(Integer status, String message);
 }

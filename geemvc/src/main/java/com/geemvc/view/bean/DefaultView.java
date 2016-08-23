@@ -54,6 +54,10 @@ public class DefaultView implements View {
 
     protected boolean rangeSupport;
 
+    protected Integer status = null;
+
+    protected String message = null;
+
     @Override
     public View forward(String to) {
         this.forward = to;
@@ -321,4 +325,28 @@ public class DefaultView implements View {
     public boolean rangeSupport() {
         return rangeSupport;
     }
+
+    @Override
+    public Integer status() {
+        return status;
+    }
+
+    @Override
+    public String message() {
+        return message;
+    }
+
+    @Override
+    public View status(Integer status) {
+        this.status = status;
+        return this;
+    }
+
+    @Override
+    public View status(Integer status, String message) {
+        this.status = status;
+        this.message = message;
+        return this;
+    }
+
 }

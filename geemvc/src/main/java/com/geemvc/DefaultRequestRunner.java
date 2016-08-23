@@ -329,15 +329,24 @@ public class DefaultRequestRunner implements RequestRunner {
             return (View) handlerResult;
 
         if (handlerResult instanceof String) {
-            String result = (String) handlerResult;
+            String result = ((String) handlerResult).trim();
 
-            if (result.trim().startsWith("forward:")) {
+            if (result.startsWith("forward:")) {
                 return Views.forward(result.substring(8).trim());
-            } else if (result.trim().startsWith("redirect:")) {
+            } else if (result.startsWith("redirect:")) {
                 return Views.redirect(result.substring(9).trim());
+            } else if (result.startsWith("status:")) {
+                String statusAndMessage = result.substring(7).trim();
+                int pos = statusAndMessage.indexOf(Char.SPACE);
+                if (pos != -1) {
+                    return Views.status(Integer.valueOf(statusAndMessage.substring(0, pos)), statusAndMessage.substring(pos + 1).trim());
+
+                } else {
+                    return Views.status(Integer.valueOf(statusAndMessage));
+                }
             } else {
                 // Content-type is set automatically later.
-                return Views.stream(null, result);
+                return Views.stream((String) null, result);
             }
         } else {
             return Views.stream(null, handlerResult);
@@ -352,7 +361,7 @@ public class DefaultRequestRunner implements RequestRunner {
 
         String characterEncoding = configuration.characterEncodingFor(locale);
 
-        log.debug("Using locale '{}' and character encofing '{}'.", () -> locale, () -> characterEncoding);
+        log.debug("Using locale '{}' and character encoding '{}'.", () -> locale, () -> characterEncoding);
 
         try {
             request.setCharacterEncoding(characterEncoding);

@@ -94,6 +94,11 @@ public class DefaultViewHandler implements ViewHandler {
 
             log.debug("Sending user to redirect path '{}'.", () -> redirectPath);
             ((HttpServletResponse) requestCtx.getResponse()).sendRedirect(requests.toRequestURL(view.redirect(), request.isSecure(), request));
+        } else if (view.status() != null) {
+            if (view.message() != null)
+                ((HttpServletResponse) requestCtx.getResponse()).sendError(view.status());
+            else
+                ((HttpServletResponse) requestCtx.getResponse()).sendError(view.status(), view.message());
         }
         // Assuming stream.
         else {
