@@ -92,6 +92,8 @@ public class DefaultRequestRunner implements RequestRunner {
 
     @Override
     public void process(RequestContext requestCtx) throws Exception {
+        ThreadStash.put(RequestContext.class, requestCtx);
+
         initJaxRsRuntime();
 
         // Create a new Error instance for collecting errors.

@@ -96,7 +96,9 @@ import com.geemvc.i18n.locale.DefaultLocaleResolver;
 import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.message.CompositeMessageResolver;
 import com.geemvc.i18n.message.DefaultCompositeMessageResolver;
+import com.geemvc.i18n.message.DefaultMessages;
 import com.geemvc.i18n.message.DefaultSimpleMessageResolver;
+import com.geemvc.i18n.message.Messages;
 import com.geemvc.i18n.message.SimpleMessageResolver;
 import com.geemvc.i18n.notice.DefaultNotice;
 import com.geemvc.i18n.notice.DefaultNotices;
@@ -250,6 +252,7 @@ public class GeeMvcModule extends AbstractModule {
         configureNotices();
         configureError();
         configureErrors();
+        configureMessages();
         configureValidator();
         configureValidation();
         configureValidations();
@@ -389,6 +392,10 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureNotice() {
         bind(Notice.class).to(DefaultNotice.class);
+    }
+
+    protected void configureMessages() {
+        bind(Messages.class).to(DefaultMessages.class);
     }
 
     protected void configureStreamViewHandler() {

@@ -16,6 +16,16 @@
 
 package com.geemvc.i18n.message;
 
-public interface Messages {
+import java.util.Locale;
 
+public interface Messages {
+    String getString(String messageKey);
+
+    String getString(String messageKey, Object... args);
+
+    String getString(String messageKey, Locale locale);
+
+    String getString(String messageKey, Locale locale, Object... args);
+
+    String getString(String messageKey, Locale locale, boolean failQuietly, Object... args);
 }

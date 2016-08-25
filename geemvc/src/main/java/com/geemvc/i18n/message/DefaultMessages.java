@@ -16,6 +16,11 @@
 
 package com.geemvc.i18n.message;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
+import com.geemvc.RequestContext;
+import com.geemvc.ThreadStash;
 import com.google.inject.Inject;
 
 public class DefaultMessages implements Messages {
@@ -25,6 +30,40 @@ public class DefaultMessages implements Messages {
     public DefaultMessages(CompositeMessageResolver compositeMessageResolver) {
         this.compositeMessageResolver = compositeMessageResolver;
     }
-    
-    
+
+    @Override
+    public String getString(String messageKey) {
+        return getString(messageKey, null, false, (Object[]) null);
+    }
+
+    @Override
+    public String getString(String messageKey, Object... args) {
+        return getString(messageKey, null, true, args);
+
+    }
+
+    @Override
+    public String getString(String messageKey, Locale locale) {
+        return getString(messageKey, locale, true, (Object[]) null);
+    }
+
+    @Override
+    public String getString(String messageKey, Locale locale, Object... args) {
+        return getString(messageKey, locale, true, args);
+    }
+
+    @Override
+    public String getString(String messageKey, Locale locale, boolean failQuietly, Object... args) {
+        String message = compositeMessageResolver.resolve(messageKey, locale, requestContext(), failQuietly);
+
+        if (args != null && args.length > 0 && args[0] != null) {
+            message = MessageFormat.format(message, args);
+        }
+
+        return message;
+    }
+
+    protected RequestContext requestContext() {
+        return (RequestContext) ThreadStash.get(RequestContext.class);
+    }
 }
