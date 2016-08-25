@@ -19,7 +19,9 @@ package com.geemvc.test;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -46,6 +49,8 @@ import org.junit.BeforeClass;
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
 import com.geemvc.annotation.Request;
+import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.helper.Annotations;
 import com.geemvc.helper.TestHelper;
 import com.geemvc.inject.InjectorProvider;
@@ -334,7 +339,7 @@ public class BaseTest {
 
     @Before
     public void setUp() throws Exception {
-        ThreadStash.prepare(newRequestContext("/webapp", "/servlet", "/webapp/servlet/test"));
+        ThreadStash.prepare((HttpServletRequest) newRequestContext("/webapp", "/servlet", "/webapp/servlet/test").getRequest());
     }
 
     @After
@@ -344,6 +349,74 @@ public class BaseTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        Configurations.set(new Configuration() {
+
+            @Override
+            public String viewSuffix() {
+                return ".jsp";
+            }
+
+            @Override
+            public String viewPrefix() {
+                return "/jsp/pages";
+            }
+
+            @Override
+            public List<String> supportedUriSuffixes() {
+                return Arrays.asList(".html");
+            }
+
+            @Override
+            public Set<Locale> supportedLocales() {
+                return new HashSet<>(Arrays.asList(Locale.ENGLISH, Locale.GERMAN));
+            }
+
+            @Override
+            public List<String> reflectionsLibIncludes() {
+                return null;
+            }
+
+            @Override
+            public List<String> reflectionsLibExcludes() {
+                return null;
+            }
+
+            @Override
+            public boolean isJaxRsEnabled() {
+                return true;
+            }
+
+            @Override
+            public InjectorProvider injectorProvider() {
+                return null;
+            }
+
+            @Override
+            public Set<String> excludePathMappinig() {
+                return null;
+            }
+
+            @Override
+            public String defaultContentType() {
+                return "text/html";
+            }
+
+            @Override
+            public String defaultCharacterEncoding() {
+                return "UTF-8";
+            }
+
+            @Override
+            public String characterEncodingFor(Locale locale) {
+                return "UTF-8";
+            }
+
+            @Override
+            public Configuration build(Map<String, String> configurationMap) {
+                return null;
+            }
+        });
+
         setupInitialContext();
         initializeInjector();
         initializeReflections();

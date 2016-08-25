@@ -16,28 +16,23 @@
 
 package com.geemvc.i18n.locale;
 
-import com.geemvc.RequestContext;
-import com.geemvc.config.Configuration;
-import com.geemvc.logging.Log;
-import com.geemvc.logging.annotation.Logger;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Set;
 
+import com.geemvc.RequestContext;
+import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
+import com.google.inject.Singleton;
+
 @Singleton
 public class DefaultLocaleResolver implements LocaleResolver {
-    protected Configuration configuration;
+    protected Configuration configuration = Configurations.get();
 
     @Logger
     protected Log log;
-
-    @Inject
-    public DefaultLocaleResolver(Configuration configuration) {
-        this.configuration = configuration;
-    }
 
     public Locale resolve(RequestContext requestCtx) {
         Enumeration<Locale> requestLocales = requestCtx.getLocales();
@@ -50,7 +45,7 @@ public class DefaultLocaleResolver implements LocaleResolver {
             throw new IllegalStateException("You must provide at least 1 supported locale. Check your supported-locales configuration - an example of the correct syntax would be: 'en, de_DE, fr_FR, es_ES, ru_RU:UTF-8, ja_JP:Shift_JIS, zh:UTF-8'.");
 
         // If there is no request-locale, return the first supported one.
-        if(requestLocales == null) {
+        if (requestLocales == null) {
             return supportedLocales.iterator().next();
         }
 

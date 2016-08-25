@@ -28,27 +28,29 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.handler.CompositeControllerResolver;
-import com.geemvc.handler.CompositeHandlerResolver;
-import com.geemvc.handler.RequestHandler;
-import com.geemvc.matcher.PathMatcherKey;
-import com.geemvc.mock.bean.Address;
-import com.geemvc.mock.bean.AddressType;
-import com.geemvc.mock.bean.Person;
-import com.geemvc.mock.controller.TestController18;
-import com.geemvc.mock.converter.IdConverter;
-import com.geemvc.validation.Errors;
-import com.geemvc.validation.Validator;
-import jodd.typeconverter.TypeConverterManager;
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
+import com.geemvc.handler.CompositeControllerResolver;
+import com.geemvc.handler.CompositeHandlerResolver;
+import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.mock.Id;
+import com.geemvc.mock.bean.Address;
+import com.geemvc.mock.bean.AddressType;
+import com.geemvc.mock.bean.Person;
+import com.geemvc.mock.controller.TestController18;
+import com.geemvc.mock.converter.IdConverter;
 import com.geemvc.test.BaseTest;
+import com.geemvc.validation.Errors;
 import com.geemvc.validation.ValidationContext;
+import com.geemvc.validation.Validator;
+
+import jodd.typeconverter.TypeConverterManager;
 
 public class ModelParamBindingTest extends BaseTest {
     @Test
@@ -57,13 +59,13 @@ public class ModelParamBindingTest extends BaseTest {
         Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.forename", new String[]{"Michael"});
-        requestParams.put("person.surname", new String[]{"Delamere"});
-        requestParams.put("person.age", new String[]{"10"});
+        requestParams.put("person.forename", new String[] { "Michael" });
+        requestParams.put("person.surname", new String[] { "Delamere" });
+        requestParams.put("person.age", new String[] { "10" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", "POST", requestParams);
 
-        ThreadStash.prepare(reqCtx);
+        ThreadStash.prepare((HttpServletRequest) reqCtx.getRequest());
         ThreadStash.put(Errors.class, e);
         ThreadStash.put(Notices.class, n);
 
@@ -106,27 +108,27 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.id", new String[]{"1234567890"});
-        requestParams.put("person.forename", new String[]{"Michael"});
-        requestParams.put("person.surname", new String[]{"Delamere"});
-        requestParams.put("person.age", new String[]{"10"});
-        requestParams.put("person.locale", new String[]{"en_US"});
-        requestParams.put("person.addresses[0].id", new String[]{"234567890"});
-        requestParams.put("person.addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("person.addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("person.addresses[0].zip", new String[]{"12345"});
-        requestParams.put("person.addresses[0].city", new String[]{"Washington"});
-        requestParams.put("person.addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("person.id", new String[] { "1234567890" });
+        requestParams.put("person.forename", new String[] { "Michael" });
+        requestParams.put("person.surname", new String[] { "Delamere" });
+        requestParams.put("person.age", new String[] { "10" });
+        requestParams.put("person.locale", new String[] { "en_US" });
+        requestParams.put("person.addresses[0].id", new String[] { "234567890" });
+        requestParams.put("person.addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("person.addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("person.addresses[0].zip", new String[] { "12345" });
+        requestParams.put("person.addresses[0].city", new String[] { "Washington" });
+        requestParams.put("person.addresses[0].countryCode", new String[] { "us" });
 
-        requestParams.put("person.addresses[1].id", new String[]{"34567890"});
-        requestParams.put("person.addresses[1].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("person.addresses[1].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("person.addresses[1].zip", new String[]{"67890"});
-        requestParams.put("person.addresses[1].city", new String[]{"New York"});
-        requestParams.put("person.addresses[1].countryCode", new String[]{"us"});
+        requestParams.put("person.addresses[1].id", new String[] { "34567890" });
+        requestParams.put("person.addresses[1].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("person.addresses[1].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("person.addresses[1].zip", new String[] { "67890" });
+        requestParams.put("person.addresses[1].city", new String[] { "New York" });
+        requestParams.put("person.addresses[1].countryCode", new String[] { "us" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", requestParams);
-        ThreadStash.prepare(reqCtx);
+        ThreadStash.prepare((HttpServletRequest) reqCtx.getRequest());
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
@@ -190,27 +192,27 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[0].forename", new String[]{"Michael"});
-        requestParams.put("persons[0].surname", new String[]{"Delamere"});
-        requestParams.put("persons[0].age", new String[]{"10"});
-        requestParams.put("persons[0].locale", new String[]{"en_US"});
-        requestParams.put("persons[0].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[0].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[0].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[0].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[0].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[0].forename", new String[] { "Michael" });
+        requestParams.put("persons[0].surname", new String[] { "Delamere" });
+        requestParams.put("persons[0].age", new String[] { "10" });
+        requestParams.put("persons[0].locale", new String[] { "en_US" });
+        requestParams.put("persons[0].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[0].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[0].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[0].addresses[0].countryCode", new String[] { "us" });
 
-        requestParams.put("persons[1].forename", new String[]{"Tom"});
-        requestParams.put("persons[1].surname", new String[]{"Checker"});
-        requestParams.put("persons[1].age", new String[]{"1"});
-        requestParams.put("persons[1].locale", new String[]{"de_DE"});
-        requestParams.put("persons[1].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[1].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[1].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[1].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[1].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[1].forename", new String[] { "Tom" });
+        requestParams.put("persons[1].surname", new String[] { "Checker" });
+        requestParams.put("persons[1].age", new String[] { "1" });
+        requestParams.put("persons[1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[1].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[1].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[1].addresses[0].countryCode", new String[] { "us" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPersons", requestParams);
 
@@ -282,27 +284,27 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[customerA].forename", new String[]{"Michael"});
-        requestParams.put("persons[customerA].surname", new String[]{"Delamere"});
-        requestParams.put("persons[customerA].age", new String[]{"10"});
-        requestParams.put("persons[customerA].locale", new String[]{"en_US"});
-        requestParams.put("persons[customerA].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[customerA].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[customerA].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[customerA].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[customerA].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[customerA].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[customerA].forename", new String[] { "Michael" });
+        requestParams.put("persons[customerA].surname", new String[] { "Delamere" });
+        requestParams.put("persons[customerA].age", new String[] { "10" });
+        requestParams.put("persons[customerA].locale", new String[] { "en_US" });
+        requestParams.put("persons[customerA].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[customerA].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[customerA].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[customerA].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[customerA].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[customerA].addresses[0].countryCode", new String[] { "us" });
 
-        requestParams.put("persons[customerB].forename", new String[]{"Tom"});
-        requestParams.put("persons[customerB].surname", new String[]{"Checker"});
-        requestParams.put("persons[customerB].age", new String[]{"1"});
-        requestParams.put("persons[customerB].locale", new String[]{"de_DE"});
-        requestParams.put("persons[customerB].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[customerB].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[customerB].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[customerB].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[customerB].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[customerB].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[customerB].forename", new String[] { "Tom" });
+        requestParams.put("persons[customerB].surname", new String[] { "Checker" });
+        requestParams.put("persons[customerB].age", new String[] { "1" });
+        requestParams.put("persons[customerB].locale", new String[] { "de_DE" });
+        requestParams.put("persons[customerB].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[customerB].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[customerB].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[customerB].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[customerB].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[customerB].addresses[0].countryCode", new String[] { "us" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons", requestParams);
 
@@ -374,27 +376,27 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[1234567890].forename", new String[]{"Michael"});
-        requestParams.put("persons[1234567890].surname", new String[]{"Delamere"});
-        requestParams.put("persons[1234567890].age", new String[]{"10"});
-        requestParams.put("persons[1234567890].locale", new String[]{"en_US"});
-        requestParams.put("persons[1234567890].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[1234567890].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[1234567890].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[1234567890].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[1234567890].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[1234567890].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[1234567890].forename", new String[] { "Michael" });
+        requestParams.put("persons[1234567890].surname", new String[] { "Delamere" });
+        requestParams.put("persons[1234567890].age", new String[] { "10" });
+        requestParams.put("persons[1234567890].locale", new String[] { "en_US" });
+        requestParams.put("persons[1234567890].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[1234567890].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[1234567890].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[1234567890].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[1234567890].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[1234567890].addresses[0].countryCode", new String[] { "us" });
 
-        requestParams.put("persons[987654321].forename", new String[]{"Tom"});
-        requestParams.put("persons[987654321].surname", new String[]{"Checker"});
-        requestParams.put("persons[987654321].age", new String[]{"1"});
-        requestParams.put("persons[987654321].locale", new String[]{"de_DE"});
-        requestParams.put("persons[987654321].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[987654321].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[987654321].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[987654321].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[987654321].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[987654321].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[987654321].forename", new String[] { "Tom" });
+        requestParams.put("persons[987654321].surname", new String[] { "Checker" });
+        requestParams.put("persons[987654321].age", new String[] { "1" });
+        requestParams.put("persons[987654321].locale", new String[] { "de_DE" });
+        requestParams.put("persons[987654321].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[987654321].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[987654321].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[987654321].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[987654321].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[987654321].addresses[0].countryCode", new String[] { "us" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons2", requestParams);
 
@@ -466,49 +468,49 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[groupA][0].forename", new String[]{"Michael"});
-        requestParams.put("persons[groupA][0].surname", new String[]{"Delamere"});
-        requestParams.put("persons[groupA][0].age", new String[]{"10"});
-        requestParams.put("persons[groupA][0].locale", new String[]{"en_US"});
-        requestParams.put("persons[groupA][0].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[groupA][0].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[groupA][0].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[groupA][0].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
+        requestParams.put("persons[groupA][0].surname", new String[] { "Delamere" });
+        requestParams.put("persons[groupA][0].age", new String[] { "10" });
+        requestParams.put("persons[groupA][0].locale", new String[] { "en_US" });
+        requestParams.put("persons[groupA][0].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[groupA][0].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[groupA][0].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[groupA][0].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[groupA][1].forename", new String[]{"Tom"});
-        requestParams.put("persons[groupA][1].surname", new String[]{"Checker"});
-        requestParams.put("persons[groupA][1].age", new String[]{"1"});
-        requestParams.put("persons[groupA][1].locale", new String[]{"de_DE"});
-        requestParams.put("persons[groupA][1].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[groupA][1].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[groupA][1].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[groupA][1].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[groupA][1].forename", new String[] { "Tom" });
+        requestParams.put("persons[groupA][1].surname", new String[] { "Checker" });
+        requestParams.put("persons[groupA][1].age", new String[] { "1" });
+        requestParams.put("persons[groupA][1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupA][1].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[groupA][1].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[groupA][1].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[groupA][1].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[groupB][0].forename", new String[]{"Lea"});
-        requestParams.put("persons[groupB][0].surname", new String[]{"Cool"});
-        requestParams.put("persons[groupB][0].age", new String[]{"8"});
-        requestParams.put("persons[groupB][0].locale", new String[]{"de_DE"});
-        requestParams.put("persons[groupB][0].addresses[0].id", new String[]{"88888888"});
-        requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[]{"Test Straße 8", "c/o Marc Dude"});
-        requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[groupB][0].addresses[0].zip", new String[]{"88888"});
-        requestParams.put("persons[groupB][0].addresses[0].city", new String[]{"Berlin"});
-        requestParams.put("persons[groupB][0].addresses[0].countryCode", new String[]{"DE"});
+        requestParams.put("persons[groupB][0].forename", new String[] { "Lea" });
+        requestParams.put("persons[groupB][0].surname", new String[] { "Cool" });
+        requestParams.put("persons[groupB][0].age", new String[] { "8" });
+        requestParams.put("persons[groupB][0].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupB][0].addresses[0].id", new String[] { "88888888" });
+        requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
+        requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[groupB][0].addresses[0].zip", new String[] { "88888" });
+        requestParams.put("persons[groupB][0].addresses[0].city", new String[] { "Berlin" });
+        requestParams.put("persons[groupB][0].addresses[0].countryCode", new String[] { "DE" });
 
-        requestParams.put("persons[groupB][1].forename", new String[]{"Marc"});
-        requestParams.put("persons[groupB][1].surname", new String[]{"Dude"});
-        requestParams.put("persons[groupB][1].age", new String[]{"4"});
-        requestParams.put("persons[groupB][1].locale", new String[]{"en_GB"});
-        requestParams.put("persons[groupB][1].addresses[0].id", new String[]{"4444"});
-        requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[]{"Test Avenue 4", "c/o Lea Cool"});
-        requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[groupB][1].addresses[0].zip", new String[]{"KY11 9UH"});
-        requestParams.put("persons[groupB][1].addresses[0].city", new String[]{"Dalgety Bay"});
-        requestParams.put("persons[groupB][1].addresses[0].countryCode", new String[]{"GB"});
+        requestParams.put("persons[groupB][1].forename", new String[] { "Marc" });
+        requestParams.put("persons[groupB][1].surname", new String[] { "Dude" });
+        requestParams.put("persons[groupB][1].age", new String[] { "4" });
+        requestParams.put("persons[groupB][1].locale", new String[] { "en_GB" });
+        requestParams.put("persons[groupB][1].addresses[0].id", new String[] { "4444" });
+        requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
+        requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[groupB][1].addresses[0].zip", new String[] { "KY11 9UH" });
+        requestParams.put("persons[groupB][1].addresses[0].city", new String[] { "Dalgety Bay" });
+        requestParams.put("persons[groupB][1].addresses[0].countryCode", new String[] { "GB" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons3", requestParams);
 
@@ -617,49 +619,49 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[groupA][0].forename", new String[]{"Michael"});
-        requestParams.put("persons[groupA][0].surname", new String[]{"Delamere"});
-        requestParams.put("persons[groupA][0].age", new String[]{"10"});
-        requestParams.put("persons[groupA][0].locale", new String[]{"en_US"});
-        requestParams.put("persons[groupA][0].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[groupA][0].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[groupA][0].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[groupA][0].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
+        requestParams.put("persons[groupA][0].surname", new String[] { "Delamere" });
+        requestParams.put("persons[groupA][0].age", new String[] { "10" });
+        requestParams.put("persons[groupA][0].locale", new String[] { "en_US" });
+        requestParams.put("persons[groupA][0].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[groupA][0].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[groupA][0].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[groupA][0].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[groupA][1].forename", new String[]{"Tom"});
-        requestParams.put("persons[groupA][1].surname", new String[]{"Checker"});
-        requestParams.put("persons[groupA][1].age", new String[]{"1"});
-        requestParams.put("persons[groupA][1].locale", new String[]{"de_DE"});
-        requestParams.put("persons[groupA][1].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[groupA][1].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[groupA][1].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[groupA][1].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[groupA][1].forename", new String[] { "Tom" });
+        requestParams.put("persons[groupA][1].surname", new String[] { "Checker" });
+        requestParams.put("persons[groupA][1].age", new String[] { "1" });
+        requestParams.put("persons[groupA][1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupA][1].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[groupA][1].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[groupA][1].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[groupA][1].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[groupB][0].forename", new String[]{"Lea"});
-        requestParams.put("persons[groupB][0].surname", new String[]{"Cool"});
-        requestParams.put("persons[groupB][0].age", new String[]{"8"});
-        requestParams.put("persons[groupB][0].locale", new String[]{"de_DE"});
-        requestParams.put("persons[groupB][0].addresses[0].id", new String[]{"88888888"});
-        requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[]{"Test Straße 8", "c/o Marc Dude"});
-        requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[groupB][0].addresses[0].zip", new String[]{"88888"});
-        requestParams.put("persons[groupB][0].addresses[0].city", new String[]{"Berlin"});
-        requestParams.put("persons[groupB][0].addresses[0].countryCode", new String[]{"DE"});
+        requestParams.put("persons[groupB][0].forename", new String[] { "Lea" });
+        requestParams.put("persons[groupB][0].surname", new String[] { "Cool" });
+        requestParams.put("persons[groupB][0].age", new String[] { "8" });
+        requestParams.put("persons[groupB][0].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupB][0].addresses[0].id", new String[] { "88888888" });
+        requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
+        requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[groupB][0].addresses[0].zip", new String[] { "88888" });
+        requestParams.put("persons[groupB][0].addresses[0].city", new String[] { "Berlin" });
+        requestParams.put("persons[groupB][0].addresses[0].countryCode", new String[] { "DE" });
 
-        requestParams.put("persons[groupB][1].forename", new String[]{"Marc"});
-        requestParams.put("persons[groupB][1].surname", new String[]{"Dude"});
-        requestParams.put("persons[groupB][1].age", new String[]{"4"});
-        requestParams.put("persons[groupB][1].locale", new String[]{"en_GB"});
-        requestParams.put("persons[groupB][1].addresses[0].id", new String[]{"4444"});
-        requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[]{"Test Avenue 4", "c/o Lea Cool"});
-        requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[groupB][1].addresses[0].zip", new String[]{"KY11 9UH"});
-        requestParams.put("persons[groupB][1].addresses[0].city", new String[]{"Dalgety Bay"});
-        requestParams.put("persons[groupB][1].addresses[0].countryCode", new String[]{"GB"});
+        requestParams.put("persons[groupB][1].forename", new String[] { "Marc" });
+        requestParams.put("persons[groupB][1].surname", new String[] { "Dude" });
+        requestParams.put("persons[groupB][1].age", new String[] { "4" });
+        requestParams.put("persons[groupB][1].locale", new String[] { "en_GB" });
+        requestParams.put("persons[groupB][1].addresses[0].id", new String[] { "4444" });
+        requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
+        requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[groupB][1].addresses[0].zip", new String[] { "KY11 9UH" });
+        requestParams.put("persons[groupB][1].addresses[0].city", new String[] { "Dalgety Bay" });
+        requestParams.put("persons[groupB][1].addresses[0].countryCode", new String[] { "GB" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons4", requestParams);
 
@@ -767,27 +769,27 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[0].forename", new String[]{"Michael"});
-        requestParams.put("persons[0].surname", new String[]{"Delamere"});
-        requestParams.put("persons[0].age", new String[]{"10"});
-        requestParams.put("persons[0].locale", new String[]{"en_US"});
-        requestParams.put("persons[0].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[0].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[0].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[0].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[0].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[0].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[0].forename", new String[] { "Michael" });
+        requestParams.put("persons[0].surname", new String[] { "Delamere" });
+        requestParams.put("persons[0].age", new String[] { "10" });
+        requestParams.put("persons[0].locale", new String[] { "en_US" });
+        requestParams.put("persons[0].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[0].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[0].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[0].addresses[0].countryCode", new String[] { "us" });
 
-        requestParams.put("persons[1].forename", new String[]{"Tom"});
-        requestParams.put("persons[1].surname", new String[]{"Checker"});
-        requestParams.put("persons[1].age", new String[]{"1"});
-        requestParams.put("persons[1].locale", new String[]{"de_DE"});
-        requestParams.put("persons[1].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[1].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[1].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[1].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[1].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[1].addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("persons[1].forename", new String[] { "Tom" });
+        requestParams.put("persons[1].surname", new String[] { "Checker" });
+        requestParams.put("persons[1].age", new String[] { "1" });
+        requestParams.put("persons[1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[1].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[1].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[1].addresses[0].countryCode", new String[] { "us" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons5", requestParams);
 
@@ -860,49 +862,49 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("persons[0][groupA].forename", new String[]{"Michael"});
-        requestParams.put("persons[0][groupA].surname", new String[]{"Delamere"});
-        requestParams.put("persons[0][groupA].age", new String[]{"10"});
-        requestParams.put("persons[0][groupA].locale", new String[]{"en_US"});
-        requestParams.put("persons[0][groupA].addresses[0].id", new String[]{"234567890"});
-        requestParams.put("persons[0][groupA].addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("persons[0][groupA].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[0][groupA].addresses[0].zip", new String[]{"12345"});
-        requestParams.put("persons[0][groupA].addresses[0].city", new String[]{"Washington"});
-        requestParams.put("persons[0][groupA].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[0][groupA].forename", new String[] { "Michael" });
+        requestParams.put("persons[0][groupA].surname", new String[] { "Delamere" });
+        requestParams.put("persons[0][groupA].age", new String[] { "10" });
+        requestParams.put("persons[0][groupA].locale", new String[] { "en_US" });
+        requestParams.put("persons[0][groupA].addresses[0].id", new String[] { "234567890" });
+        requestParams.put("persons[0][groupA].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("persons[0][groupA].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[0][groupA].addresses[0].zip", new String[] { "12345" });
+        requestParams.put("persons[0][groupA].addresses[0].city", new String[] { "Washington" });
+        requestParams.put("persons[0][groupA].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[1][groupA].forename", new String[]{"Tom"});
-        requestParams.put("persons[1][groupA].surname", new String[]{"Checker"});
-        requestParams.put("persons[1][groupA].age", new String[]{"1"});
-        requestParams.put("persons[1][groupA].locale", new String[]{"de_DE"});
-        requestParams.put("persons[1][groupA].addresses[0].id", new String[]{"34567890"});
-        requestParams.put("persons[1][groupA].addresses[0].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("persons[1][groupA].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[1][groupA].addresses[0].zip", new String[]{"67890"});
-        requestParams.put("persons[1][groupA].addresses[0].city", new String[]{"New York"});
-        requestParams.put("persons[1][groupA].addresses[0].countryCode", new String[]{"US"});
+        requestParams.put("persons[1][groupA].forename", new String[] { "Tom" });
+        requestParams.put("persons[1][groupA].surname", new String[] { "Checker" });
+        requestParams.put("persons[1][groupA].age", new String[] { "1" });
+        requestParams.put("persons[1][groupA].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1][groupA].addresses[0].id", new String[] { "34567890" });
+        requestParams.put("persons[1][groupA].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("persons[1][groupA].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[1][groupA].addresses[0].zip", new String[] { "67890" });
+        requestParams.put("persons[1][groupA].addresses[0].city", new String[] { "New York" });
+        requestParams.put("persons[1][groupA].addresses[0].countryCode", new String[] { "US" });
 
-        requestParams.put("persons[0][groupB].forename", new String[]{"Lea"});
-        requestParams.put("persons[0][groupB].surname", new String[]{"Cool"});
-        requestParams.put("persons[0][groupB].age", new String[]{"8"});
-        requestParams.put("persons[0][groupB].locale", new String[]{"de_DE"});
-        requestParams.put("persons[0][groupB].addresses[0].id", new String[]{"88888888"});
-        requestParams.put("persons[0][groupB].addresses[0].streetLines[]", new String[]{"Test Straße 8", "c/o Marc Dude"});
-        requestParams.put("persons[0][groupB].addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("persons[0][groupB].addresses[0].zip", new String[]{"88888"});
-        requestParams.put("persons[0][groupB].addresses[0].city", new String[]{"Berlin"});
-        requestParams.put("persons[0][groupB].addresses[0].countryCode", new String[]{"DE"});
+        requestParams.put("persons[0][groupB].forename", new String[] { "Lea" });
+        requestParams.put("persons[0][groupB].surname", new String[] { "Cool" });
+        requestParams.put("persons[0][groupB].age", new String[] { "8" });
+        requestParams.put("persons[0][groupB].locale", new String[] { "de_DE" });
+        requestParams.put("persons[0][groupB].addresses[0].id", new String[] { "88888888" });
+        requestParams.put("persons[0][groupB].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
+        requestParams.put("persons[0][groupB].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("persons[0][groupB].addresses[0].zip", new String[] { "88888" });
+        requestParams.put("persons[0][groupB].addresses[0].city", new String[] { "Berlin" });
+        requestParams.put("persons[0][groupB].addresses[0].countryCode", new String[] { "DE" });
 
-        requestParams.put("persons[1][groupB].forename", new String[]{"Marc"});
-        requestParams.put("persons[1][groupB].surname", new String[]{"Dude"});
-        requestParams.put("persons[1][groupB].age", new String[]{"4"});
-        requestParams.put("persons[1][groupB].locale", new String[]{"en_GB"});
-        requestParams.put("persons[1][groupB].addresses[0].id", new String[]{"4444"});
-        requestParams.put("persons[1][groupB].addresses[0].streetLines[]", new String[]{"Test Avenue 4", "c/o Lea Cool"});
-        requestParams.put("persons[1][groupB].addresses[0].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("persons[1][groupB].addresses[0].zip", new String[]{"KY11 9UH"});
-        requestParams.put("persons[1][groupB].addresses[0].city", new String[]{"Dalgety Bay"});
-        requestParams.put("persons[1][groupB].addresses[0].countryCode", new String[]{"GB"});
+        requestParams.put("persons[1][groupB].forename", new String[] { "Marc" });
+        requestParams.put("persons[1][groupB].surname", new String[] { "Dude" });
+        requestParams.put("persons[1][groupB].age", new String[] { "4" });
+        requestParams.put("persons[1][groupB].locale", new String[] { "en_GB" });
+        requestParams.put("persons[1][groupB].addresses[0].id", new String[] { "4444" });
+        requestParams.put("persons[1][groupB].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
+        requestParams.put("persons[1][groupB].addresses[0].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("persons[1][groupB].addresses[0].zip", new String[] { "KY11 9UH" });
+        requestParams.put("persons[1][groupB].addresses[0].city", new String[] { "Dalgety Bay" });
+        requestParams.put("persons[1][groupB].addresses[0].countryCode", new String[] { "GB" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/updatePersons6", requestParams);
 
@@ -1010,9 +1012,9 @@ public class ModelParamBindingTest extends BaseTest {
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.forename", new String[]{"Michael"});
-        requestParams.put("person.surname", new String[]{"Delamere"});
-        requestParams.put("person.age", new String[]{"10"});
+        requestParams.put("person.forename", new String[] { "Michael" });
+        requestParams.put("person.surname", new String[] { "Delamere" });
+        requestParams.put("person.age", new String[] { "10" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/personInSession", requestParams);
 
@@ -1049,13 +1051,13 @@ public class ModelParamBindingTest extends BaseTest {
         // ----------------------------------------------------------------------------
 
         requestParams = new HashMap<>();
-        requestParams.put("person.locale", new String[]{"en_US"});
-        requestParams.put("person.addresses[0].id", new String[]{"234567890"});
-        requestParams.put("person.addresses[0].streetLines[]", new String[]{"Test Street 1", "c/o Tom Checker"});
-        requestParams.put("person.addresses[0].addressTypes[]", new String[]{"SHIPPING"});
-        requestParams.put("person.addresses[0].zip", new String[]{"12345"});
-        requestParams.put("person.addresses[0].city", new String[]{"Washington"});
-        requestParams.put("person.addresses[0].countryCode", new String[]{"us"});
+        requestParams.put("person.locale", new String[] { "en_US" });
+        requestParams.put("person.addresses[0].id", new String[] { "234567890" });
+        requestParams.put("person.addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
+        requestParams.put("person.addresses[0].addressTypes[]", new String[] { "SHIPPING" });
+        requestParams.put("person.addresses[0].zip", new String[] { "12345" });
+        requestParams.put("person.addresses[0].city", new String[] { "Washington" });
+        requestParams.put("person.addresses[0].countryCode", new String[] { "us" });
 
         reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/personInSession", requestParams);
 
@@ -1094,12 +1096,12 @@ public class ModelParamBindingTest extends BaseTest {
         // ----------------------------------------------------------------------------
 
         requestParams = new HashMap<>();
-        requestParams.put("person.addresses[1].id", new String[]{"34567890"});
-        requestParams.put("person.addresses[1].streetLines[]", new String[]{"Test Street 2", "c/o Marc Checker"});
-        requestParams.put("person.addresses[1].addressTypes[]", new String[]{"INVOICE"});
-        requestParams.put("person.addresses[1].zip", new String[]{"67890"});
-        requestParams.put("person.addresses[1].city", new String[]{"New York"});
-        requestParams.put("person.addresses[1].countryCode", new String[]{"us"});
+        requestParams.put("person.addresses[1].id", new String[] { "34567890" });
+        requestParams.put("person.addresses[1].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
+        requestParams.put("person.addresses[1].addressTypes[]", new String[] { "INVOICE" });
+        requestParams.put("person.addresses[1].zip", new String[] { "67890" });
+        requestParams.put("person.addresses[1].city", new String[] { "New York" });
+        requestParams.put("person.addresses[1].countryCode", new String[] { "us" });
 
         reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/personInSession", requestParams);
 

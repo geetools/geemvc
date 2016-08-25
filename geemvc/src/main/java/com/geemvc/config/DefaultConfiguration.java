@@ -16,18 +16,24 @@
 
 package com.geemvc.config;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.inject.DefaultInjectorProvider;
 import com.geemvc.inject.InjectorProvider;
 import com.google.inject.Singleton;
 
-import javax.servlet.ServletConfig;
-import java.util.*;
-
 @Singleton
 public class DefaultConfiguration implements Configuration {
-    protected ServletConfig servletConfig;
+    protected Map<String, String> configurationMap;
 
     protected String defaultCharacterEncoding = "UTF-8";
 
@@ -39,41 +45,44 @@ public class DefaultConfiguration implements Configuration {
 
     protected List<String> supportedUriSuffixesList = new ArrayList<>();
 
-    protected InjectorProvider ínjectorProvider = new DefaultInjectorProvider();
+    protected List<String> includeLibsInReflections = new ArrayList<>();
+
+    protected List<String> excludeLibsInReflections = new ArrayList<>();
+
+    protected InjectorProvider ínjectorProvider = null;
 
     @Override
-    public Configuration build(ServletConfig servletConfig) {
-        this.servletConfig = servletConfig;
-
+    public Configuration build(Map<String, String> configurationMap) {
+        this.configurationMap = configurationMap;
         return this;
     }
 
     @Override
     public String viewPrefix() {
-        return servletConfig.getInitParameter(VIEW_PREFIX_KEY);
+        return configurationMap.get(VIEW_PREFIX_KEY);
     }
 
     @Override
     public String viewSuffix() {
-        return servletConfig.getInitParameter(VIEW_SUFFIX_KEY);
+        return configurationMap.get(VIEW_SUFFIX_KEY);
     }
 
     @Override
     public String defaultCharacterEncoding() {
-        String configuredDefaultCharacterEncoding = servletConfig.getInitParameter(DEFAULT_CHARACTER_ENCODING_KEY);
+        String configuredDefaultCharacterEncoding = configurationMap.get(DEFAULT_CHARACTER_ENCODING_KEY);
         return Str.isEmpty(configuredDefaultCharacterEncoding) ? defaultCharacterEncoding : configuredDefaultCharacterEncoding.trim();
     }
 
     @Override
     public String defaultContentType() {
-        String configuredDefaultContentType = servletConfig.getInitParameter(DEFAULT_CONTENT_TYPE_KEY);
+        String configuredDefaultContentType = configurationMap.get(DEFAULT_CONTENT_TYPE_KEY);
         return Str.isEmpty(configuredDefaultContentType) ? defaultContentType : configuredDefaultContentType.trim();
     }
 
     @Override
     public Set<Locale> supportedLocales() {
         if (supportedLocaleEncodingMap.isEmpty()) {
-            String supportedLocales = servletConfig.getInitParameter(SUPPORTED_LOCALES_KEY);
+            String supportedLocales = configurationMap.get(SUPPORTED_LOCALES_KEY);
 
             StringTokenizer st = new StringTokenizer(supportedLocales, Str.COMMA);
 
@@ -130,9 +139,12 @@ public class DefaultConfiguration implements Configuration {
 
     @Override
     public InjectorProvider injectorProvider() {
-        String configuredInjectorProvider = servletConfig.getInitParameter(INJECTOR_PROVIDER_KEY);
+        if (ínjectorProvider != null)
+            return ínjectorProvider;
+
+        String configuredInjectorProvider = configurationMap.get(INJECTOR_PROVIDER_KEY);
         try {
-            return Str.isEmpty(configuredInjectorProvider) ? ínjectorProvider : (InjectorProvider) Class.forName(configuredInjectorProvider).newInstance();
+            return Str.isEmpty(configuredInjectorProvider) ? new DefaultInjectorProvider() : (InjectorProvider) Class.forName(configuredInjectorProvider).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -140,7 +152,7 @@ public class DefaultConfiguration implements Configuration {
 
     @Override
     public Set<String> excludePathMappinig() {
-        String configuredExcludeMappings = servletConfig.getInitParameter(EXCLUDE_PATH_MAPPING_KEY);
+        String configuredExcludeMappings = configurationMap.get(EXCLUDE_PATH_MAPPING_KEY);
 
         Set<String> excludeMappings = null;
 
@@ -163,8 +175,8 @@ public class DefaultConfiguration implements Configuration {
         if (supportedUriSuffixesList.isEmpty()) {
             String supportedUriSuffixes = null;
 
-            if (servletConfig != null)
-                supportedUriSuffixes = servletConfig.getInitParameter(SUPPORTED_URI_SUFFIXES_KEY);
+            if (configurationMap != null)
+                supportedUriSuffixes = configurationMap.get(SUPPORTED_URI_SUFFIXES_KEY);
 
             if (Str.isEmpty(supportedUriSuffixes)) {
                 supportedUriSuffixes = defaultSupportedUriSuffixes;
@@ -176,7 +188,7 @@ public class DefaultConfiguration implements Configuration {
                 String suffix = st.nextToken();
 
                 if (!Str.isEmpty(suffix)) {
-                    supportedUriSuffixesList.add(suffix);
+                    supportedUriSuffixesList.add(suffix.trim());
                 }
             }
         }
@@ -185,8 +197,63 @@ public class DefaultConfiguration implements Configuration {
     }
 
     @Override
+    public List<String> reflectionsLibIncludes() {
+        if (includeLibsInReflections.isEmpty()) {
+            String reflectionsLibIncludes = null;
+
+            if (configurationMap != null)
+                reflectionsLibIncludes = configurationMap.get(REFLECTIONS_INCLUDE_LIBS_KEY);
+
+            if (!Str.isEmpty(reflectionsLibIncludes)) {
+                StringTokenizer st = new StringTokenizer(reflectionsLibIncludes, Str.COMMA);
+
+                while (st.hasMoreTokens()) {
+                    String lib = st.nextToken();
+
+                    if (!Str.isEmpty(lib)) {
+                        includeLibsInReflections.add(lib.trim());
+                    }
+                }
+            }
+        }
+
+        return includeLibsInReflections;
+    }
+
+    @Override
+    public List<String> reflectionsLibExcludes() {
+        if (excludeLibsInReflections.isEmpty()) {
+            String reflectionsLibExcludes = null;
+
+            if (configurationMap != null)
+                reflectionsLibExcludes = configurationMap.get(REFLECTIONS_EXCLUDE_LIBS_KEY);
+
+            if (!Str.isEmpty(reflectionsLibExcludes)) {
+                StringTokenizer st = new StringTokenizer(reflectionsLibExcludes, Str.COMMA);
+
+                while (st.hasMoreTokens()) {
+                    String lib = st.nextToken();
+
+                    if (!Str.isEmpty(lib)) {
+                        excludeLibsInReflections.add(lib.trim());
+                    }
+                }
+            }
+        }
+
+        return excludeLibsInReflections;
+    }
+
+    @Override
+    public boolean isJaxRsEnabled() {
+        String configuredJaxRsEnabled = configurationMap.get(JAX_RS_ENABLED_KEY);
+        return Str.isEmpty(configuredJaxRsEnabled) ? true : Boolean.valueOf(configuredJaxRsEnabled);
+    }
+
+    @Override
     public String toString() {
         return "DefaultConfiguration [viewPrefix()=" + viewPrefix() + ", viewSuffix()=" + viewSuffix() + ", defaultCharacterEncoding()=" + defaultCharacterEncoding() + ", defaultContentType()=" + defaultContentType() + ", supportedLocales()="
-                + supportedLocales() + ", injectorProvider()=" + injectorProvider() + "]";
+                + supportedLocales() + ", injectorProvider()=" + injectorProvider() + ", excludePathMappinig()=" + excludePathMappinig() + ", supportedUriSuffixes()=" + supportedUriSuffixes() + ", reflectionsLibIncludes()=" + reflectionsLibIncludes()
+                + ", reflectionsLibExcludes()=" + reflectionsLibExcludes() + ", isJaxRsEnabled()=" + isJaxRsEnabled() + "]";
     }
 }

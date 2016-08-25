@@ -16,11 +16,12 @@
 
 package com.geemvc;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ThreadStash {
     protected static final String REQUEST_STACK_KEY = "REQUEST_STACK";
@@ -64,13 +65,12 @@ public class ThreadStash {
     }
 
     /**
-     * Adds a new element to the request stack. As more than 1 request can take place in a single Thread,
-     * we give each one its own thread local space.
+     * Adds a new element to the request stack. As more than 1 request can take place in a single Thread, we give each one its own thread local space.
      */
-    public static void prepare(RequestContext requestCtx) {
-        String requestURL = new StringBuilder(requestCtx.getMethod())
-                .append(Char.SPACE).append(requestCtx.getPath())
-                .append(Char.QUESTION_MARK).append(((HttpServletRequest) requestCtx.getRequest()).getQueryString()).toString();
+    public static void prepare(HttpServletRequest request) {
+        String requestURL = new StringBuilder(request.getMethod())
+                .append(Char.SPACE).append(request.getRequestURI())
+                .append(Char.QUESTION_MARK).append(request.getQueryString()).toString();
 
         requestStack().add(0, requestURL.hashCode());
     }

@@ -18,9 +18,8 @@ package com.geemvc.config;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletConfig;
 
 import com.geemvc.inject.InjectorProvider;
 
@@ -39,11 +38,17 @@ public interface Configuration {
 
     static final String REFLECTIONS_PROVIDER_KEY = "reflections-provider";
 
+    static final String REFLECTIONS_INCLUDE_LIBS_KEY = "reflections-include-libs";
+
+    static final String REFLECTIONS_EXCLUDE_LIBS_KEY = "reflections-exclude-libs";
+
     static final String EXCLUDE_PATH_MAPPING_KEY = "exclude-path-mapping";
 
     static final String SUPPORTED_URI_SUFFIXES_KEY = "supported-uri-suffixes";
 
-    Configuration build(ServletConfig servletConfig);
+    static final String JAX_RS_ENABLED_KEY = "jax-rs-enabled";
+
+    Configuration build(Map<String, String> configurationMap);
 
     String viewPrefix();
 
@@ -62,4 +67,10 @@ public interface Configuration {
     Set<String> excludePathMappinig();
 
     List<String> supportedUriSuffixes();
+
+    List<String> reflectionsLibIncludes();
+
+    List<String> reflectionsLibExcludes();
+
+    boolean isJaxRsEnabled();
 }

@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
@@ -50,8 +52,7 @@ public class ValidationTest extends BaseTest {
         requestParams.put("person.age", new String[]{"10"});
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", "POST", requestParams);
-
-        ThreadStash.prepare(reqCtx);
+        ThreadStash.prepare((HttpServletRequest) reqCtx.getRequest());
         ThreadStash.put(Errors.class, e);
         ThreadStash.put(Notices.class, n);
 

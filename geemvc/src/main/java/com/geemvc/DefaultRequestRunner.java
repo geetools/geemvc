@@ -32,6 +32,7 @@ import com.geemvc.annotation.Request;
 import com.geemvc.bind.MethodParam;
 import com.geemvc.bind.MethodParams;
 import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
 import com.geemvc.handler.HandlerNotFoundException;
@@ -61,7 +62,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class DefaultRequestRunner implements RequestRunner {
-    protected final Configuration configuration;
+    protected final Configuration configuration = Configurations.get();
     protected final CompositeControllerResolver controllerResolver;
     protected final CompositeHandlerResolver handlerResolver;
     protected final LocaleResolver localeResolver;
@@ -77,10 +78,9 @@ public class DefaultRequestRunner implements RequestRunner {
     protected Log log;
 
     @Inject
-    public DefaultRequestRunner(Configuration configuration, CompositeControllerResolver controllerResolver, CompositeHandlerResolver handlerResolver, LocaleResolver localeResolver, Interceptors interceptors,
+    public DefaultRequestRunner(CompositeControllerResolver controllerResolver, CompositeHandlerResolver handlerResolver, LocaleResolver localeResolver, Interceptors interceptors,
             MethodParams methodParams, Validator Validator, ViewHandler viewHandler) {
 
-        this.configuration = configuration;
         this.controllerResolver = controllerResolver;
         this.handlerResolver = handlerResolver;
         this.interceptors = interceptors;
@@ -92,8 +92,7 @@ public class DefaultRequestRunner implements RequestRunner {
 
     @Override
     public void process(RequestContext requestCtx) throws Exception {
-        // JAX-RS runtime delegate. TODO: Configure somewhere else.
-        RuntimeDelegate.setInstance(injector.getInstance(RuntimeDelegate.class));
+        initJaxRsRuntime();
 
         // Create a new Error instance for collecting errors.
         Errors errors = injector.getInstance(Errors.class);
@@ -424,5 +423,15 @@ public class DefaultRequestRunner implements RequestRunner {
 
     protected void handle404(RequestContext requestCtx) throws ServletException, IOException {
         ((HttpServletResponse) requestCtx.getResponse()).sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    protected void initJaxRsRuntime() {
+        if (configuration.isJaxRsEnabled()) {
+            // JAX-RS runtime delegate.
+            log.debug("Initializging JAX-RS Runtime.");
+            RuntimeDelegate.setInstance(injector.getInstance(RuntimeDelegate.class));
+        } else {
+            log.debug("JAX-RS Runtime disabled by configuration.");
+        }
     }
 }

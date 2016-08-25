@@ -16,10 +16,20 @@
 
 package com.geemvc.view;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.geemvc.Char;
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
 import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.helper.Requests;
 import com.geemvc.intercept.Interceptors;
 import com.geemvc.intercept.LifecycleContext;
@@ -30,14 +40,6 @@ import com.geemvc.logging.annotation.Logger;
 import com.geemvc.view.bean.View;
 import com.google.inject.Inject;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Map;
-
 public class DefaultViewHandler implements ViewHandler {
     protected final ViewAdapterFactory viewAdapterFactory;
     protected final StreamViewHandler streamViewHandler;
@@ -47,8 +49,7 @@ public class DefaultViewHandler implements ViewHandler {
     @Logger
     protected Log log;
 
-    @Inject
-    protected Configuration configuration;
+    protected Configuration configuration = Configurations.get();
 
     @Inject
     protected DefaultViewHandler(ViewAdapterFactory viewAdapterFactory, StreamViewHandler streamViewHandler, Requests requests, Interceptors interceptors) {

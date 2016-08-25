@@ -18,8 +18,10 @@ package com.geemvc.reflect;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -37,6 +39,10 @@ import org.reflections.util.ConfigurationBuilder;
 
 import com.geemvc.Str;
 import com.geemvc.ThreadStash;
+import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
+import com.geemvc.logging.DefaultLog;
+import com.geemvc.logging.Log;
 
 public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected String WEBAPP_CLASSES_DIR = "/WEB-INF/classes";
@@ -47,7 +53,10 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected Pattern webGeemvcJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
     protected Pattern webGensonJarPattern = Pattern.compile("^\\/WEB\\-INF\\/lib\\/genson\\-\\d\\.\\d\\.*\\.jar$");
     protected Pattern appGeemvcJarPattern = Pattern.compile(".*geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
-    protected Pattern appGensonJarPattern = Pattern.compile(".*geemvc\\-\\d\\.\\d\\.\\d.*\\.jar$");
+    protected Pattern appGensonJarPattern = Pattern.compile(".*genson\\-\\d\\.\\d\\.*\\.jar$");
+
+    // @Logger TODO: Find other way when injector is not initialized yet.
+    protected Log log = new DefaultLog().get(DefaultReflectionsProvider.class);
 
     @Override
     public Reflections provide() {
@@ -64,9 +73,12 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
 
             cb = cb.addUrls(webappClassesPath, geemvcLibPath).addClassLoader(mainClassLoader());
 
-            if (gensonLibPath != null) {
+            if (gensonLibPath != null && !isExcluded(gensonLibPath.getPath())) {
                 cb = cb.addUrls(gensonLibPath);
             }
+
+            // Add configured libraries configured.
+            cb = addConfiguredIncludes(cb);
 
             // Give the developer a chance to add his own URLs.
             Set<URL> urls = appendURLs();
@@ -98,6 +110,116 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
         }
 
         return reflections;
+    }
+
+    protected ConfigurationBuilder addConfiguredIncludes(ConfigurationBuilder cb) {
+        ServletContext servletContext = servletContext();
+
+        Set<URL> libsToInclude = new HashSet<>();
+
+        if (servletContext != null) {
+            Set<String> libJars = servletContext.getResourcePaths(WEBAPP_LIB_DIR);
+
+            if (libJars != null && !libJars.isEmpty()) {
+                if (libJars != null && !libJars.isEmpty()) {
+                    for (String jar : libJars) {
+
+                        if (isIncluded(jar)) {
+                            File f = new File(servletContext.getRealPath(jar));
+
+                            if (f.exists()) {
+                                try {
+                                    libsToInclude.add(f.toURI().toURL());
+                                } catch (MalformedURLException e) {
+                                    throw new IllegalStateException(e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(File.pathSeparator);
+
+            for (String classpathEntry : classpathEntries) {
+                if (isIncluded(classpathEntry)) {
+                    File f = new File(classpathEntry);
+
+                    if (f.exists()) {
+                        try {
+                            libsToInclude.add(f.toURI().toURL());
+                        } catch (MalformedURLException e) {
+                            throw new IllegalStateException(e);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!libsToInclude.isEmpty())
+            cb = cb.addUrls(libsToInclude);
+
+        return cb;
+    }
+
+    protected boolean isExcluded(String libPath) {
+        if (isExcludeAll() && !isIncludeAll()) {
+            return true;
+        }
+
+        List<String> excludes = configuration().reflectionsLibExcludes();
+
+        for (String exclude : excludes) {
+            log.debug("Checking if lib-path '{}' is excluded using pattern '{}'.", () -> libPath, () -> exclude);
+
+            Pattern p = Pattern.compile(exclude);
+            Matcher m = p.matcher(libPath);
+
+            if (m.matches()) {
+                log.info("Excluding lib-path '{}' from org.reflections.", () -> libPath);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean isIncluded(String libPath) {
+
+        if (isIncludeAll()) {
+            if (!isExcluded(libPath)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        List<String> includes = configuration().reflectionsLibIncludes();
+
+        for (String include : includes) {
+            log.debug("Checking if lib-path '{}' is included using pattern '{}'.", () -> libPath, () -> include);
+
+            Pattern p = Pattern.compile(include);
+            Matcher m = p.matcher(libPath);
+
+            if (m.matches()) {
+                log.info("Including lib-path '{}' from org.reflections.", () -> libPath);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    boolean isIncludeAll() {
+        List<String> includes = configuration().reflectionsLibIncludes();
+        return includes.size() == 1 && "ALL".equals(includes.get(0).trim());
+    }
+
+    boolean isExcludeAll() {
+        List<String> excludes = configuration().reflectionsLibExcludes();
+        return excludes.size() == 1 && "ALL".equals(excludes.get(0).trim());
     }
 
     protected URL webappClassesPath() throws IOException {
@@ -268,6 +390,10 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
     protected Set<URL> appendURLs() {
         // Override this method if necessary.
         return null;
+    }
+
+    protected Configuration configuration() {
+        return Configurations.get();
     }
 
     protected ServletContext servletContext() {

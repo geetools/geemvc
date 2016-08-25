@@ -20,6 +20,7 @@ import com.geemvc.Char;
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
 import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.script.Regex;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -52,8 +53,7 @@ public class DefaultPathMatcher implements PathMatcher {
     @Inject
     protected Injector injector;
 
-    @Inject
-    protected Configuration configuration;
+    protected Configuration configuration = Configurations.get();
 
     @Override
     public PathMatcher build(String path) {

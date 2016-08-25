@@ -51,7 +51,7 @@ import com.geemvc.cache.CacheEntry;
 import com.geemvc.cache.DefaultCache;
 import com.geemvc.cache.DefaultCacheEntry;
 import com.geemvc.config.Configuration;
-import com.geemvc.config.DefaultConfiguration;
+import com.geemvc.config.Configurations;
 import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.ConverterAdapterFactory;
 import com.geemvc.converter.ConverterAdapterKey;
@@ -191,7 +191,6 @@ public class GeeMvcModule extends AbstractModule {
     protected void configure() {
         configureLog();
         configureLoggerTypeListener();
-        configureConfiguration();
         configureCache();
         configureCacheEntry();
         configureRequestRunner();
@@ -247,9 +246,6 @@ public class GeeMvcModule extends AbstractModule {
         configureInvocationContext();
         configureLifecycleInterceptor();
         configureLifecycleContext();
-
-        configureStreamViewHandler();
-
         configureNotice();
         configureNotices();
         configureError();
@@ -262,6 +258,7 @@ public class GeeMvcModule extends AbstractModule {
         configureValidationAdapterFactory();
         configureBindings();
         configureViewOnlyRequestHandler();
+        configureStreamViewHandler();
 
         // Jax-RS
         configureJaxRSRuntimeDelegate();
@@ -279,51 +276,63 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configureJaxRSResponse() {
-        bind(GeeMvcResponse.class).to(DefaultResponse.class);
+        if (configuration().isJaxRsEnabled())
+            bind(GeeMvcResponse.class).to(DefaultResponse.class);
     }
 
     protected void configureJaxRSResponseBuilder() {
-        bind(ResponseBuilder.class).to(DefaultResponseBuilder.class);
+        if (configuration().isJaxRsEnabled())
+            bind(ResponseBuilder.class).to(DefaultResponseBuilder.class);
     }
 
     protected void configureJaxRSMediaTypeHeaderDelegate() {
-        bind(MediaTypeHeaderDelegate.class).to(DefaultMediaTypeHeaderDelegate.class);
+        if (configuration().isJaxRsEnabled())
+            bind(MediaTypeHeaderDelegate.class).to(DefaultMediaTypeHeaderDelegate.class);
     }
 
     protected void configureJaxRSRuntimeDelegate() {
-        bind(RuntimeDelegate.class).to(DefaultRuntimeDelegate.class);
+        if (configuration().isJaxRsEnabled())
+            bind(RuntimeDelegate.class).to(DefaultRuntimeDelegate.class);
     }
 
     protected void configureJaxRSApplication() {
-        bind(Application.class).to(JaxRsApplication.class);
+        if (configuration().isJaxRsEnabled())
+            bind(Application.class).to(JaxRsApplication.class);
     }
 
     protected void configureJaxRSProviders() {
-        bind(Providers.class).to(DefaultProviders.class);
+        if (configuration().isJaxRsEnabled())
+            bind(Providers.class).to(DefaultProviders.class);
     }
 
     protected void configureJaxRSProviderFilter() {
-        bind(ProviderFilter.class).to(DefaultProviderFilter.class);
+        if (configuration().isJaxRsEnabled())
+            bind(ProviderFilter.class).to(DefaultProviderFilter.class);
     }
 
     protected void configureJaxRSProviderKey() {
-        bind(ProviderKey.class).to(DefaultProviderKey.class);
+        if (configuration().isJaxRsEnabled())
+            bind(ProviderKey.class).to(DefaultProviderKey.class);
     }
 
     protected void configureJaxRSMultivaluedMap() {
-        bind(MultivaluedMap.class).to(DefaultMultivaluedMap.class);
+        if (configuration().isJaxRsEnabled())
+            bind(MultivaluedMap.class).to(DefaultMultivaluedMap.class);
     }
 
     protected void configureJaxRSHttpHeaders() {
-        bind(HttpHeaders.class).to(DefaultHttpHeaders.class);
+        if (configuration().isJaxRsEnabled())
+            bind(HttpHeaders.class).to(DefaultHttpHeaders.class);
     }
 
     protected void configureJaxRSUriInfo() {
-        bind(UriInfo.class).to(DefaultUriInfo.class);
+        if (configuration().isJaxRsEnabled())
+            bind(UriInfo.class).to(DefaultUriInfo.class);
     }
 
     protected void configureJaxRSObjectFactory() {
-        bind(ObjectFactory.class).to(DefaultObjectFactory.class);
+        if (configuration().isJaxRsEnabled())
+            bind(ObjectFactory.class).to(DefaultObjectFactory.class);
     }
 
     protected void configureLog() {
@@ -396,10 +405,6 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureLocaleResolver() {
         bind(LocaleResolver.class).to(DefaultLocaleResolver.class);
-    }
-
-    protected void configureConfiguration() {
-        bind(Configuration.class).to(DefaultConfiguration.class);
     }
 
     protected void configureConverterAdapterFactory() {
@@ -608,5 +613,9 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureLifecycleContext() {
         bind(LifecycleContext.class).to(DefaultLifecycleContext.class);
+    }
+
+    protected Configuration configuration() {
+        return (Configuration) Configurations.get();
     }
 }

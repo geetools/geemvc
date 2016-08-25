@@ -16,6 +16,10 @@
 
 package com.geemvc.i18n.message;
 
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Set;
+
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
 import com.geemvc.cache.Cache;
@@ -26,10 +30,6 @@ import com.google.common.base.CaseFormat;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
 
 @Singleton
 public class DefaultCompositeMessageResolver implements CompositeMessageResolver {
@@ -140,8 +140,7 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
     }
 
     protected String controllerBundle(RequestContext requestCtx) {
-        Locale currentLocale = requestCtx.currentLocale();
-        return String.format("%s-messages", controllerName(requestCtx), currentLocale.getLanguage());
+        return String.format("%s-messages", controllerName(requestCtx));
     }
 
     protected String controllerName(RequestContext requestCtx) {
@@ -149,10 +148,10 @@ public class DefaultCompositeMessageResolver implements CompositeMessageResolver
 
         String name = controllerClass.getSimpleName();
 
-            if (name.endsWith(controllerSuffix)) {
-                name = name.replace(controllerSuffix, Str.EMPTY);
-            } else if (name.endsWith(actionSuffix)) {
-                name = name.replace(actionSuffix, Str.EMPTY);
+        if (name.endsWith(controllerSuffix)) {
+            name = name.replace(controllerSuffix, Str.EMPTY);
+        } else if (name.endsWith(actionSuffix)) {
+            name = name.replace(actionSuffix, Str.EMPTY);
         }
 
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);

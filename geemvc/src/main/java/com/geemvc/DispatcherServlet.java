@@ -16,7 +16,20 @@
 
 package com.geemvc;
 
+import java.io.IOException;
+import java.util.Set;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.inject.DefaultInjectorProvider;
 import com.geemvc.inject.InjectorProvider;
 import com.geemvc.inject.Injectors;
@@ -26,20 +39,19 @@ import com.geemvc.reflect.ReflectionsWrapper;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Set;
-
 @Singleton
 public class DispatcherServlet extends HttpServlet {
     private static final long serialVersionUID = 6824931404770992086L;
 
-    protected ServletConfig servletConfig;
-
     protected InjectorProvider ínjectorProvider;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        Configuration configuration = Configurations.builder().build(config);
+        config.getServletContext().setAttribute(Configuration.class.getName(), configuration);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -63,7 +75,17 @@ public class DispatcherServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            this.servletConfig = getServletConfig();
+            ServletConfig servletConfig = getServletConfig();
+
+            // Get built configuration object from ServletContext and add it to the current ThreadLocal context.
+            Configurations.copyFrom(servletConfig.getServletContext());
+
+            ThreadStash.prepare(request);
+
+            // Add request objects to thread local stash for the rare case where these cannot be injected.
+            ThreadStash.put(ServletConfig.class, servletConfig);
+            ThreadStash.put(ServletRequest.class, request);
+            ThreadStash.put(ServletResponse.class, response);
 
             // AsyncContext asyncContext = request.startAsync(request,
             // response);
@@ -73,16 +95,7 @@ public class DispatcherServlet extends HttpServlet {
             // response.getOutputStream().setWriteListener(dispatcher);
             Injector injector = injector(servletConfig.getServletContext());
 
-            Configuration c = injector.getInstance(Configuration.class).build(servletConfig);
-
             RequestContext requestCtx = injector.getInstance(RequestContext.class).build(request, response, getServletContext());
-
-            ThreadStash.prepare(requestCtx);
-
-            // Add request objects to thread local stash for the rare case where these cannot be injected.
-            ThreadStash.put(ServletConfig.class, servletConfig);
-            ThreadStash.put(ServletRequest.class, request);
-            ThreadStash.put(ServletResponse.class, response);
 
             injector.getInstance(ReflectionsWrapper.class).configure();
 
@@ -91,7 +104,7 @@ public class DispatcherServlet extends HttpServlet {
             // executor.execute(injector.getInstance(RequestProcessor.class).build(asyncContext,
             // requestCtx));
 
-            Set<String> excudePathMappings = c.excludePathMappinig();
+            Set<String> excudePathMappings = Configurations.get().excludePathMappinig();
             if (excudePathMappings != null && !excudePathMappings.isEmpty() && ignore(request.getRequestURI(), excudePathMappings))
                 return;
 
@@ -132,7 +145,7 @@ public class DispatcherServlet extends HttpServlet {
             // If not then we check to see if a custom provider class has been
             // configured.
             if (ínjectorProvider == null) {
-                String configuredInjectorProvider = servletConfig.getInitParameter(Configuration.INJECTOR_PROVIDER_KEY);
+                String configuredInjectorProvider = getServletConfig().getInitParameter(Configuration.INJECTOR_PROVIDER_KEY);
 
                 try {
                     if (!Str.isEmpty(configuredInjectorProvider)) {

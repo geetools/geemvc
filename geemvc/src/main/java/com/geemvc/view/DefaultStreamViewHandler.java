@@ -29,21 +29,27 @@ import javax.ws.rs.ext.Providers;
 import org.apache.commons.io.IOUtils;
 
 import com.geemvc.RequestContext;
+import com.geemvc.config.Configuration;
+import com.geemvc.config.Configurations;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.geemvc.view.bean.View;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class DefaultStreamViewHandler implements StreamViewHandler {
-    // Use JAX-RS functionality for converting and streaming data in other formats, such as JSON or XML.
-    protected final Providers providers;
+
+    protected Configuration configuration = Configurations.get();
 
     @Inject
     protected Injector injector;
 
+    @Logger
+    protected Log log;
+
     @Inject
-    public DefaultStreamViewHandler(Providers providers) {
-        this.providers = providers;
+    public DefaultStreamViewHandler() {
     }
 
     @Override
@@ -74,14 +80,19 @@ public class DefaultStreamViewHandler implements StreamViewHandler {
             RequestHandler requestHandler = requestCtx.requestHandler();
             Method handlerMethod = requestHandler.handlerMethod();
 
-            MessageBodyWriter mbw = providers.getMessageBodyWriter(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()));
+            if (configuration.isJaxRsEnabled()) {
+                MessageBodyWriter mbw = injector.getInstance(Providers.class).getMessageBodyWriter(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()));
 
-            if (mbw != null && mbw.isWriteable(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()))) {
-                MultivaluedMap<String, Object> httpResponseHeaders = injector.getInstance(MultivaluedMap.class);
+                if (mbw != null && mbw.isWriteable(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()))) {
+                    MultivaluedMap<String, Object> httpResponseHeaders = injector.getInstance(MultivaluedMap.class);
 
-                mbw.writeTo(view.result(), handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(),
-                        MediaType.valueOf(response.getContentType()), httpResponseHeaders, response.getOutputStream());
+                    mbw.writeTo(view.result(), handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(),
+                            MediaType.valueOf(response.getContentType()), httpResponseHeaders, response.getOutputStream());
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+                }
             } else {
+                log.info("Unable to convert the result object of type '{}' to the media type '{}' as the JAX-RS runtime has been disabled.", () -> view.result().getClass().getName(), () -> response.getContentType());
                 response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             }
 
