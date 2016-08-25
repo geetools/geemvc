@@ -21,6 +21,7 @@ import com.geemvc.ThreadStash;
 import com.geemvc.annotation.Adapter;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
+import com.geemvc.i18n.message.Messages;
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.reflect.ReflectionProvider;
 import com.geemvc.validation.Errors;
@@ -86,6 +87,8 @@ public class ContextParamAdapter implements TypedParamAdapter<Context> {
             return ThreadStash.get(Errors.class);
         } else if (Notices.class.isAssignableFrom(paramType)) {
             return ThreadStash.get(Notices.class);
+        } else if (Messages.class.isAssignableFrom(paramType)) {
+            return injector.getInstance(Messages.class);
         } else if (Bindings.class.isAssignableFrom(paramType)) {
             return injector.getInstance(Bindings.class).build(paramCtx.requestValues(), paramCtx.typedValues(), (Errors) ThreadStash.get(Errors.class), (Notices) ThreadStash.get(Notices.class));
         } else if (Map.class.isAssignableFrom(paramType)) {

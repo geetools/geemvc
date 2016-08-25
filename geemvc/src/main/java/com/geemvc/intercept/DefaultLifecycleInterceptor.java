@@ -16,24 +16,6 @@
 
 package com.geemvc.intercept;
 
-import com.geemvc.Bindings;
-import com.geemvc.RequestContext;
-import com.geemvc.Str;
-import com.geemvc.helper.Annotations;
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.intercept.annotation.*;
-import com.geemvc.reflect.ReflectionProvider;
-import com.geemvc.validation.Errors;
-import com.geemvc.view.bean.View;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,6 +24,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.geemvc.Bindings;
+import com.geemvc.RequestContext;
+import com.geemvc.Str;
+import com.geemvc.helper.Annotations;
+import com.geemvc.i18n.message.Messages;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.intercept.annotation.Lifecycle;
+import com.geemvc.intercept.annotation.PostBinding;
+import com.geemvc.intercept.annotation.PostHandle;
+import com.geemvc.intercept.annotation.PostValidation;
+import com.geemvc.intercept.annotation.PostView;
+import com.geemvc.intercept.annotation.PreBinding;
+import com.geemvc.intercept.annotation.PreHandle;
+import com.geemvc.intercept.annotation.PreValidation;
+import com.geemvc.intercept.annotation.PreView;
+import com.geemvc.reflect.ReflectionProvider;
+import com.geemvc.validation.Errors;
+import com.geemvc.view.bean.View;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * Created by Michael on 13.07.2016.
@@ -147,6 +157,8 @@ public class DefaultLifecycleInterceptor implements LifecycleInterceptor {
             return lifecycleCtx.errors();
         } else if (Notices.class.isAssignableFrom(type)) {
             return lifecycleCtx.notices();
+        } else if (Messages.class.isAssignableFrom(type)) {
+            return injector.getInstance(Messages.class);
         } else if (Bindings.class.isAssignableFrom(type)) {
             return lifecycleCtx.bindings();
         } else if (View.class.isAssignableFrom(type)) {

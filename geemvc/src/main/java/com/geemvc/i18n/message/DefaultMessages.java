@@ -22,7 +22,9 @@ import java.util.Locale;
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class DefaultMessages implements Messages {
     protected final CompositeMessageResolver compositeMessageResolver;
 
@@ -38,25 +40,25 @@ public class DefaultMessages implements Messages {
 
     @Override
     public String getString(String messageKey, Object... args) {
-        return getString(messageKey, null, true, args);
+        return getString(messageKey, null, false, args);
 
     }
 
     @Override
     public String getString(String messageKey, Locale locale) {
-        return getString(messageKey, locale, true, (Object[]) null);
+        return getString(messageKey, locale, false, (Object[]) null);
     }
 
     @Override
     public String getString(String messageKey, Locale locale, Object... args) {
-        return getString(messageKey, locale, true, args);
+        return getString(messageKey, locale, false, args);
     }
 
     @Override
     public String getString(String messageKey, Locale locale, boolean failQuietly, Object... args) {
         String message = compositeMessageResolver.resolve(messageKey, locale, requestContext(), failQuietly);
 
-        if (args != null && args.length > 0 && args[0] != null) {
+        if (message != null && args != null && args.length > 0 && args[0] != null) {
             message = MessageFormat.format(message, args);
         }
 
