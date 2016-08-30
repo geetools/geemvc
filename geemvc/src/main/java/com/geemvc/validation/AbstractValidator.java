@@ -16,16 +16,20 @@
 
 package com.geemvc.validation;
 
-import com.geemvc.Str;
-import com.geemvc.inject.Injectors;
-import com.geemvc.script.*;
-import com.geemvc.validation.annotation.Check;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+
+import com.geemvc.Str;
+import com.geemvc.inject.Injectors;
+import com.geemvc.script.Evaluator;
+import com.geemvc.script.EvaluatorContext;
+import com.geemvc.script.EvaluatorFactory;
+import com.geemvc.script.RegexEvaluator;
+import com.geemvc.script.SimpleEvaluator;
+import com.geemvc.validation.annotation.Check;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public abstract class AbstractValidator {
     protected final EvaluatorFactory evaluatorFactory;

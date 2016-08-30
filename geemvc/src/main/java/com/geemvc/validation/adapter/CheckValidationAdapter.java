@@ -20,6 +20,10 @@ import com.geemvc.Str;
 import com.geemvc.annotation.Adapter;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.helper.Paths;
+import com.geemvc.script.Evaluator;
+import com.geemvc.script.EvaluatorContext;
+import com.geemvc.script.RegexEvaluator;
+import com.geemvc.script.SimpleEvaluator;
 import com.geemvc.validation.AbstractValidator;
 import com.geemvc.validation.Errors;
 import com.geemvc.validation.ValidationAdapter;
@@ -41,7 +45,39 @@ public class CheckValidationAdapter extends AbstractValidator implements Validat
 
     @Override
     public boolean incudeInValidation(Check checkAnnotation, RequestHandler requestHandler, ValidationContext validationCtx) {
-        return paths.isValidForRequest(checkAnnotation.on(), requestHandler, validationCtx.requestCtx());
+        return paths.isValidForRequest(checkAnnotation.on(), requestHandler, validationCtx.requestCtx()) && isWhenValidForRequest(checkAnnotation, validationCtx);
+    }
+
+    protected boolean isWhenValidForRequest(Check check, ValidationContext validationCtx) {
+        String[] whenExpressions = check.when();
+
+        if (whenExpressions == null || whenExpressions.length == 0)
+            return true;
+
+        for (String whenExpression : whenExpressions) {
+            if (Str.isEmpty(whenExpression))
+                continue;
+
+            Evaluator evaluator = evaluatorFactory.find(whenExpression);
+            EvaluatorContext evalCtx = null;
+
+            // The simple and regex evaluators expect the request parameter map.
+            if (evaluator instanceof SimpleEvaluator || evaluator instanceof RegexEvaluator) {
+                evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
+            } else {
+                // All other will get the converted typed map values.
+                evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.typedValues()).append(validationCtx.requestCtx());
+            }
+
+            if (evaluator.matches(evalCtx)) {
+                System.out.println("--- WHEN expression '" + whenExpression + "' matches request parameters!");
+                return true;
+            } else {
+                System.out.println("--- WHEN expression '" + whenExpression + "' does NOT match request parameters!");
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -49,7 +85,7 @@ public class CheckValidationAdapter extends AbstractValidator implements Validat
         String[] parameters = checkAnnotation.param();
 
         if (parameters.length == 0 && !Str.isEmpty(name))
-            parameters = new String[]{name};
+            parameters = new String[] { name };
 
         if (parameters.length > 0) {
             for (String param : parameters) {

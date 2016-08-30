@@ -31,6 +31,8 @@ public @interface Check {
 
     String[] on() default {};
 
+    String[] when() default {};
+
     double min() default -1;
 
     double max() default -1;

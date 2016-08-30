@@ -113,6 +113,9 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
     }
 
     protected ConfigurationBuilder addConfiguredIncludes(ConfigurationBuilder cb) {
+        if (configuration() == null)
+            return cb;
+
         ServletContext servletContext = servletContext();
 
         Set<URL> libsToInclude = new HashSet<>();
@@ -164,6 +167,9 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
     }
 
     protected boolean isExcluded(String libPath) {
+        if (configuration() == null)
+            return false;
+
         if (isExcludeAll() && !isIncludeAll()) {
             return true;
         }
