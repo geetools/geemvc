@@ -279,62 +279,62 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configureJaxRSResponse() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(GeeMvcResponse.class).to(DefaultResponse.class);
     }
 
     protected void configureJaxRSResponseBuilder() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(ResponseBuilder.class).to(DefaultResponseBuilder.class);
     }
 
     protected void configureJaxRSMediaTypeHeaderDelegate() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(MediaTypeHeaderDelegate.class).to(DefaultMediaTypeHeaderDelegate.class);
     }
 
     protected void configureJaxRSRuntimeDelegate() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(RuntimeDelegate.class).to(DefaultRuntimeDelegate.class);
     }
 
     protected void configureJaxRSApplication() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(Application.class).to(JaxRsApplication.class);
     }
 
     protected void configureJaxRSProviders() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(Providers.class).to(DefaultProviders.class);
     }
 
     protected void configureJaxRSProviderFilter() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(ProviderFilter.class).to(DefaultProviderFilter.class);
     }
 
     protected void configureJaxRSProviderKey() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(ProviderKey.class).to(DefaultProviderKey.class);
     }
 
     protected void configureJaxRSMultivaluedMap() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(MultivaluedMap.class).to(DefaultMultivaluedMap.class);
     }
 
     protected void configureJaxRSHttpHeaders() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(HttpHeaders.class).to(DefaultHttpHeaders.class);
     }
 
     protected void configureJaxRSUriInfo() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(UriInfo.class).to(DefaultUriInfo.class);
     }
 
     protected void configureJaxRSObjectFactory() {
-        if (configuration().isJaxRsEnabled())
+        if (configuration() == null || configuration().isJaxRsEnabled())
             bind(ObjectFactory.class).to(DefaultObjectFactory.class);
     }
 
