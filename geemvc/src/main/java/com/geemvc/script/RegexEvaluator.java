@@ -19,9 +19,11 @@ package com.geemvc.script;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.geemvc.Char;
+
 @com.geemvc.annotation.Evaluator("regex:")
-public class RegexEvaluator extends SimpleEvaluator {
-    protected Pattern isRegexPattern = Pattern.compile("^.+=[ ]*\\/.+\\/[gi]*$");
+public class RegexEvaluator extends DefaultSimpleEvaluator {
+    protected Pattern isRegexPattern = Pattern.compile("^.+[^=]=[ ]?\\/.+\\/[ ]?$");
     protected Pattern mappedPattern = null;
     protected String mappedExpression = null;
 
@@ -45,15 +47,11 @@ public class RegexEvaluator extends SimpleEvaluator {
             return false;
 
         if (mappedExpression.startsWith("regex:")
-                || expression.contains("*")
-                || expression.contains("=^")
-                || expression.contains("!=^")
-                || expression.contains("= ^")
-                || expression.contains("!= ^")) {
-            return true;
-        }
+                || expression.contains("=/")
+                || expression.contains("= /")
+                || expression.contains("!=/")
+                || expression.contains("!= /")) {
 
-        if (expression.contains("=/") || expression.contains("= /")) {
             Matcher m = isRegexPattern.matcher(expression);
             return m.matches();
         }
@@ -111,27 +109,13 @@ public class RegexEvaluator extends SimpleEvaluator {
     }
 
     protected Pattern toPattern(String expression) {
-        char[] chars = expression.toCharArray();
+        int firstSlashIdx = expression.indexOf("=/") + 1;
 
-        StringBuilder pattern = new StringBuilder();
+        if (firstSlashIdx == -1)
+            firstSlashIdx = expression.indexOf("= /") + 2;
 
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == '*') {
-                if (i == 0 || (i > 0 && chars[i - 1] != '.' && chars[i - 1] != '\\'))
-                    pattern.append('.');
+        int lastSlashIdx = expression.lastIndexOf(Char.SLASH);
 
-                pattern.append(chars[i]);
-            } else {
-                pattern.append(chars[i]);
-            }
-        }
-
-        if (pattern.charAt(0) != '^')
-            pattern.insert(0, '^');
-
-        if (pattern.charAt(pattern.length() - 1) != '$')
-            pattern.append('$');
-
-        return Pattern.compile(pattern.toString());
+        return Pattern.compile(expression.substring(firstSlashIdx + 1, lastSlashIdx).trim());
     }
 }

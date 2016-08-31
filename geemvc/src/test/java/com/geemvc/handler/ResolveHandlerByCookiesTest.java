@@ -126,7 +126,7 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertEquals("handler11c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedCookiesExists(new String[]{"group=one", "rememberMe=^(0|1)"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedCookiesExists(new String[]{"group=one", "rememberMe=/^(0|1)/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller11/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -158,7 +158,7 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertEquals("handler11e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedCookiesExists(new String[]{"rememberMe=^(?iu:0|1)$"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedCookiesExists(new String[]{"rememberMe=/^(?iu:0|1)$/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller11/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -388,7 +388,7 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertEquals("handler11j", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedCookiesExists(new String[]{"jCookieOne != ^notTr[ue]+", "jCookieTwo!=tru*"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedCookiesExists(new String[]{"jCookieOne != /^notTr[ue]+/", "jCookieTwo!=/tru.*/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller11", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -420,7 +420,7 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertEquals("handler11k", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedCookiesExists(new String[]{"kCookieOne != ^notTr[ue]+$", "kCookieOne!=tru*"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedCookiesExists(new String[]{"kCookieOne != /^notTr[ue]+$/", "kCookieOne!=/tru.*/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller11", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 

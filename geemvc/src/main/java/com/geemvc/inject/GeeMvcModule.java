@@ -155,9 +155,13 @@ import com.geemvc.rest.jaxrs.util.ObjectFactory;
 import com.geemvc.script.DefaultEvaluatorContext;
 import com.geemvc.script.DefaultEvaluatorFactory;
 import com.geemvc.script.DefaultRegex;
+import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.script.EvaluatorContext;
 import com.geemvc.script.EvaluatorFactory;
+import com.geemvc.script.GroovyEvaluator;
 import com.geemvc.script.Regex;
+import com.geemvc.script.ScriptEvaluator;
+import com.geemvc.script.SimpleEvaluator;
 import com.geemvc.validation.DefaultError;
 import com.geemvc.validation.DefaultErrors;
 import com.geemvc.validation.DefaultValidation;
@@ -220,6 +224,8 @@ public class GeeMvcModule extends AbstractModule {
         configureHandlerResolverStats();
         configureEvaluatorFactory();
         configureEvaluatorContext();
+        configureSimpleEvaluator();
+        configureScriptEvaluator();
         configureStringHelper();
         configureRequestHelper();
         configureMimeTypeHelper();
@@ -564,6 +570,14 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureEvaluatorContext() {
         bind(EvaluatorContext.class).to(DefaultEvaluatorContext.class);
+    }
+
+    protected void configureSimpleEvaluator() {
+        bind(SimpleEvaluator.class).to(DefaultSimpleEvaluator.class);
+    }
+
+    protected void configureScriptEvaluator() {
+        bind(ScriptEvaluator.class).to(GroovyEvaluator.class);
     }
 
     protected void configureStringHelper() {

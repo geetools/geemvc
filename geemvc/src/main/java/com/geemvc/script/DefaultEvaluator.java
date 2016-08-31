@@ -16,6 +16,6 @@
 
 package com.geemvc.script;
 
-public interface SimpleEvaluator extends Evaluator {
+public interface DefaultEvaluator extends Evaluator {
 
 }

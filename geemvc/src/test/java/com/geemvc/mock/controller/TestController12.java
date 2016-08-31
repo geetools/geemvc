@@ -23,6 +23,7 @@ import com.geemvc.annotation.Request;
 @Request("/controller12")
 public class TestController12 {
     @Request(handles = "js: 1 == 0 || ( /handler[a]+/igm.test( Java.from( req.cookies ).filter( function(c) c.name == 'cookieOne' )[0].value ) )")
+    // @Request(handles = eval(() -> true))
     public void handler12a() {
 
     }

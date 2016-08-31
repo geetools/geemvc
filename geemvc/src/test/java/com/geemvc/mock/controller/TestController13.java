@@ -103,12 +103,12 @@ public class TestController13 {
 
     }
 
-    @Request(path = "/handler13/same/path3", params = "cmd=^test\\d+", priority = 1)
+    @Request(path = "/handler13/same/path3", params = "cmd=/^test\\d+/", priority = 1)
     public void handler13nA() {
 
     }
 
-    @Request(path = "/handler13/same/path3", params = "cmd=^test[0-9]+", priority = 2)
+    @Request(path = "/handler13/same/path3", params = "cmd=/^test[0-9]+/", priority = 2)
     public void handler13nB() {
 
     }

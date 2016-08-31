@@ -52,4 +52,5 @@ public class Char {
     public static final char PIPE = '|';
     public static final char NEWLINE = '\n';
     public static final char NUL = '\0';
+    public static final char TILDE = '~';
 }

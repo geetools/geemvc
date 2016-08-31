@@ -30,6 +30,8 @@ public class Str {
     public static final String SEMI_COLON = String.valueOf(Char.SEMI_COLON);
     public static final String ASTERIX = String.valueOf(Char.ASTERIX);
     public static final String EQUALS = String.valueOf(Char.EQUALS);
+    public static final String EQUALS_2X = "==";
+    public static final String EQUALS_3X = "===";
     public static final String PLUS = String.valueOf(Char.PLUS);
     public static final String HYPHEN = String.valueOf(Char.HYPHEN);
     public static final String HYPHEN_2x = "--";
@@ -39,6 +41,7 @@ public class Str {
     public static final String UNDERSCORE_2X = "__";
     public static final String UNDERSCORE_3X = "___";
     public static final String AMPERSAND = String.valueOf(Char.AMPERSAND);
+    public static final String AMPERSAND_2X = "&&";
     public static final String BACKSLASH = String.valueOf(Char.BACKSLASH);
     public static final String BACKSLASH_ESCAPED = "\\" + Char.BACKSLASH;
     public static final String LESS_THAN = String.valueOf(Char.LESS_THAN);
@@ -67,11 +70,14 @@ public class Str {
     public static final String CURLY_BRACKET_CLOSE = String.valueOf(Char.CURLY_BRACKET_CLOSE);
     public static final String CURLY_BRACKET_OPEN_CLOSE = "{}";
     public static final String PIPE = String.valueOf(Char.PIPE);
+    public static final String PIPE_2X = "||";
     public static final String NEWLINE = String.valueOf(Char.NEWLINE);
     public static final String PROTOCOL_SUFFIX = "://";
     public static final String EMPTY = "";
     public static final String NUL = String.valueOf(Char.NUL);
     public static final String NULL_STRING = "null";
+    public static final String TILDE = String.valueOf(Char.TILDE);
+    public static final String EQUALS_TILDE = "=~";
 
     public static boolean isEmpty(String s) {
         if (s == null)

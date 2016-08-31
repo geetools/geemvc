@@ -26,7 +26,7 @@ import com.geemvc.script.Evaluator;
 import com.geemvc.script.EvaluatorContext;
 import com.geemvc.script.EvaluatorFactory;
 import com.geemvc.script.RegexEvaluator;
-import com.geemvc.script.SimpleEvaluator;
+import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.validation.annotation.Check;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -141,7 +141,7 @@ public abstract class AbstractValidator {
         EvaluatorContext evalCtx = null;
 
         // The simple and regex evaluators expect the request parameter map.
-        if (evaluator instanceof SimpleEvaluator || evaluator instanceof RegexEvaluator) {
+        if (evaluator instanceof DefaultSimpleEvaluator || evaluator instanceof RegexEvaluator) {
             evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
         } else {
             // All other will get the converted typed map values.

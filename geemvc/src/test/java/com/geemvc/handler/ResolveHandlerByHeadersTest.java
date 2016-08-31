@@ -122,7 +122,7 @@ public class ResolveHandlerByHeadersTest extends BaseTest {
         assertEquals("handler10c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller10", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedHeadersExists(new String[]{"Accept=application/json", "version=^\\d+"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedHeadersExists(new String[]{"Accept=application/json", "version=/\\d+/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller10/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -154,7 +154,7 @@ public class ResolveHandlerByHeadersTest extends BaseTest {
         assertEquals("handler10d", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller10", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedHeadersExists(new String[]{"Accept=application/json", "Accept=application/xml", "Accept=^text\\/.*", "Accept=image/*"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedHeadersExists(new String[]{"Accept=application/json", "Accept=application/xml", "Accept=/text\\/.+/", "Accept=/image\\/.+/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller10/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -186,7 +186,7 @@ public class ResolveHandlerByHeadersTest extends BaseTest {
         assertEquals("handler10e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller10", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedHeadersExists(new String[]{"orHeader=^(?iu:ONE|TWO|THREE|FOUR)$"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedHeadersExists(new String[]{"orHeader=/^(?iu:ONE|TWO|THREE|FOUR)$/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller10/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -416,7 +416,7 @@ public class ResolveHandlerByHeadersTest extends BaseTest {
         assertEquals("handler10j", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller10", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedHeadersExists(new String[]{"jHeaderOne != ^notTr[ue]+", "jHeaderTwo!=tru*"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedHeadersExists(new String[]{"jHeaderOne != /^notTr[ue]+/", "jHeaderTwo!=/tru.*/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller10", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -448,7 +448,7 @@ public class ResolveHandlerByHeadersTest extends BaseTest {
         assertEquals("handler10k", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller10", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedHeadersExists(new String[]{"kHeaderOne != ^notTr[ue]+$", "kHeaderOne!=tru*"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedHeadersExists(new String[]{"kHeaderOne != /^notTr[ue]+$/", "kHeaderOne!=/tru.*/"}, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller10", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 

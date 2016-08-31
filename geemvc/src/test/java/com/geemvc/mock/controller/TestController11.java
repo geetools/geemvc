@@ -33,12 +33,12 @@ public class TestController11 {
 
     }
 
-    @Request(path = "/handler", cookies = {"group=one", "rememberMe=^(0|1)"})
+    @Request(path = "/handler", cookies = {"group=one", "rememberMe=/^(0|1)/"})
     public void handler11c() {
 
     }
 
-    @Request(path = "/handler", cookies = {"rememberMe=^(?iu:0|1)$"})
+    @Request(path = "/handler", cookies = {"rememberMe=/^(?iu:0|1)$/"})
     public void handler11e() {
 
     }
@@ -73,12 +73,12 @@ public class TestController11 {
 
     }
 
-    @Request(cookies = {"jCookieOne != ^notTr[ue]+", "jCookieTwo!=tru*"})
+    @Request(cookies = {"jCookieOne != /^notTr[ue]+/", "jCookieTwo!=/tru.*/"})
     public void handler11j() {
 
     }
 
-    @Request(cookies = {"kCookieOne != ^notTr[ue]+$", "kCookieOne!=tru*"})
+    @Request(cookies = {"kCookieOne != /^notTr[ue]+$/", "kCookieOne!=/tru.*/"})
     public void handler11k() {
 
     }

@@ -26,7 +26,7 @@ import org.mvel2.MVEL;
 import com.geemvc.annotation.Evaluator;
 
 @Evaluator("mvel:")
-public class MvelEvaluator extends AbstractEvaluator {
+public class MvelEvaluator extends AbstractEvaluator implements ScriptEvaluator {
     protected String mappedExpression = null;
 
     @Override

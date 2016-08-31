@@ -16,16 +16,16 @@
 
 package com.geemvc.script;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-
 import java.util.Map;
 import java.util.Set;
 
 import com.geemvc.annotation.Evaluator;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
 @Evaluator("groovy:")
-public class GroovyEvaluator extends AbstractEvaluator {
+public class GroovyEvaluator extends AbstractEvaluator implements ScriptEvaluator {
     protected String mappedExpression = null;
 
     @Override

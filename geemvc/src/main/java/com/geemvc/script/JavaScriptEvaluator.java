@@ -26,7 +26,7 @@ import javax.script.ScriptEngineManager;
 import com.geemvc.annotation.Evaluator;
 
 @Evaluator("js:")
-public class JavaScriptEvaluator extends AbstractEvaluator {
+public class JavaScriptEvaluator extends AbstractEvaluator implements ScriptEvaluator {
     protected String mappedExpression = null;
 
     @Override

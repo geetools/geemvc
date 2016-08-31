@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.geemvc.Str;
 import com.geemvc.reflect.ReflectionProvider;
@@ -30,6 +32,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultEvaluatorFactory implements EvaluatorFactory {
     protected final ReflectionProvider reflectionProvider;
+    // Test if the simple evaluator is sufficient or whether we need to use a dynamic scripting language.
+    protected Pattern isSimplePattern = Pattern.compile("[a-zA-Z]{1}[a-zA-Z0-9_-]*[ ]*[!]?[=]{1}[ ]*[^=~]+");
 
     protected Map<String, Class<? extends Evaluator>> evaluators = new HashMap<>();
 
@@ -78,6 +82,32 @@ public class DefaultEvaluatorFactory implements EvaluatorFactory {
             }
         }
 
-        return null;
+        // Do simple check first.
+        if (isSimpleExpression(expression)) {
+            return injector.getInstance(SimpleEvaluator.class).build(expression);
+        }
+
+        Matcher m = isSimplePattern.matcher(expression);
+
+        if (m.matches()) {
+            return injector.getInstance(SimpleEvaluator.class).build(expression);
+        } else {
+            return injector.getInstance(ScriptEvaluator.class).build(expression);
+        }
+    }
+
+    /**
+     * Basic check so that regular expressions are only needed for more advanced cases.
+     * 
+     * @param expression
+     * @return
+     */
+    protected boolean isSimpleExpression(String expression) {
+        return !expression.contains(Str.EQUALS_2X)
+                && !expression.contains(Str.LESS_THAN)
+                && !expression.contains(Str.GREATER_THAN)
+                && !expression.contains(Str.EQUALS_TILDE)
+                && !expression.contains(Str.AMPERSAND_2X)
+                && !expression.contains(Str.PIPE_2X);
     }
 }

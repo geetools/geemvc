@@ -33,17 +33,17 @@ public class TestController10 {
 
     }
 
-    @Request(path = "/handler", headers = {"Accept=application/json", "version=^\\d+"})
+    @Request(path = "/handler", headers = {"Accept=application/json", "version=/\\d+/"})
     public void handler10c() {
 
     }
 
-    @Request(path = "/handler", headers = {"Accept=application/json", "Accept=application/xml", "Accept=^text\\/.*", "Accept=image/*"})
+    @Request(path = "/handler", headers = {"Accept=application/json", "Accept=application/xml", "Accept=/text\\/.+/", "Accept=/image\\/.+/"})
     public void handler10d() {
 
     }
 
-    @Request(path = "/handler", headers = {"orHeader=^(?iu:ONE|TWO|THREE|FOUR)$"})
+    @Request(path = "/handler", headers = {"orHeader=/^(?iu:ONE|TWO|THREE|FOUR)$/"})
     public void handler10e() {
 
     }
@@ -78,12 +78,12 @@ public class TestController10 {
 
     }
 
-    @Request(headers = {"jHeaderOne != ^notTr[ue]+", "jHeaderTwo!=tru*"})
+    @Request(headers = {"jHeaderOne != /^notTr[ue]+/", "jHeaderTwo!=/tru.*/"})
     public void handler10j() {
 
     }
 
-    @Request(headers = {"kHeaderOne != ^notTr[ue]+$", "kHeaderOne!=tru*"})
+    @Request(headers = {"kHeaderOne != /^notTr[ue]+$/", "kHeaderOne!=/tru.*/"})
     public void handler10k() {
 
     }
