@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geetools.geemvc</groupId>
 	<artifactId>geemvc-tomcat-boot</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>0.9.1-rc7</version>
 	<packaging>jar</packaging>
 
 	<name>geeMVC Tomcat Bootstrapper</name>
@@ -17,7 +17,7 @@
 	<parent>
 		<groupId>com.geetools.geemvc</groupId>
 		<artifactId>geemvc-parent</artifactId>
-		<version>0.9.1-SNAPSHOT</version>
+		<version>0.9.1-rc7</version>
 		<relativePath>../../</relativePath>
 	</parent>
 
