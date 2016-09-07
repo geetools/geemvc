@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc</artifactId>
-    <version>0.9.1-rc9</version>
+    <version>0.9.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>geeMVC</name>
@@ -12,7 +12,7 @@
     <parent>
         <groupId>com.geetools.geemvc</groupId>
         <artifactId>geemvc-parent</artifactId>
-        <version>0.9.1-rc9</version>
+        <version>0.9.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
