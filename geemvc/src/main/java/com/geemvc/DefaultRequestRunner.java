@@ -19,7 +19,6 @@ package com.geemvc;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,8 +37,8 @@ import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
 import com.geemvc.handler.HandlerNotFoundException;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.handler.RequestHandlerInfo;
 import com.geemvc.handler.RequestHandlers;
-import com.geemvc.helper.UriBuilder;
 import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.intercept.Interceptors;
@@ -226,35 +225,17 @@ public class DefaultRequestRunner implements RequestRunner {
 
         // Check if the return object is leading to another request handler instead of a view.
         if (isInvokeNextHandler(lifecycleCtx.result())) {
-            Result result = lifecycleCtx.result();
-
-            // Locate a request handler for the returned result object.
-            RequestHandler nextRequestHandler = requestHandlers.toRequestHandler(result);
-
-            // If a pathMatcher exists, we'll try to extract the parameters from the handler path.
-            Map<String, String[]> pathParameters = null;
-            if (result.handlerPath() != null)
-                pathParameters = nextRequestHandler.pathMatcher().parameters(result.handlerPath());
-
-            // Merge the parameters of the result object together with the extracted path parameters.
-            Map<String, String[]> parameters = mergeParameters(pathParameters, result.parameters());
-
-            // Now we can build the new URI composed of a mapped path and parameters that may have been passed to the result object.
-            String nextRequestURI = requestURI(result, nextRequestHandler, parameters);
-
-            // We need to create an internal RequestContext here so that the new requestURI and parameters are used when invoking the request handler.
-            RequestContext internalRequestCtx = injector.getInstance(InternalRequestContext.class).build(nextRequestURI, result.handlerMethod(), parameters, requestCtx.getRequest(), requestCtx.getResponse(), requestCtx.getServletContext())
-                    .requestHandler(nextRequestHandler);
+            RequestHandlerInfo requestHandlerInfo = injector.getInstance(RequestHandlerInfo.class).from(lifecycleCtx.result(), requestCtx);
 
             // Make sure that parameters, headers and cookie values etc. are compatible with the request handler.
-            if (requestHandlers.handlerResolutionPlan(nextRequestHandler, internalRequestCtx).isCompatible()) {
-                Bindings bindings = bindings(nextRequestHandler, internalRequestCtx, errors, notices);
+            if (requestHandlerInfo.isCompatible()) {
+                Bindings bindings = bindings(requestHandlerInfo.requestHandler(), requestHandlerInfo.internalRequestContext(), errors, notices);
                 lifecycleCtx.bindings(bindings);
 
                 // Now we are ready to invoke.
-                return invokeRequestHandler(nextRequestHandler, internalRequestCtx, errors, notices, bindings.typedValues(), lifecycleCtx);
+                return invokeRequestHandler(requestHandlerInfo.requestHandler(), requestHandlerInfo.internalRequestContext(), errors, notices, bindings.typedValues(), lifecycleCtx);
             } else {
-                log.debug("Unable to find the handler '" + nextRequestURI + "' in the handler chain. Ensure that all the values (i.e. path, parameters, headers etc.) match a valid request handler. The initial request was '"
+                log.debug("Unable to find the handler '" + requestHandlerInfo.getRequestURI() + "' in the handler chain. Ensure that all the values (i.e. path, parameters, headers etc.) match a valid request handler. The initial request was '"
                         + requestCtx.getMethod() + " " + requestCtx.getPath() + "'");
 
                 throw new HandlerNotFoundException();
@@ -262,37 +243,6 @@ public class DefaultRequestRunner implements RequestRunner {
         } else {
             return lifecycleCtx.result();
         }
-    }
-
-    protected String requestURI(Result result, RequestHandler requestHandler, Map<String, String[]> parameters) {
-        String requestURI = result.handlerPath();
-
-        if (requestURI == null)
-            requestURI = injector.getInstance(UriBuilder.class).build(requestHandler.controllerClass(), requestHandler.handlerMethod(), parameters);
-
-        return requestURI;
-    }
-
-    protected Map<String, String[]> mergeParameters(Map<String, String[]> pathParameters, Map<String, Object> resultParameters) {
-        Map<String, String[]> mergedParameters = new HashMap<>();
-
-        if (resultParameters != null) {
-            for (Map.Entry<String, Object> entry : resultParameters.entrySet()) {
-                if (Str.isEmpty(entry.getKey()))
-                    continue;
-
-                if (entry.getValue() != null) {
-                    mergedParameters.put(entry.getKey(), new String[] { String.valueOf(entry.getValue()) });
-                } else {
-                    mergedParameters.put(entry.getKey(), Str.EMPTY_ARRAY);
-                }
-            }
-        }
-
-        if (pathParameters != null)
-            mergedParameters.putAll(pathParameters);
-
-        return mergedParameters;
     }
 
     protected boolean isInvokeNextHandler(Result result) {
@@ -309,29 +259,31 @@ public class DefaultRequestRunner implements RequestRunner {
         requestCtx.setAttribute("handler-exec-count", handlerExecCount == null ? 1 : ++handlerExecCount);
     }
 
-    protected boolean onErrorViewExists(RequestHandler requestHandler) {
-        return onErrorView(requestHandler) != null;
+    protected boolean onErrorResultExists(RequestHandler requestHandler) {
+        return onErrorResult(requestHandler) != null;
     }
 
-    protected String onErrorView(RequestHandler requestHandler) {
+    protected String onErrorResult(RequestHandler requestHandler) {
         Request controllerRequestMapping = requestHandler.controllerRequestMapping();
         Request handlerRequestMapping = requestHandler.handlerRequestMapping();
 
         if (!Str.isEmpty(handlerRequestMapping.onError())) {
             String onError = handlerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("view:")) {
+            if (!onError.startsWith("view:") && !onError.startsWith("handler:")) {
                 onError = "view:" + onError;
             }
+
             return onError;
         }
 
         if (!Str.isEmpty(controllerRequestMapping.onError())) {
             String onError = controllerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("view:")) {
+            if (!onError.startsWith("view:") && !onError.startsWith("handler:")) {
                 onError = "view:" + onError;
             }
+
             return onError;
         }
 
@@ -350,11 +302,11 @@ public class DefaultRequestRunner implements RequestRunner {
 
         if (result != null) {
             errorResult = result(result);
-        } else if (!errors.isEmpty() && onErrorViewExists(requestHandler)) {
-            errorResult = result(onErrorView(requestHandler));
+        } else if (!errors.isEmpty() && onErrorResultExists(requestHandler)) {
+            errorResult = result(onErrorResult(requestHandler));
         }
 
-        // If result and errors exist, re-bind values to the result object if they do not exist yet.
+        // If result object and errors exist, re-bind values if they do not yet exist.
         if (errorResult != null && !errors.isEmpty()) {
             for (Map.Entry<String, Object> entry : typedValues.entrySet()) {
                 if (!errorResult.containsBinding(entry.getKey())) {
@@ -418,7 +370,7 @@ public class DefaultRequestRunner implements RequestRunner {
             String result = ((String) handlerResult).trim();
 
             if (result.startsWith("view:")) {
-                return Results.view(result.substring(8).trim());
+                return Results.view(result.substring(5).trim());
             } else if (result.startsWith("redirect:")) {
                 return Results.redirect(result.substring(9).trim());
             } else if (result.startsWith("handler:")) {

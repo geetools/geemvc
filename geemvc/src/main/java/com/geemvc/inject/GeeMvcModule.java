@@ -70,6 +70,7 @@ import com.geemvc.handler.DefaultCompositeControllerResolver;
 import com.geemvc.handler.DefaultCompositeHandlerResolver;
 import com.geemvc.handler.DefaultHandlerResolutionPlan;
 import com.geemvc.handler.DefaultRequestHandler;
+import com.geemvc.handler.DefaultRequestHandlerInfo;
 import com.geemvc.handler.DefaultRequestHandlerKey;
 import com.geemvc.handler.DefaultRequestHandlers;
 import com.geemvc.handler.DefaultRequestMappingKey;
@@ -77,6 +78,7 @@ import com.geemvc.handler.DefaultSimpleControllerResolver;
 import com.geemvc.handler.DefaultSimpleHandlerResolver;
 import com.geemvc.handler.HandlerResolutionPlan;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.handler.RequestHandlerInfo;
 import com.geemvc.handler.RequestHandlerKey;
 import com.geemvc.handler.RequestHandlers;
 import com.geemvc.handler.RequestMappingKey;
@@ -222,6 +224,7 @@ public class GeeMvcModule extends AbstractModule {
         configurePathRegex();
         configureRequestHandler();
         configureRequestHandlers();
+        configureRequestHandlerInfo();
         configureRequestHandlerKey();
         configureRequestMappingKey();
         configureCompositeHandlerResolver();
@@ -468,6 +471,10 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureRequestHandlers() {
         bind(RequestHandlers.class).to(DefaultRequestHandlers.class);
+    }
+
+    protected void configureRequestHandlerInfo() {
+        bind(RequestHandlerInfo.class).to(DefaultRequestHandlerInfo.class);
     }
 
     protected void configureMethodParams() {
