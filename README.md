@@ -111,7 +111,7 @@ public class HelloWorldController {
         System.out.println("Well done! You have successfully called the /hello/world controller.");        
         
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
@@ -129,7 +129,7 @@ public class HelloWorldController {
         System.out.println("Well done! You can now use the id path parameter in your code. The id is: " + id);
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
@@ -157,7 +157,7 @@ public class HelloWorldController {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }    
 ```
@@ -282,7 +282,7 @@ public class HelloWorldController {
     @Request("world-form")
     public String helloWorld() {
         // Located at /WEB-INF/jsp/pages/hello-world-form.jsp
-        return "forward: hello-world-form";
+        return "view: hello-world-form";
     }
 
     /**
@@ -486,7 +486,7 @@ public class HelloWorldController {
         // Inject your object.
         WorldBean world = injector.getInstance(WorldBean.class);
 
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
