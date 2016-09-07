@@ -33,6 +33,6 @@ public class PersonValidator implements Validator {
         if (p.getAge() < 20)
             e.add("person.age", "error.validation.minage", p.getAge(), 20);
 
-        return "forward: form.ftl";
+        return "view: form.ftl";
     }
 }

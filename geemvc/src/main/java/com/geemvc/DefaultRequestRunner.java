@@ -320,8 +320,8 @@ public class DefaultRequestRunner implements RequestRunner {
         if (!Str.isEmpty(handlerRequestMapping.onError())) {
             String onError = handlerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("forward:")) {
-                onError = "forward:" + onError;
+            if (!onError.startsWith("view:")) {
+                onError = "view:" + onError;
             }
             return onError;
         }
@@ -329,8 +329,8 @@ public class DefaultRequestRunner implements RequestRunner {
         if (!Str.isEmpty(controllerRequestMapping.onError())) {
             String onError = controllerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("forward:")) {
-                onError = "forward:" + onError;
+            if (!onError.startsWith("view:")) {
+                onError = "view:" + onError;
             }
             return onError;
         }
@@ -417,7 +417,7 @@ public class DefaultRequestRunner implements RequestRunner {
         if (handlerResult instanceof String) {
             String result = ((String) handlerResult).trim();
 
-            if (result.startsWith("forward:")) {
+            if (result.startsWith("view:")) {
                 return Results.view(result.substring(8).trim());
             } else if (result.startsWith("redirect:")) {
                 return Results.redirect(result.substring(9).trim());
