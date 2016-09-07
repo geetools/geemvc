@@ -16,15 +16,15 @@
 
 package com.geemvc.intercept;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import com.geemvc.Bindings;
 import com.geemvc.RequestContext;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.validation.Errors;
-import com.geemvc.view.bean.View;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import com.geemvc.view.bean.Result;
 
 public class DefaultLifecycleContext implements LifecycleContext {
     protected Annotation lifecycleAnnotation;
@@ -33,9 +33,8 @@ public class DefaultLifecycleContext implements LifecycleContext {
     protected Bindings bindings;
     protected Errors errors;
     protected Notices notices;
-    protected View view;
+    protected Result result;
     protected boolean invokeHandler = true;
-
 
     @Override
     public LifecycleContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices) {
@@ -57,7 +56,6 @@ public class DefaultLifecycleContext implements LifecycleContext {
     public Annotation lifecycle() {
         return lifecycleAnnotation;
     }
-
 
     @Override
     public RequestHandler requestHandler() {
@@ -86,13 +84,13 @@ public class DefaultLifecycleContext implements LifecycleContext {
     }
 
     @Override
-    public View view() {
-        return view;
+    public Result result() {
+        return result;
     }
 
     @Override
-    public LifecycleContext view(View view) {
-        this.view = view;
+    public LifecycleContext result(Result result) {
+        this.result = result;
         return this;
     }
 

@@ -87,10 +87,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/{param1}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/{param1}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param1"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param1")[0], "someParam");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param1"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param1")[0], "someParam");
     }
 
     @Test
@@ -117,12 +117,12 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/{param1}/{param2}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/{param1}/{param2}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/([^\\/]+)/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 2);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param1"));
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param2"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param1")[0], "someParam");
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param2")[0], "andAnother");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 2);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param1"));
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param2"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param1")[0], "someParam");
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param2")[0], "andAnother");
     }
 
     @Test
@@ -149,12 +149,12 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/{param1}-{param2}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/{param1}-{param2}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/([^\\/]+)-([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 2);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param1"));
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param2"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param1")[0], "someParam");
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param2")[0], "andAnother");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 2);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param1"));
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param2"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param1")[0], "someParam");
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param2")[0], "andAnother");
     }
 
     @Test
@@ -181,10 +181,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/id/{param3:^\\d+}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/id/{param3:^\\d+}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/id/(\\d+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param3"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param3")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param3"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param3")[0], "12345");
     }
 
     @Test
@@ -211,10 +211,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/id/{param3:^\\d+}/testme", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/id/{param3:^\\d+}/testme", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/id/(\\d+)/testme$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param3"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param3")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param3"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param3")[0], "12345");
     }
 
     @Test
@@ -241,12 +241,12 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/id/{param3:^\\d+}/{param4}/testme", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/id/{param3:^\\d+}/{param4}/testme", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/id/(\\d+)/([^\\/]+)/testme$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 2);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param3"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param3")[0], "12345");
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("param4"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("param4")[0], "abcde");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 2);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param3"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param3")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("param4"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("param4")[0], "abcde");
     }
 
     @Test
@@ -273,10 +273,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("{id}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
     }
 
     @Test
@@ -303,10 +303,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("{id}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
         Assert.assertEquals(requestHandler.handlerRequestMapping().method()[0], HttpMethod.POST);
     }
 
@@ -338,10 +338,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedHeaderExists("Accept=application/json", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
         Assert.assertEquals(requestHandler.handlerRequestMapping().method()[0], HttpMethod.POST);
     }
 
@@ -373,10 +373,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedHeaderExists("Accept  =  application/xml", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
         Assert.assertEquals(requestHandler.handlerRequestMapping().method()[0], HttpMethod.POST);
     }
 
@@ -412,10 +412,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedHeaderExists("Accept=application/xml", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
         Assert.assertEquals(requestHandler.handlerRequestMapping().method()[0], HttpMethod.POST);
     }
 
@@ -453,10 +453,10 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedParameterExists("param1=val1", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/{id}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("id"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("id")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("id"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("id")[0], "12345");
         Assert.assertEquals(requestHandler.handlerRequestMapping().method()[0], HttpMethod.POST);
     }
 
@@ -487,9 +487,9 @@ public class PathParametersTest extends BaseTest {
         assertTrue(mappedPathExists("/handler15/test-regex/{regex-param:\\d+}", requestHandler.handlerRequestMapping()));
         assertEquals("/controller15/handler15/test-regex/{regex-param:\\d+}", requestHandler.pathMatcher().getMappedPath());
         assertEquals("^/controller15/handler15/test-regex/(\\d+)$", requestHandler.pathMatcher().getRegexPath());
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).size(), 1);
-        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx).containsKey("regex-param"));
-        assertEquals(requestHandler.pathMatcher().parameters(reqCtx).get("regex-param")[0], "12345");
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).size(), 1);
+        assertNotNull(requestHandler.pathMatcher().parameters(reqCtx.getPath()).containsKey("regex-param"));
+        assertEquals(requestHandler.pathMatcher().parameters(reqCtx.getPath()).get("regex-param")[0], "12345");
     }
 }

@@ -17,14 +17,14 @@
 package com.geemvc.mock.controller;
 
 import com.geemvc.HttpMethod;
-import com.geemvc.Views;
+import com.geemvc.Results;
 import com.geemvc.annotation.Controller;
 import com.geemvc.annotation.Request;
 import com.geemvc.bind.param.annotation.Data;
 import com.geemvc.bind.param.annotation.PathParam;
 import com.geemvc.mock.bean.Person;
 import com.geemvc.mock.repository.Persons;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Inject;
 
 @Controller
@@ -38,20 +38,20 @@ public class TestController20 {
     }
 
     @Request(path = "/")
-    public View getAll() {
-        return Views.forward("person/list").bind("persons", persons.all());
+    public Result getAll() {
+        return Results.view("person/list").bind("persons", persons.all());
     }
 
     @Request(path = "/{id}")
-    public View get(@Data Person person) {
-        return Views.forward("person/details").bind("person", person);
+    public Result get(@Data Person person) {
+        return Results.view("person/details").bind("person", person);
     }
 
     @Request(path = "/", method = HttpMethod.POST)
-    public View create(Person person) {
+    public Result create(Person person) {
         Person p = persons.add(person);
 
-        return Views.redirect("/persons/success").bind("person", p);
+        return Results.redirect("/persons/success").bind("person", p);
     }
 
     @Request(path = "/{id}", method = HttpMethod.PUT)

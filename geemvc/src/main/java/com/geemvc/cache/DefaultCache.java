@@ -103,6 +103,7 @@ public class DefaultCache implements Cache {
                 final Object val = callable.call();
                 return injector.getInstance(CacheEntry.class).build(val);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new IllegalStateException(e);
             }
         };

@@ -16,39 +16,36 @@
 
 package com.geemvc.validation;
 
-import com.geemvc.annotation.Request;
-import com.geemvc.bind.MethodParam;
-import com.geemvc.handler.HandlerResolverStats;
-import com.geemvc.handler.RequestHandler;
-import com.geemvc.matcher.PathMatcher;
-import com.geemvc.view.bean.View;
-
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import com.geemvc.annotation.Request;
+import com.geemvc.bind.MethodParam;
+import com.geemvc.handler.RequestHandler;
+import com.geemvc.matcher.PathMatcher;
+import com.geemvc.view.bean.Result;
 
 /**
  * Created by Michael on 13.07.2016.
  */
 public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
-
-    protected View view;
+    protected Result result;
     protected RequestHandler requestHandler;
 
     @Override
-    public RequestHandler build(View view, RequestHandler requestHandler) {
-        this.view = view;
+    public RequestHandler build(Result result, RequestHandler requestHandler) {
+        this.result = result;
         this.requestHandler = requestHandler;
 
-        if (view == null || requestHandler == null)
+        if (result == null || requestHandler == null)
             throw new NullPointerException();
 
         return this;
     }
 
     @Override
-    public RequestHandler build(Class<?> controllerClass, Method handlerMethod, String consumes, String produces) {
+    public RequestHandler build(Class<?> controllerClass, Method handlerMethod) {
         throw new IllegalStateException("The ViewOnlyRequestHandler does not support this build method");
     }
 
@@ -74,16 +71,6 @@ public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
     }
 
     @Override
-    public String consumes() {
-        return requestHandler.consumes();
-    }
-
-    @Override
-    public String produces() {
-        return requestHandler.produces();
-    }
-
-    @Override
     public RequestHandler pathMatcher(PathMatcher pathMatcher) {
         requestHandler.pathMatcher(pathMatcher);
         return this;
@@ -92,52 +79,6 @@ public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
     @Override
     public PathMatcher pathMatcher() {
         return requestHandler.pathMatcher();
-    }
-
-    @Override
-    public Collection<String> resolvedParameters() {
-        return requestHandler.resolvedParameters();
-    }
-
-    @Override
-    public RequestHandler resolvedParameters(Collection<String> resolvedParameters) {
-        return requestHandler.resolvedCookies(resolvedParameters);
-    }
-
-    @Override
-    public Collection<String> resolvedHeaders() {
-        return requestHandler.resolvedHeaders();
-    }
-
-    @Override
-    public RequestHandler resolvedHeaders(Collection<String> resolvedHeaders) {
-        requestHandler.resolvedHeaders(resolvedHeaders);
-        return this;
-    }
-
-    @Override
-    public Collection<String> resolvedCookies() {
-        return requestHandler.resolvedCookies();
-    }
-
-    @Override
-    public RequestHandler resolvedCookies(Collection<String> resolvedCookes) {
-        return requestHandler.resolvedCookies(resolvedCookes);
-    }
-
-    @Override
-    public Collection<String> resolvedHandlesScripts() {
-        return requestHandler.resolvedHandlesScripts();
-    }
-
-    @Override
-    public RequestHandler resolvedHandlesScripts(Collection<String> resolvedHandlesScripts) {
-        return requestHandler.resolvedHandlesScripts(resolvedHandlesScripts);
-    }
-
-    @Override
-    public HandlerResolverStats handlerResolverStats() {
-        return requestHandler.handlerResolverStats();
     }
 
     @Override
@@ -157,7 +98,7 @@ public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
 
     @Override
     public Object invoke(Map<String, Object> args) {
-        return this.view;
+        return this.result;
     }
 
     @Override

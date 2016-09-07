@@ -17,6 +17,7 @@
 package com.geemvc;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.geemvc.config.Configuration;
 import com.geemvc.config.Configurations;
+import com.geemvc.converter.adapter.DateConverterAdapter;
 import com.geemvc.inject.DefaultInjectorProvider;
 import com.geemvc.inject.InjectorProvider;
 import com.geemvc.inject.Injectors;
@@ -38,6 +40,8 @@ import com.geemvc.reflect.ReflectionsStash;
 import com.geemvc.reflect.ReflectionsWrapper;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
+import jodd.typeconverter.TypeConverterManager;
 
 @Singleton
 public class DispatcherServlet extends HttpServlet {
@@ -51,6 +55,9 @@ public class DispatcherServlet extends HttpServlet {
 
         Configuration configuration = Configurations.builder().build(config);
         config.getServletContext().setAttribute(Configuration.class.getName(), configuration);
+
+        // Register the Jodd type converter.
+        TypeConverterManager.register(Date.class, new DateConverterAdapter());
     }
 
     @Override
@@ -127,7 +134,7 @@ public class DispatcherServlet extends HttpServlet {
         for (String excludePath : excudePathMappings) {
             PathMatcher pathMatcher = injector.getInstance(PathMatcher.class).build(excludePath);
 
-            if (pathMatcher.matches(injector.getInstance(PathOnlyRequestContext.class).build(requestURI), null)) {
+            if (pathMatcher.matches(injector.getInstance(InternalRequestContext.class).build(requestURI), null)) {
                 return true;
             }
         }

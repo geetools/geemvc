@@ -723,6 +723,7 @@ public class DefaultReflectionProvider implements ReflectionProvider {
         return type.isPrimitive()
                 || type.isEnum()
                 || Number.class.isAssignableFrom(type)
+                || Boolean.class.isAssignableFrom(type)
                 || CharSequence.class.isAssignableFrom(type)
                 || Date.class.isAssignableFrom(type)
                 || Locale.class.isAssignableFrom(type)

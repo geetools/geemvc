@@ -16,6 +16,21 @@
 
 package com.geemvc.handler;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+
 import com.geemvc.Str;
 import com.geemvc.annotation.Request;
 import com.geemvc.bind.MethodParam;
@@ -23,29 +38,15 @@ import com.geemvc.helper.Annotations;
 import com.geemvc.matcher.PathMatcher;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
 import jodd.paramo.MethodParameter;
 import jodd.paramo.Paramo;
-
-import javax.ws.rs.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 public class DefaultRequestHandler implements RequestHandler {
     protected Class<?> controllerClass = null;
     protected Method method = null;
     protected String name = null;
     protected PathMatcher pathMatcher = null;
-    protected Collection<String> resolvedParameters = null;
-    protected Collection<String> resolvedHeaders = null;
-    protected Collection<String> resolvedCookies = null;
-    protected Collection<String> resolvedHandlesScripts = null;
-    protected String consumes = null;
-    protected String produces = null;
     protected List<MethodParam> methodParams = null;
 
     protected boolean isInitialized = false;
@@ -53,12 +54,10 @@ public class DefaultRequestHandler implements RequestHandler {
     @Inject
     protected Injector injector;
 
-    public RequestHandler build(Class<?> controllerClass, Method method, String consumes, String produces) {
+    public RequestHandler build(Class<?> controllerClass, Method method) {
         if (!isInitialized) {
             this.controllerClass = controllerClass;
             this.method = method;
-            this.consumes = consumes;
-            this.produces = produces;
 
             isInitialized = true;
         } else {
@@ -88,16 +87,6 @@ public class DefaultRequestHandler implements RequestHandler {
     }
 
     @Override
-    public String consumes() {
-        return consumes;
-    }
-
-    @Override
-    public String produces() {
-        return produces;
-    }
-
-    @Override
     public RequestHandler pathMatcher(PathMatcher pathMatcher) {
         this.pathMatcher = pathMatcher;
         return this;
@@ -106,50 +95,6 @@ public class DefaultRequestHandler implements RequestHandler {
     @Override
     public PathMatcher pathMatcher() {
         return pathMatcher;
-    }
-
-    @Override
-    public Collection<String> resolvedParameters() {
-        return resolvedParameters;
-    }
-
-    @Override
-    public RequestHandler resolvedParameters(Collection<String> resolvedParameters) {
-        this.resolvedParameters = resolvedParameters;
-        return this;
-    }
-
-    @Override
-    public Collection<String> resolvedHeaders() {
-        return resolvedHeaders;
-    }
-
-    @Override
-    public RequestHandler resolvedHeaders(Collection<String> resolvedHeaders) {
-        this.resolvedHeaders = resolvedHeaders;
-        return this;
-    }
-
-    @Override
-    public Collection<String> resolvedCookies() {
-        return resolvedCookies;
-    }
-
-    @Override
-    public RequestHandler resolvedCookies(Collection<String> resolvedCookies) {
-        this.resolvedCookies = resolvedCookies;
-        return this;
-    }
-
-    @Override
-    public Collection<String> resolvedHandlesScripts() {
-        return resolvedHandlesScripts;
-    }
-
-    @Override
-    public RequestHandler resolvedHandlesScripts(Collection<String> resolvedHandlesScripts) {
-        this.resolvedHandlesScripts = resolvedHandlesScripts;
-        return this;
     }
 
     @Override
@@ -185,11 +130,6 @@ public class DefaultRequestHandler implements RequestHandler {
     }
 
     @Override
-    public HandlerResolverStats handlerResolverStats() {
-        return injector.getInstance(HandlerResolverStats.class).build(resolvedParameters, resolvedHeaders, resolvedCookies, resolvedHandlesScripts);
-    }
-
-    @Override
     public List<MethodParam> methodParams() {
         if (methodParams == null) {
             methodParams = new ArrayList<>();
@@ -222,10 +162,8 @@ public class DefaultRequestHandler implements RequestHandler {
 
             return method.invoke(injector == null ? controllerClass.newInstance() : injector.getInstance(controllerClass), args);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Unable to invoke request handler: " + toGenericString() + ". " + e.getMessage(), e);
         }
-
-        return null;
     }
 
     @Override

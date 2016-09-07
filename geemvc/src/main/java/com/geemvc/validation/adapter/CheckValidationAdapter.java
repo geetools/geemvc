@@ -20,10 +20,10 @@ import com.geemvc.Str;
 import com.geemvc.annotation.Adapter;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.helper.Paths;
+import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.script.Evaluator;
 import com.geemvc.script.EvaluatorContext;
 import com.geemvc.script.RegexEvaluator;
-import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.validation.AbstractValidator;
 import com.geemvc.validation.Errors;
 import com.geemvc.validation.ValidationAdapter;
@@ -65,16 +65,12 @@ public class CheckValidationAdapter extends AbstractValidator implements Validat
             if (evaluator instanceof DefaultSimpleEvaluator || evaluator instanceof RegexEvaluator) {
                 evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
             } else {
-                // All other will get the converted typed map values.
+                // All others will get the converted typed map values.
                 evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.typedValues()).append(validationCtx.requestCtx());
             }
 
-            if (evaluator.matches(evalCtx)) {
-                System.out.println("--- WHEN expression '" + whenExpression + "' matches request parameters!");
+            if (evaluator.matches(evalCtx))
                 return true;
-            } else {
-                System.out.println("--- WHEN expression '" + whenExpression + "' does NOT match request parameters!");
-            }
         }
 
         return false;
@@ -105,11 +101,11 @@ public class CheckValidationAdapter extends AbstractValidator implements Validat
                     errors.add(param, "validation.error.minLength", value, checkAnnotation.minLength());
                 } else if (!validateMaxLength(checkAnnotation.maxLength(), value)) {
                     errors.add(param, "validation.error.maxLength", value, checkAnnotation.maxLength());
-                } else if (!validateIs(checkAnnotation, validationCtx)) {
+                } else if (!validateIs(checkAnnotation, param, validationCtx)) {
                     errors.add(param, "validation.error.is");
                 }
             }
-        } else if (!validateIs(checkAnnotation, validationCtx)) {
+        } else if (!validateIs(checkAnnotation, name, validationCtx)) {
             errors.add(null, "validation.error.is");
         }
     }

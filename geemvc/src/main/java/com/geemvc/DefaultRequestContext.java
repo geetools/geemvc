@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.geemvc.handler.HandlerResolutionPlan;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.view.GeemvcKey;
 
@@ -48,6 +49,7 @@ public class DefaultRequestContext implements RequestContext {
     protected String contentTypeHeader = "Content-Type";
 
     protected RequestHandler requestHandler;
+    protected Map<Integer, HandlerResolutionPlan> handlerResolutionPlans;
 
     protected String requestURI = null;
     protected String servletPath = null;
@@ -87,6 +89,20 @@ public class DefaultRequestContext implements RequestContext {
     }
 
     @Override
+    public RequestContext add(RequestHandler requestHandler, HandlerResolutionPlan handlerResolutionPlan) {
+        if (handlerResolutionPlans == null)
+            handlerResolutionPlans = new LinkedHashMap<>();
+
+        handlerResolutionPlans.put(requestHandler.toGenericString().hashCode(), handlerResolutionPlan);
+        return this;
+    }
+
+    @Override
+    public HandlerResolutionPlan handlerResolutionPlan(RequestHandler requestHandler) {
+        return handlerResolutionPlans == null || requestHandler == null ? null : handlerResolutionPlans.get(requestHandler.toGenericString().hashCode());
+    }
+
+    @Override
     public String getPath() {
 
         String path = null;
@@ -103,7 +119,7 @@ public class DefaultRequestContext implements RequestContext {
     }
 
     public Map<String, String[]> getPathParameters() {
-        return requestHandler.pathMatcher().parameters(this);
+        return requestHandler.pathMatcher().parameters(getPath());
     }
 
     protected String normalizeSlashes(String path) {
@@ -189,7 +205,7 @@ public class DefaultRequestContext implements RequestContext {
 
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
-                cookieMap.put(cookie.getName(), new String[]{cookie.getValue()});
+                cookieMap.put(cookie.getName(), new String[] { cookie.getValue() });
             }
         }
 
@@ -275,32 +291,25 @@ public class DefaultRequestContext implements RequestContext {
 
     @Override
     public Collection<String> getAttributeNames() {
-        HttpSession session = request.getSession();
+        Enumeration<String> requestAttrNames = request.getAttributeNames();
 
-        if (session != null) {
-            HashSet<String> names = new HashSet<>();
+        HashSet<String> names = new HashSet<>();
 
-            Enumeration<String> sessionNames = session.getAttributeNames();
-
-            while (sessionNames.hasMoreElements()) {
-                names.add((String) sessionNames.nextElement());
-            }
-
-            return names;
+        while (requestAttrNames.hasMoreElements()) {
+            names.add((String) requestAttrNames.nextElement());
         }
 
-        return null;
+        return names;
     }
 
     @Override
     public Object getAttribute(String name) {
-        HttpSession session = request.getSession();
+        return request.getAttribute(name);
+    }
 
-        if (session != null) {
-            return session.getAttribute(name);
-        }
-
-        return null;
+    @Override
+    public void setAttribute(String name, Object value) {
+        request.setAttribute(name, value);
     }
 
     @Override

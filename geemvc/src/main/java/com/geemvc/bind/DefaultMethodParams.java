@@ -16,23 +16,29 @@
 
 package com.geemvc.bind;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
 import com.geemvc.bind.param.ParamAdapter;
 import com.geemvc.bind.param.ParamAdapterFactory;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
-import com.geemvc.converter.*;
+import com.geemvc.converter.BeanConverter;
+import com.geemvc.converter.ConverterAdapter;
+import com.geemvc.converter.ConverterAdapterFactory;
+import com.geemvc.converter.ConverterContext;
+import com.geemvc.converter.SimpleConverter;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DefaultMethodParams implements MethodParams {
     protected final ParamAdapterFactory paramAdapterFactory;
@@ -41,6 +47,9 @@ public class DefaultMethodParams implements MethodParams {
 
     @Inject
     protected Injector injector;
+
+    @Logger
+    protected Log log;
 
     @Inject
     public DefaultMethodParams(ParamAdapterFactory paramAdapterFactory, ConverterAdapterFactory converterAdapterFactory, ReflectionProvider reflectionProvider) {
@@ -77,7 +86,7 @@ public class DefaultMethodParams implements MethodParams {
         return paramValues;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Map<String, Object> typedValues(Map<String, List<String>> requestValues, List<MethodParam> methodParams, RequestContext requestCtx) {
         SimpleConverter simpleConverter = injector.getInstance(SimpleConverter.class);
@@ -126,14 +135,22 @@ public class DefaultMethodParams implements MethodParams {
                 List<Class<?>> genericType = reflectionProvider.getGenericType(parameterizedType);
 
                 ConverterAdapter<?> converterAdapter = converterAdapterFactory.create(type, parameterizedType);
+                ConverterContext converterCtx = injector.getInstance(ConverterContext.class).build(name, type, genericType, requestCtx);
 
-                if (converterAdapter != null) {
-                    Object convertedValue = converterAdapter.fromStrings(value, injector.getInstance(ConverterContext.class).build(name, type, genericType, requestCtx));
+                if (converterAdapter != null && Str.isEmpty(value.get(0))) {
+                    typedValues.put(name, null);
+                } else if (converterAdapter != null && converterAdapter.canConvert(value, converterCtx)) {
+                    Object convertedValue = converterAdapter.fromStrings(value, converterCtx);
                     typedValues.put(name, convertedValue);
                 } else {
                     if (simpleConverter.canConvert((Class<?>) type)) {
-                        Object typedVal = simpleConverter.fromString(value.get(0), (Class<?>) type);
-                        typedValues.put(name, typedVal);
+                        try {
+                            Object typedVal = simpleConverter.fromString(value.get(0), (Class<?>) type);
+                            typedValues.put(name, typedVal);
+                        } catch (Exception e) {
+                            log.warn("Unable to convert parameter '{}' due to the following error: '{}'. Binding 'null' instead.", () -> name, () -> e.getMessage());
+                            typedValues.put(name, null);
+                        }
                     } else {
                         Object bean = beanConverter.fromStrings(value, name, type);
                         typedValues.put(name, bean);

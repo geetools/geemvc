@@ -26,10 +26,10 @@ import javax.ws.rs.ext.RuntimeDelegate;
 
 import com.geemvc.Bindings;
 import com.geemvc.DefaultBindings;
-import com.geemvc.DefaultPathOnlyRequestContext;
+import com.geemvc.DefaultInternalRequestContext;
 import com.geemvc.DefaultRequestContext;
 import com.geemvc.DefaultRequestRunner;
-import com.geemvc.PathOnlyRequestContext;
+import com.geemvc.InternalRequestContext;
 import com.geemvc.RequestContext;
 import com.geemvc.RequestRunner;
 import com.geemvc.bind.DefaultMethodParam;
@@ -68,15 +68,17 @@ import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
 import com.geemvc.handler.DefaultCompositeControllerResolver;
 import com.geemvc.handler.DefaultCompositeHandlerResolver;
-import com.geemvc.handler.DefaultHandlerResolverStats;
+import com.geemvc.handler.DefaultHandlerResolutionPlan;
 import com.geemvc.handler.DefaultRequestHandler;
 import com.geemvc.handler.DefaultRequestHandlerKey;
+import com.geemvc.handler.DefaultRequestHandlers;
 import com.geemvc.handler.DefaultRequestMappingKey;
 import com.geemvc.handler.DefaultSimpleControllerResolver;
 import com.geemvc.handler.DefaultSimpleHandlerResolver;
-import com.geemvc.handler.HandlerResolverStats;
+import com.geemvc.handler.HandlerResolutionPlan;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.handler.RequestHandlerKey;
+import com.geemvc.handler.RequestHandlers;
 import com.geemvc.handler.RequestMappingKey;
 import com.geemvc.handler.SimpleControllerResolver;
 import com.geemvc.handler.SimpleHandlerResolver;
@@ -88,10 +90,12 @@ import com.geemvc.helper.DefaultMimeTypes;
 import com.geemvc.helper.DefaultPaths;
 import com.geemvc.helper.DefaultRequests;
 import com.geemvc.helper.DefaultStrings;
+import com.geemvc.helper.DefaultUriBuilder;
 import com.geemvc.helper.MimeTypes;
 import com.geemvc.helper.Paths;
 import com.geemvc.helper.Requests;
 import com.geemvc.helper.Strings;
+import com.geemvc.helper.UriBuilder;
 import com.geemvc.i18n.locale.DefaultLocaleResolver;
 import com.geemvc.i18n.locale.LocaleResolver;
 import com.geemvc.i18n.message.CompositeMessageResolver;
@@ -186,8 +190,8 @@ import com.geemvc.view.DefaultViewHandler;
 import com.geemvc.view.StreamViewHandler;
 import com.geemvc.view.ViewAdapterFactory;
 import com.geemvc.view.ViewHandler;
-import com.geemvc.view.bean.DefaultView;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.DefaultResult;
+import com.geemvc.view.bean.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
@@ -217,6 +221,7 @@ public class GeeMvcModule extends AbstractModule {
         configureMatcherContext();
         configurePathRegex();
         configureRequestHandler();
+        configureRequestHandlers();
         configureRequestHandlerKey();
         configureRequestMappingKey();
         configureCompositeHandlerResolver();
@@ -268,6 +273,7 @@ public class GeeMvcModule extends AbstractModule {
         configureBindings();
         configureViewOnlyRequestHandler();
         configureStreamViewHandler();
+        configureUriBuilder();
 
         // Jax-RS
         configureJaxRSRuntimeDelegate();
@@ -460,6 +466,10 @@ public class GeeMvcModule extends AbstractModule {
         bind(RequestHandler.class).to(DefaultRequestHandler.class);
     }
 
+    protected void configureRequestHandlers() {
+        bind(RequestHandlers.class).to(DefaultRequestHandlers.class);
+    }
+
     protected void configureMethodParams() {
         bind(MethodParams.class).to(DefaultMethodParams.class);
     }
@@ -477,7 +487,7 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configureHandlerResolverStats() {
-        bind(HandlerResolverStats.class).to(DefaultHandlerResolverStats.class);
+        bind(HandlerResolutionPlan.class).to(DefaultHandlerResolutionPlan.class);
     }
 
     protected void configureRequestRunner() {
@@ -489,7 +499,7 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configurePathOnlyRequestContext() {
-        bind(PathOnlyRequestContext.class).to(DefaultPathOnlyRequestContext.class);
+        bind(InternalRequestContext.class).to(DefaultInternalRequestContext.class);
     }
 
     protected void configureCache() {
@@ -601,7 +611,7 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configureViewBean() {
-        bind(View.class).to(DefaultView.class);
+        bind(Result.class).to(DefaultResult.class);
     }
 
     protected void configureViewAdapterFactory() {
@@ -634,6 +644,10 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureLifecycleContext() {
         bind(LifecycleContext.class).to(DefaultLifecycleContext.class);
+    }
+
+    protected void configureUriBuilder() {
+        bind(UriBuilder.class).to(DefaultUriBuilder.class);
     }
 
     protected Configuration configuration() {

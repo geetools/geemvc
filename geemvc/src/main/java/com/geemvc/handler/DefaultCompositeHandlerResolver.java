@@ -16,6 +16,11 @@
 
 package com.geemvc.handler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import com.geemvc.RequestContext;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.annotation.Logger;
@@ -23,11 +28,6 @@ import com.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @Singleton
 public class DefaultCompositeHandlerResolver implements CompositeHandlerResolver {
@@ -45,6 +45,62 @@ public class DefaultCompositeHandlerResolver implements CompositeHandlerResolver
     public DefaultCompositeHandlerResolver(ReflectionProvider reflectionProvider) {
         this.reflectionProvider = reflectionProvider;
         this.handlerResolvers = reflectionProvider.locateHandlerResolvers();
+    }
+
+    @Override
+    public RequestHandler resolve(Class<?> controllerClass, String handlerMethod) {
+        List<RequestHandler> requestHandlers = new ArrayList<>();
+
+        for (HandlerResolver handlerResolver : handlerResolvers) {
+            log.trace("Looking for handler method {} in controller class {} using handler resolver '{}'.", () -> handlerMethod, () -> controllerClass.getName(), () -> handlerResolver.getClass().getName());
+
+            RequestHandler requestHandler = handlerResolver.resolve(controllerClass, handlerMethod);
+
+            if (requestHandler != null) {
+                log.trace("Found request handler '{}' using handler resolver '{}'.", () -> requestHandler, () -> handlerResolver.getClass().getName());
+                requestHandlers.add(requestHandler);
+            } else {
+                log.trace("No request handler found using handler resolver '{}'.", () -> handlerResolver.getClass().getName());
+            }
+        }
+
+        if (requestHandlers.size() == 1) {
+            log.info("Found 1 request handler ({}) for the handler method {} and controller class {}.", () -> requestHandlers.get(0), () -> handlerMethod, () -> controllerClass.getName());
+        } else if (requestHandlers.isEmpty()) {
+            log.warn("No request handler found for the handler method {} and controller class {}.", () -> handlerMethod, () -> controllerClass.getName());
+        } else if (requestHandlers.size() > 0) {
+            log.info("More than 1 request handlers found for the handler method {} and controller class {}. Using the first one of {}.", () -> requestHandlers.get(0), () -> handlerMethod, () -> requestHandlers);
+        }
+
+        return requestHandlers.isEmpty() ? null : requestHandlers.get(0);
+    }
+
+    @Override
+    public RequestHandler resolveByName(String uniqueName) {
+        List<RequestHandler> requestHandlers = new ArrayList<>();
+
+        for (HandlerResolver handlerResolver : handlerResolvers) {
+            log.trace("Looking for request handler by the unique name '{}' using handler resolver '{}'.", () -> uniqueName, () -> handlerResolver.getClass().getName());
+
+            RequestHandler requestHandler = handlerResolver.resolveByName(uniqueName);
+
+            if (requestHandler != null) {
+                log.trace("Found request handler '{}' using handler resolver '{}'.", () -> requestHandler, () -> handlerResolver.getClass().getName());
+                requestHandlers.add(requestHandler);
+            } else {
+                log.trace("No request handler found using handler resolver '{}'.", () -> handlerResolver.getClass().getName());
+            }
+        }
+
+        if (requestHandlers.size() == 1) {
+            log.info("Found 1 request handler ({}) for the unique name '{}' '{}'.", () -> requestHandlers.get(0), () -> uniqueName);
+        } else if (requestHandlers.isEmpty()) {
+            log.warn("No request handler found for the unique name '{}'.", () -> uniqueName);
+        } else if (requestHandlers.size() > 0) {
+            log.info("More than 1 request handlers found for the the unique name '{}'. Using the first one of {}.", () -> uniqueName, () -> requestHandlers);
+        }
+
+        return requestHandlers.isEmpty() ? null : requestHandlers.get(0);
     }
 
     @Override

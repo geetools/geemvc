@@ -24,11 +24,11 @@ import java.lang.annotation.Target;
 import com.geemvc.validation.Validator;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Request {
-    String[] value() default {};
+    String value() default "";
 
-    String[] path() default {};
+    String path() default "";
 
     String name() default "";
 

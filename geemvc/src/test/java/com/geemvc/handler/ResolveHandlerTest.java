@@ -28,21 +28,21 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
-import com.geemvc.mock.controller.TestController13;
 import org.junit.Test;
 
 import com.geemvc.RequestContext;
 import com.geemvc.matcher.PathMatcherKey;
+import com.geemvc.mock.controller.TestController13;
 import com.geemvc.test.BaseTest;
 
 public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13a() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "one"));
@@ -63,8 +63,9 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
-        assertNotNull(requestHandler.resolvedCookies());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedCookies());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13a", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -80,10 +81,10 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13b() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/xml"});
+        headers.put("Accept", new String[] { "application/xml" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "one"));
@@ -104,7 +105,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13b", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -120,10 +122,10 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13c() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "two"));
@@ -144,7 +146,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -160,10 +163,10 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13d() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"delete"});
+        params.put("cmd", new String[] { "delete" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "one"));
@@ -184,7 +187,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13d", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -200,10 +204,10 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13e() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "one"));
@@ -224,7 +228,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -240,7 +245,7 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13f() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("group", "one"));
@@ -261,7 +266,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13f", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -276,7 +282,7 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13g() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller13/handler13", "GET", (Map<String, String[]>) null, headers);
 
@@ -294,7 +300,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13g", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -323,7 +330,9 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
+
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13h", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -351,7 +360,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13i", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -379,7 +389,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13j", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -407,7 +418,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13kA", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -420,10 +432,10 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13l() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller13/handler13/same/path", params, headers);
 
@@ -441,7 +453,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13lB", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -454,7 +467,7 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13m() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller13/handler13/same/path2", params);
 
@@ -472,7 +485,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13mB", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));
@@ -485,7 +499,7 @@ public class ResolveHandlerTest extends BaseTest {
     @Test
     public void testFindcontroller13n() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"test123"});
+        params.put("cmd", new String[] { "test123" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller13/handler13/same/path3", params);
 
@@ -503,7 +517,8 @@ public class ResolveHandlerTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController13.class);
         assertEquals("handler13nA", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller13", controllers.values()));

@@ -19,8 +19,20 @@ package com.geemvc.handler;
 import java.io.Serializable;
 import java.util.Collection;
 
-public interface HandlerResolverStats extends Serializable {
-    HandlerResolverStats build(Collection<String> resolvedParameters, Collection<String> resolvedHeaders, Collection<String> resolvedCookies, Collection<String> resolvedHandlesScripts);
+public interface HandlerResolutionPlan extends Serializable {
+    HandlerResolutionPlan buildCompatible(Collection<String> resolvedParameters, Collection<String> resolvedHeaders, Collection<String> resolvedCookes, Collection<String> resolvedHandlesScripts);
+
+    HandlerResolutionPlan build();
+
+    boolean isCompatible();
+
+    Collection<String> resolvedParameters();
+
+    Collection<String> resolvedHeaders();
+
+    Collection<String> resolvedCookies();
+
+    Collection<String> resolvedHandlesScripts();
 
     int numResolvedParameters();
 

@@ -29,7 +29,12 @@ import com.google.inject.Injector;
 @Adapter
 public class BooleanArrayConverterAdapter implements ConverterAdapter<boolean[]> {
     @Inject
-    Injector injector;
+    protected Injector injector;
+
+    @Override
+    public boolean canConvert(List<String> values, ConverterContext ctx) {
+        return true;
+    }
 
     @Override
     public boolean[] fromStrings(List<String> values, ConverterContext ctx) {

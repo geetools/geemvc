@@ -119,9 +119,7 @@ public class BaseTest {
     }
 
     protected String firstMappedPath(Request requestMapping) {
-        String[] paths = injector.getInstance(Annotations.class).paths(requestMapping);
-
-        return paths == null || paths.length == 0 ? null : paths[0];
+        return injector.getInstance(Annotations.class).path(requestMapping);
     }
 
     protected String firstRegexPath(Map<PathMatcherKey, Class<?>> controllers) {
@@ -145,9 +143,7 @@ public class BaseTest {
         if (controllerClass == null)
             return null;
 
-        String[] paths = injector.getInstance(Annotations.class).paths(requestMapping(controllerClass));
-
-        return paths == null || paths.length == 0 ? null : paths[0];
+        return injector.getInstance(Annotations.class).path(requestMapping(controllerClass));
     }
 
     protected boolean controllerPathExists(String mappedPath, Collection<Class<?>> controllerClasses) {
@@ -169,9 +165,7 @@ public class BaseTest {
         if (mappedPath == null || requestMapping == null)
             return false;
 
-        String[] paths = injector.getInstance(Annotations.class).paths(requestMapping);
-
-        return paths == null || paths.length == 0 ? false : Arrays.asList(paths).contains(mappedPath);
+        return injector.getInstance(Annotations.class).path(requestMapping).equals(mappedPath);
     }
 
     protected boolean mappedParameterExists(String mappedParam, Request requestMapping) {
@@ -272,9 +266,9 @@ public class BaseTest {
             return null;
 
         for (Class<?> controllerClass : controllerClasses) {
-            String[] paths = injector.getInstance(Annotations.class).paths(requestMapping(controllerClass));
+            String path = injector.getInstance(Annotations.class).path(requestMapping(controllerClass));
 
-            if (Arrays.asList(paths).contains(mappedPath))
+            if (path.equals(mappedPath))
                 return controllerClass;
         }
 

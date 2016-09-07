@@ -29,7 +29,12 @@ import com.google.inject.Injector;
 @Adapter
 public class CharArrayConverterAdapter implements ConverterAdapter<char[]> {
     @Inject
-    Injector injector;
+    protected Injector injector;
+
+    @Override
+    public boolean canConvert(List<String> values, ConverterContext ctx) {
+        return true;
+    }
 
     @Override
     public char[] fromStrings(List<String> values, ConverterContext ctx) {

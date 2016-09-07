@@ -29,7 +29,12 @@ import com.google.inject.Injector;
 @Adapter
 public class DoubleArrayConverterAdapter implements ConverterAdapter<double[]> {
     @Inject
-    Injector injector;
+    protected Injector injector;
+
+    @Override
+    public boolean canConvert(List<String> values, ConverterContext ctx) {
+        return true;
+    }
 
     @Override
     public double[] fromStrings(List<String> values, ConverterContext ctx) {

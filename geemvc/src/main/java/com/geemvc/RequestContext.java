@@ -26,6 +26,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.geemvc.handler.HandlerResolutionPlan;
 import com.geemvc.handler.RequestHandler;
 
 public interface RequestContext {
@@ -34,6 +35,10 @@ public interface RequestContext {
     RequestContext requestHandler(RequestHandler requestHandler);
 
     RequestHandler requestHandler();
+
+    RequestContext add(RequestHandler requestHandler, HandlerResolutionPlan handlerResolutionPlan);
+
+    HandlerResolutionPlan handlerResolutionPlan(RequestHandler requestHandler);
 
     String getPath();
 
@@ -60,6 +65,8 @@ public interface RequestContext {
     Collection<String> getAttributeNames();
 
     Object getAttribute(String name);
+
+    void setAttribute(String name, Object value);
 
     Map<String, String> getCookies();
 

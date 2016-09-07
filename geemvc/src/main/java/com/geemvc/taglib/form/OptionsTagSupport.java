@@ -28,10 +28,10 @@ import java.util.Set;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import com.geemvc.reflect.ReflectionProvider;
-import jodd.bean.BeanUtil;
-
 import com.geemvc.Char;
+import com.geemvc.reflect.ReflectionProvider;
+
+import jodd.bean.BeanUtil;
 
 public class OptionsTagSupport extends OptionTagSupport {
     // Expression for value in map or collection.
@@ -50,7 +50,7 @@ public class OptionsTagSupport extends OptionTagSupport {
 
     protected Boolean isMapValueSimpleType;
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void doTag() throws JspException {
         try {
@@ -66,17 +66,19 @@ public class OptionsTagSupport extends OptionTagSupport {
             } else if (values instanceof String) {
                 Object foundValues = attribute((String) values);
 
-                if (foundValues instanceof Collection) {
-                    Collection<?> collectionValues = (Collection<?>) foundValues;
-                    writeOptionsFromCollection(collectionValues);
-                } else if (foundValues instanceof Enumeration) {
-                    Collection<?> collectionValues = Collections.list((Enumeration) foundValues);
-                    writeOptionsFromCollection(collectionValues);
-                } else if (foundValues instanceof Map) {
-                    writeOptionsFromMap((Map<?, ?>) foundValues);
-                } else if (foundValues.getClass().isArray()) {
-                    Collection<?> collectionValues = Arrays.asList((Object[]) foundValues);
-                    writeOptionsFromCollection(collectionValues);
+                if (foundValues != null) {
+                    if (foundValues instanceof Collection) {
+                        Collection<?> collectionValues = (Collection<?>) foundValues;
+                        writeOptionsFromCollection(collectionValues);
+                    } else if (foundValues instanceof Enumeration) {
+                        Collection<?> collectionValues = Collections.list((Enumeration) foundValues);
+                        writeOptionsFromCollection(collectionValues);
+                    } else if (foundValues instanceof Map) {
+                        writeOptionsFromMap((Map<?, ?>) foundValues);
+                    } else if (foundValues.getClass().isArray()) {
+                        Collection<?> collectionValues = Arrays.asList((Object[]) foundValues);
+                        writeOptionsFromCollection(collectionValues);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -134,7 +136,7 @@ public class OptionsTagSupport extends OptionTagSupport {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected void writeOptionsFromMap(Map mapValues) throws IOException, JspException {
         JspWriter writer = jspContext.getOut();
 
@@ -150,7 +152,7 @@ public class OptionsTagSupport extends OptionTagSupport {
                 isMapValueSimpleType = reflectionProvider.isSimpleType(entry.getValue().getClass());
 
             Object optionValue = optionValue(entry);
-            Object optionLabel = optionLabel(entry);
+            String optionLabel = optionLabel(entry);
 
             writeTag(jspContext.getOut(), "option", false, false);
 
@@ -171,7 +173,7 @@ public class OptionsTagSupport extends OptionTagSupport {
             }
 
             writer.write(Char.GREATER_THAN);
-            writer.write(String.valueOf(optionLabel == null ? optionValue : optionLabel));
+            writer.write(optionLabel == null ? String.valueOf(optionValue) : optionLabel);
 
             writeCloseTag(writer, "option", true);
         }
@@ -193,17 +195,19 @@ public class OptionsTagSupport extends OptionTagSupport {
     }
 
     @SuppressWarnings("rawtypes")
-    protected Object optionLabel(Entry mapEntry) {
+    protected String optionLabel(Entry mapEntry) {
         boolean optionLabelIsMapValue = label == null || label.startsWith("value::");
 
         if (optionLabelIsMapValue) {
             String propertyName = label == null ? null : label.startsWith("value::") ? label.substring(7).trim() : label;
+            Object val = mapValue(mapEntry, propertyName);
 
-            return mapValue(mapEntry, propertyName);
+            return val == null ? null : String.valueOf(val);
         } else {
             String propertyName = label == null ? null : label.startsWith("key::") ? label.substring(5).trim() : label;
+            Object key = mapKey(mapEntry, propertyName);
 
-            return mapKey(mapEntry, propertyName);
+            return key == null ? null : String.valueOf(key);
         }
     }
 

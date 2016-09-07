@@ -22,11 +22,11 @@ import java.util.Map;
 
 import com.geemvc.Str;
 import com.geemvc.inject.Injectors;
+import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.script.Evaluator;
 import com.geemvc.script.EvaluatorContext;
 import com.geemvc.script.EvaluatorFactory;
 import com.geemvc.script.RegexEvaluator;
-import com.geemvc.script.DefaultSimpleEvaluator;
 import com.geemvc.validation.annotation.Check;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -131,27 +131,37 @@ public abstract class AbstractValidator {
         return false;
     }
 
-    protected boolean validateIs(Check check, ValidationContext validationCtx) {
+    protected boolean validateIs(Check check, String fieldName, ValidationContext validationCtx) {
         String isExpression = check.is();
 
         if (Str.isEmpty(isExpression))
             return true;
 
-        Evaluator evaluator = evaluatorFactory.find(isExpression);
-        EvaluatorContext evalCtx = null;
+        isExpression = isExpression.trim();
 
-        // The simple and regex evaluators expect the request parameter map.
-        if (evaluator instanceof DefaultSimpleEvaluator || evaluator instanceof RegexEvaluator) {
-            evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
+        // If the expression starts and end with a slash we already know that it is a regular expression.
+        if (isExpression.startsWith(Str.SLASH) && isExpression.endsWith(Str.SLASH)) {
+            // Make the regular expression compatible with the default regex evaluator.
+            Evaluator regexEvaluator = evaluatorFactory.get("regex:", fieldName + "=" + isExpression);
+            EvaluatorContext evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
+            return regexEvaluator.matches(evalCtx);
         } else {
-            // All other will get the converted typed map values.
-            evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.typedValues()).append(validationCtx.requestCtx());
-        }
+            // Otherwise use the standard method of finding the appropriate evaluator.
+            Evaluator evaluator = evaluatorFactory.find(isExpression);
+            EvaluatorContext evalCtx = null;
 
-        if (evaluator.matches(evalCtx)) {
-            return true;
-        }
+            // The simple and regex evaluators expect the request parameter map.
+            if (evaluator instanceof DefaultSimpleEvaluator || evaluator instanceof RegexEvaluator) {
+                evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.requestCtx().getParameterMap()).append(validationCtx.requestCtx());
+            } else {
+                // All other will get the converted typed map values.
+                evalCtx = injector.getInstance(EvaluatorContext.class).build(validationCtx.typedValues()).append(validationCtx.requestCtx());
+            }
 
-        return false;
+            if (evaluator.matches(evalCtx))
+                return true;
+
+            return false;
+        }
     }
 }

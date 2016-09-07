@@ -37,13 +37,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
     @Test
     public void testFindController16a() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("accept", new String[]{MediaType.APPLICATION_JSON});
-        headers.put("content-type", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("accept", new String[] { MediaType.APPLICATION_JSON });
+        headers.put("content-type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller16/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -56,13 +57,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController16.class);
         assertEquals("handler16a", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller16", controllers.values()));
         assertTrue(mappedPathExists("{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/json", requestHandler.consumes());
-        assertEquals("application/json", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/json", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/controller16/{id}", requestHandler.pathMatcher()));
         assertEquals("^/controller16/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
     }
@@ -70,13 +72,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
     @Test
     public void testFindController16b() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_XML});
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_XML});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_XML });
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_XML });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller16/12345", "POST", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -89,13 +92,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController16.class);
         assertEquals("handler16b", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller16", controllers.values()));
         assertTrue(mappedPathExists("{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/xml", requestHandler.consumes());
-        assertEquals("application/xml", requestHandler.produces());
+        assertEquals("application/xml", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/xml", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/controller16/{id}", requestHandler.pathMatcher()));
         assertEquals("^/controller16/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
     }
@@ -103,13 +107,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
     @Test
     public void testFindController16c() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_JSON});
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_XML});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_JSON });
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_XML });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller16/handler16", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -122,26 +127,28 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController16.class);
         assertEquals("handler16c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller16", controllers.values()));
         assertTrue(mappedPathExists("handler16", requestHandler.handlerRequestMapping()));
-        assertEquals("application/xml", requestHandler.consumes());
-        assertEquals("application/json", requestHandler.produces());
+        assertEquals("application/xml", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/json", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/controller16/handler16", requestHandler.pathMatcher()));
     }
 
     @Test
     public void testFindController16d() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_XML});
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_XML });
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller16/handler16", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -154,13 +161,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController16.class);
         assertEquals("handler16d", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller16", controllers.values()));
         assertTrue(mappedPathExists("handler16", requestHandler.handlerRequestMapping()));
-        assertEquals("application/json", requestHandler.consumes());
-        assertEquals("application/xml", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/xml", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/controller16/handler16", requestHandler.pathMatcher()));
     }
 
@@ -169,13 +177,15 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         Map<String, String[]> headers = new HashMap<>();
         headers.put(
                 "Accept",
-                new String[]{"image/gif, image/jpeg, image/pjpeg, application/x-ms-application,         application/vnd.ms-xpsdocument, application/xaml+xml,         application/x-ms-xbap, application/x-shockwave-flash,         application/x-silverlight-2-b2, application/x-silverlight,         application/vnd.ms-excel, application/vnd.ms-powerpoint,         application/msword, text/html, application/xml, */*"});
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_JSON});
+                new String[] {
+                        "image/gif, image/jpeg, image/pjpeg, application/x-ms-application,         application/vnd.ms-xpsdocument, application/xaml+xml,         application/x-ms-xbap, application/x-shockwave-flash,         application/x-silverlight-2-b2, application/x-silverlight,         application/vnd.ms-excel, application/vnd.ms-powerpoint,         application/msword, text/html, application/xml, */*" });
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller16/handler16", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -188,13 +198,14 @@ public class ResolveHandlerByConsumesProducesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController16.class);
         assertEquals("handler16e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller16", controllers.values()));
         assertTrue(mappedPathExists("handler16", requestHandler.handlerRequestMapping()));
-        assertEquals("application/json", requestHandler.consumes());
-        assertEquals("text/html", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("text/html", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/controller16/handler16", requestHandler.pathMatcher()));
     }
 }

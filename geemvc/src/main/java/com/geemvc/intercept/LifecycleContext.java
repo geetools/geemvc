@@ -16,15 +16,15 @@
 
 package com.geemvc.intercept;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import com.geemvc.Bindings;
 import com.geemvc.RequestContext;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.i18n.notice.Notices;
 import com.geemvc.validation.Errors;
-import com.geemvc.view.bean.View;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import com.geemvc.view.bean.Result;
 
 /**
  * Created by Michael on 13.07.2016.
@@ -46,9 +46,9 @@ public interface LifecycleContext {
 
     LifecycleContext bindings(Bindings bindings);
 
-    View view();
+    Result result();
 
-    LifecycleContext view(View view);
+    LifecycleContext result(Result result);
 
     boolean isInvokeHandler();
 

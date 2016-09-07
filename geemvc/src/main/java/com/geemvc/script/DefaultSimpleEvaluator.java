@@ -28,7 +28,7 @@ public class DefaultSimpleEvaluator extends AbstractEvaluator implements SimpleE
     protected boolean isNegateCondition = false;
     protected boolean isExistsCondition = false;
 
-    protected Pattern isRegexPattern = Pattern.compile("^.+=[ ]*\\/.+\\/[gi]*$");
+    protected Pattern isRegexPattern = Pattern.compile("^.+[^=]=[ ]?\\/.+\\/[ ]?$");
 
     protected static final String NOT_EQUALS_OPERATOR = "!=";
 

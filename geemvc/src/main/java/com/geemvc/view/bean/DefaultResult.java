@@ -18,19 +18,29 @@ package com.geemvc.view.bean;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-public class DefaultView implements View {
+public class DefaultResult implements Result {
     protected Map<String, Object> bindings = null;
 
     protected Map<String, Object> flashBindings = null;
 
+    protected Map<String, Object> handlerParmeters = null;
+
     protected String forward = null;
 
     protected String redirect = null;
+
+    protected String handlerPath = null;
+
+    protected String httpMethod = null;
+
+    protected String uniqueHandler = null;
+
+    protected Class<?> controllerClass = null;
+
+    protected String handlerMethod = null;
 
     protected String contentType = null;
 
@@ -59,18 +69,18 @@ public class DefaultView implements View {
     protected String message = null;
 
     @Override
-    public View forward(String to) {
-        this.forward = to;
+    public Result view(String path) {
+        this.forward = path;
         return this;
     }
 
     @Override
-    public String forward() {
+    public String view() {
         return forward;
     }
 
     @Override
-    public View redirect(String to) {
+    public Result redirect(String to) {
         this.redirect = to;
         return this;
     }
@@ -81,7 +91,58 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View bind(String name, Object value) {
+    public Result handler(String path) {
+        this.handlerPath = path;
+        return this;
+    }
+
+    @Override
+    public Result handler(String path, String httpMethod) {
+        this.handlerPath = path;
+        this.httpMethod = httpMethod;
+        return this;
+    }
+
+    @Override
+    public String handlerPath() {
+        return handlerPath;
+    }
+
+    @Override
+    public String httpMethod() {
+        return httpMethod;
+    }
+
+    @Override
+    public Result handler(Class<?> controllerClass, String handlerMethod) {
+        this.controllerClass = controllerClass;
+        this.handlerMethod = handlerMethod;
+        return this;
+    }
+
+    @Override
+    public Class<?> controllerClass() {
+        return controllerClass;
+    }
+
+    @Override
+    public String handlerMethod() {
+        return handlerMethod;
+    }
+
+    @Override
+    public Result uniqueHandler(String name) {
+        this.uniqueHandler = name;
+        return this;
+    }
+
+    @Override
+    public String uniqueHandler() {
+        return uniqueHandler;
+    }
+
+    @Override
+    public Result bind(String name, Object value) {
         if (bindings == null)
             bindings = new HashMap<>();
 
@@ -91,7 +152,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View bind(Map<String, Object> bindings) {
+    public Result bind(Map<String, Object> bindings) {
         if (bindings == null)
             return this;
 
@@ -104,7 +165,27 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View flash(String name, Object value) {
+    public Object binding(String name) {
+        return bindings == null ? null : bindings.get(name);
+    }
+
+    @Override
+    public boolean containsBinding(String name) {
+        return bindings == null ? false : bindings.containsKey(name);
+    }
+
+    @Override
+    public boolean hasBindings() {
+        return bindings != null && !bindings.isEmpty();
+    }
+
+    @Override
+    public Map<String, Object> bindings() {
+        return bindings;
+    }
+
+    @Override
+    public Result flash(String name, Object value) {
         if (flashBindings == null)
             flashBindings = new HashMap<>();
 
@@ -114,7 +195,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View flash(Map<String, Object> flashBindings) {
+    public Result flash(Map<String, Object> flashBindings) {
         if (flashBindings == null)
             return this;
 
@@ -132,74 +213,50 @@ public class DefaultView implements View {
     }
 
     @Override
-    public int size() {
-        return bindings == null ? 0 : bindings.size();
+    public Result param(String name, Object value) {
+        if (handlerParmeters == null)
+            handlerParmeters = new HashMap<>();
+
+        handlerParmeters.put(name, value);
+
+        return this;
     }
 
     @Override
-    public boolean isEmpty() {
-        return bindings == null ? true : bindings.isEmpty();
+    public Result param(Map<String, Object> parameters) {
+        if (handlerParmeters == null)
+            return this;
+
+        if (this.handlerParmeters == null)
+            this.handlerParmeters = new HashMap<>();
+
+        this.handlerParmeters.putAll(parameters);
+
+        return this;
     }
 
     @Override
-    public boolean containsKey(Object key) {
-        return bindings == null ? false : bindings.containsKey(key);
+    public Object param(String name) {
+        return handlerParmeters == null ? null : handlerParmeters.get(name);
     }
 
     @Override
-    public boolean containsValue(Object value) {
-        return bindings == null ? false : bindings.containsValue(value);
+    public boolean containsParam(String name) {
+        return handlerParmeters == null ? false : handlerParmeters.containsKey(name);
     }
 
     @Override
-    public Object get(Object key) {
-        return bindings == null ? null : bindings.get(key);
+    public boolean hasParameters() {
+        return handlerParmeters != null && !handlerParmeters.isEmpty();
     }
 
     @Override
-    public Object put(String key, Object value) {
-        if (bindings == null)
-            bindings = new HashMap<>();
-
-        return bindings.put(key, value);
+    public Map<String, Object> parameters() {
+        return handlerParmeters;
     }
 
     @Override
-    public Object remove(Object key) {
-        return bindings == null ? null : bindings.remove(key);
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
-        if (bindings == null)
-            bindings = new HashMap<>();
-
-        bindings.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        if (bindings != null)
-            bindings.clear();
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return bindings == null ? null : bindings.keySet();
-    }
-
-    @Override
-    public Collection<Object> values() {
-        return bindings == null ? null : bindings.values();
-    }
-
-    @Override
-    public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        return bindings == null ? null : bindings.entrySet();
-    }
-
-    @Override
-    public View stream(String contentType, InputStream inputStream) {
+    public Result stream(String contentType, InputStream inputStream) {
         this.contentType = contentType;
         this.inputStream = inputStream;
 
@@ -207,7 +264,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View stream(String contentType, Reader reader) {
+    public Result stream(String contentType, Reader reader) {
         this.contentType = contentType;
         this.reader = reader;
 
@@ -215,7 +272,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View stream(String contentType, String output) {
+    public Result stream(String contentType, String output) {
         this.contentType = contentType;
         this.output = output;
 
@@ -223,7 +280,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View stream(String contentType, Object result) {
+    public Result stream(String contentType, Object result) {
         this.contentType = contentType;
         this.result = result;
 
@@ -251,7 +308,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View filename(String filename) {
+    public Result filename(String filename) {
         this.filename = filename;
         return this;
     }
@@ -272,7 +329,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View characterEncoding(String characterEncoding) {
+    public Result characterEncoding(String characterEncoding) {
         this.characterEncoding = characterEncoding;
         return this;
     }
@@ -283,7 +340,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View lastModified(long lastModified) {
+    public Result lastModified(long lastModified) {
         this.lastModified = lastModified;
         return this;
     }
@@ -294,7 +351,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View length(long length) {
+    public Result length(long length) {
         this.length = length;
         return this;
     }
@@ -305,7 +362,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View attachment(boolean attachment) {
+    public Result attachment(boolean attachment) {
         this.attachment = attachment;
         return this;
     }
@@ -316,7 +373,7 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View rangeSupport(boolean rangeSupport) {
+    public Result rangeSupport(boolean rangeSupport) {
         this.rangeSupport = rangeSupport;
         return this;
     }
@@ -337,16 +394,15 @@ public class DefaultView implements View {
     }
 
     @Override
-    public View status(Integer status) {
+    public Result status(Integer status) {
         this.status = status;
         return this;
     }
 
     @Override
-    public View status(Integer status, String message) {
+    public Result status(Integer status, String message) {
         this.status = status;
         this.message = message;
         return this;
     }
-
 }

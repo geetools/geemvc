@@ -37,13 +37,14 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
     @Test
     public void testFindControllerJSR311a() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("accept", new String[]{MediaType.APPLICATION_JSON});
-        headers.put("content-type", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("accept", new String[] { MediaType.APPLICATION_JSON });
+        headers.put("content-type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -56,13 +57,15 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311a", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("{id}", requestMapping(requestHandler.handlerMethod())));
-        assertEquals("application/json", requestHandler.consumes());
-        assertEquals("application/json", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/json", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
+
         assertTrue(mappedPathExists("/jsr311-test/{id}", requestHandler.pathMatcher()));
         assertEquals("^/jsr311-test/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
     }
@@ -70,12 +73,13 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
     @Test
     public void testFindControllerJSR311b() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_XML});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_XML });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/12345", "DELETE", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -88,12 +92,14 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311b", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("{id}", requestMapping(requestHandler.handlerMethod())));
-        assertEquals("application/xml", requestHandler.produces());
+        assertEquals("application/xml", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
+
         assertTrue(mappedPathExists("/jsr311-test/{id}", requestHandler.pathMatcher()));
         assertEquals("^/jsr311-test/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
     }
@@ -101,12 +107,13 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
     @Test
     public void testFindControllerJSR311c() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/handlerC/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -119,24 +126,27 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("/handlerC/{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/json", requestHandler.consumes());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+
         assertTrue(mappedPathExists("/jsr311-test/handlerC/{id}", requestHandler.pathMatcher()));
     }
 
     @Test
     public void testFindControllerJSR311d() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Content-Type", new String[]{MediaType.APPLICATION_XML});
+        headers.put("Content-Type", new String[] { MediaType.APPLICATION_XML });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/handlerC/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -149,24 +159,27 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311d", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("/handlerC/{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/xml", requestHandler.consumes());
+        assertEquals("application/xml", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+
         assertTrue(mappedPathExists("/jsr311-test/handlerC/{id}", requestHandler.pathMatcher()));
     }
 
     @Test
     public void testFindControllerJSR311e() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/handlerE/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -179,24 +192,26 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("/handlerE/{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/json", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/jsr311-test/handlerE/{id}", requestHandler.pathMatcher()));
     }
 
     @Test
     public void testFindControllerJSR311f() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{MediaType.APPLICATION_XML});
+        headers.put("Accept", new String[] { MediaType.APPLICATION_XML });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/handlerE/12345", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -209,25 +224,28 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311f", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("/handlerE/{id}", requestHandler.handlerRequestMapping()));
-        assertEquals("application/xml", requestHandler.produces());
+        assertEquals("application/xml", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
+
         assertTrue(mappedPathExists("/jsr311-test/handlerE/{id}", requestHandler.pathMatcher()));
     }
 
     @Test
     public void testFindControllerJSR311g() {
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("accept", new String[]{MediaType.APPLICATION_JSON});
-        headers.put("content-type", new String[]{MediaType.APPLICATION_JSON});
+        headers.put("accept", new String[] { MediaType.APPLICATION_JSON });
+        headers.put("content-type", new String[] { MediaType.APPLICATION_JSON });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/jsr311-test/12345", "POST", (Map<String, String[]>) null, headers);
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
         CompositeControllerResolver controllerResolver = instance(CompositeControllerResolver.class);
+        RequestHandlers requestHandlers = instance(RequestHandlers.class);
 
         Map<PathMatcherKey, Class<?>> controllers = controllerResolver.resolve(reqCtx);
 
@@ -240,13 +258,14 @@ public class ResolveHandlerByJSR311Test extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestControllerJSR311.class);
         assertEquals("handlerJSR311g", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/jsr311-test", controllers.values()));
         assertTrue(mappedPathExists("{id}", requestMapping(requestHandler.handlerMethod())));
-        assertEquals("application/json", requestHandler.consumes());
-        assertEquals("application/json", requestHandler.produces());
+        assertEquals("application/json", requestHandlers.consumes(requestHandler.handlerRequestMapping(), reqCtx));
+        assertEquals("application/json", requestHandlers.produces(requestHandler.handlerRequestMapping(), reqCtx));
         assertTrue(mappedPathExists("/jsr311-test/{id}", requestHandler.pathMatcher()));
         assertEquals("^/jsr311-test/([^\\/]+)$", requestHandler.pathMatcher().getRegexPath());
     }

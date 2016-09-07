@@ -35,7 +35,7 @@ import com.geemvc.mock.bean.Person;
 import com.geemvc.mock.controller.TestController20;
 import com.geemvc.mock.repository.Persons;
 import com.geemvc.test.BaseTest;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 
 public class JpaBeanParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
@@ -58,8 +58,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
         Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
 
-        View view = (View) requestHandler.invoke(null);
-        List<Person> persons = (List<Person>) view.get("persons");
+        Result result = (Result) requestHandler.invoke(null);
+        List<Person> persons = (List<Person>) result.binding("persons");
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -69,7 +69,7 @@ public class JpaBeanParamBindingTest extends BaseTest {
         assertNotNull(params);
         assertNotNull(requestValues);
         assertNotNull(typedValues);
-        assertNotNull(view);
+        assertNotNull(result);
         assertNotNull(persons);
         assertEquals(4, persons.size());
         assertEquals(0, params.size());
@@ -100,8 +100,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
         Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
 
-        View view = (View) requestHandler.invoke(typedValues);
-        Person person = (Person) view.get("person");
+        Result result = (Result) requestHandler.invoke(typedValues);
+        Person person = (Person) result.binding("person");
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -114,10 +114,10 @@ public class JpaBeanParamBindingTest extends BaseTest {
         assertEquals(1, params.size());
         assertEquals(1, requestValues.size());
         assertEquals(1, typedValues.size());
-        assertNotNull(view);
-        assertNotNull(view.forward());
+        assertNotNull(result);
+        assertNotNull(result.view());
         assertNotNull(person);
-        assertEquals("person/details", view.forward());
+        assertEquals("person/details", result.view());
         assertEquals(Person.class, typedValues.get("person").getClass());
         assertEquals("Michael", person.getForename());
         assertEquals("Delamere", person.getSurname());
@@ -130,10 +130,10 @@ public class JpaBeanParamBindingTest extends BaseTest {
         initTestData();
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.id", new String[]{"5"});
-        requestParams.put("person.forename", new String[]{"Yulia"});
-        requestParams.put("person.surname", new String[]{"Lady"});
-        requestParams.put("person.age", new String[]{"9"});
+        requestParams.put("person.id", new String[] { "5" });
+        requestParams.put("person.forename", new String[] { "Yulia" });
+        requestParams.put("person.surname", new String[] { "Lady" });
+        requestParams.put("person.age", new String[] { "9" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/persons", "POST", requestParams);
 
@@ -149,8 +149,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
         Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
 
-        View view = (View) requestHandler.invoke(typedValues);
-        Person person = (Person) view.get("person");
+        Result result = (Result) requestHandler.invoke(typedValues);
+        Person person = (Person) result.binding("person");
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -177,7 +177,7 @@ public class JpaBeanParamBindingTest extends BaseTest {
         initTestData();
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.age", new String[]{"99"});
+        requestParams.put("person.age", new String[] { "99" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/persons/4", "PUT", requestParams);
 

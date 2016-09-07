@@ -16,6 +16,8 @@
 
 package com.geemvc.helper;
 
+import javax.ws.rs.Path;
+
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
 import com.geemvc.annotation.Request;
@@ -25,8 +27,6 @@ import com.geemvc.matcher.PathMatcher;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
-import javax.ws.rs.Path;
 
 @Singleton
 public class DefaultControllers implements Controllers {
@@ -55,8 +55,8 @@ public class DefaultControllers implements Controllers {
                     newBasePath = Str.EMPTY;
                 }
             } else {
-                String[] basePaths = typeRequestMapping.path() == null || typeRequestMapping.path().length == 0 ? typeRequestMapping.value() : typeRequestMapping.path();
-                newBasePath = basePaths == null || basePaths.length == 0 ? Str.EMPTY : basePaths[0].trim();
+                String basePath = Str.isEmpty(typeRequestMapping.path()) ? typeRequestMapping.value() : typeRequestMapping.path();
+                newBasePath = Str.isEmpty(basePath) ? Str.EMPTY : basePath.trim();
             }
 
             return newBasePath;

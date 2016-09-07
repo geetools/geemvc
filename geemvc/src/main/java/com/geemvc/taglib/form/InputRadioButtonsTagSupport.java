@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package com.geemvc.view;
+package com.geemvc.taglib.form;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-
-import com.geemvc.RequestContext;
-import com.geemvc.view.bean.Result;
-
-public interface ViewAdapter {
-    String name();
-
-    boolean canHandle(String path);
-
-    ViewAdapter prepare(Result view, RequestContext requestCtx);
-
-    void forward(String path, RequestContext requestCtx) throws ServletException, IOException;
+public class InputRadioButtonsTagSupport extends InputCheckboxesTagSupport {
+    public InputRadioButtonsTagSupport() {
+        dynamicAttributes.put("type", "radio");
+    }
 }

@@ -23,7 +23,6 @@ import com.geemvc.Char;
 
 @com.geemvc.annotation.Evaluator("regex:")
 public class RegexEvaluator extends DefaultSimpleEvaluator {
-    protected Pattern isRegexPattern = Pattern.compile("^.+[^=]=[ ]?\\/.+\\/[ ]?$");
     protected Pattern mappedPattern = null;
     protected String mappedExpression = null;
 
@@ -53,6 +52,7 @@ public class RegexEvaluator extends DefaultSimpleEvaluator {
                 || expression.contains("!= /")) {
 
             Matcher m = isRegexPattern.matcher(expression);
+
             return m.matches();
         }
 

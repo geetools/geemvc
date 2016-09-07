@@ -70,7 +70,7 @@ public class DefaultInterceptors implements Interceptors {
                 Lifecycle lifecycle = lifecycleInterceptor.lifecycleAnnotation();
 
                 if ((lifecycle.when() == When.ALWAYS || (lifecycle.when() == When.NO_ERRORS && lifecycleCtx.errors().isEmpty()) || (lifecycle.when() == When.HAS_ERRORS && !lifecycleCtx.errors().isEmpty()))
-                        && (lifecycle.onView() == OnView.ALWAYS || (lifecycle.onView() == OnView.NOT_EXISTS && lifecycleCtx.view() == null) || (lifecycle.onView() == OnView.EXISTS && lifecycleCtx.view() != null))) {
+                        && (lifecycle.onView() == OnView.ALWAYS || (lifecycle.onView() == OnView.NOT_EXISTS && lifecycleCtx.result() == null) || (lifecycle.onView() == OnView.EXISTS && lifecycleCtx.result() != null))) {
 
                     log.trace("Invoking lifecycle interceptor '{}' for stage '{}'.", () -> lifecycleInterceptor, () -> lifecycleAnnotation.getSimpleName());
 

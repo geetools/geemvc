@@ -17,25 +17,30 @@
 package com.geemvc.taglib.form;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.geemvc.Char;
 import com.geemvc.Str;
+import com.geemvc.reflect.ReflectionProvider;
 
-public class InputCheckboxTagSupport extends OptionTagSupport {
+import jodd.bean.BeanUtil;
+
+public class InputCheckboxesTagSupport extends OptionsTagSupport {
     protected String id;
 
     protected String name;
-
-    protected Object value;
 
     protected String optionLabel;
 
     protected String optionLabelClass;
 
-    public InputCheckboxTagSupport() {
+    public InputCheckboxesTagSupport() {
         dynamicAttributes.put("type", "checkbox");
     }
 
@@ -49,12 +54,107 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
         try {
             writePreFieldBlock(id, name, value);
-            writeTag(jspContext.getOut(), "input", false);
+            super.doTag();
             writePostFieldBlock(name);
         } catch (JspException e) {
             throw e;
         } catch (Throwable t) {
             throw new JspException(t);
+        }
+    }
+
+    protected void writeOptionsFromCollection(Collection<?> collectionValues) throws IOException, JspException {
+        JspWriter writer = jspContext.getOut();
+
+        ReflectionProvider reflectionProvider = injector.getInstance(ReflectionProvider.class);
+
+        Boolean isSimpleType = null;
+
+        for (Object obj : collectionValues) {
+            if (isSimpleType == null)
+                isSimpleType = reflectionProvider.isSimpleType(obj.getClass());
+
+            Object optionValue = null;
+            String optionLabel = null;
+
+            if (isSimpleType) {
+                optionValue = obj;
+                optionLabel = String.valueOf(obj);
+            } else {
+                if (value == null)
+                    throw new JspException("When creating select-options from a collection of beans you must specifiy the attribute of that bean to use for the value. Please check your checobox-values for '" + name + "'");
+
+                optionValue = BeanUtil.getProperty(obj, value);
+                optionLabel = String.valueOf(BeanUtil.getProperty(obj, label == null ? value : label));
+            }
+
+            writer.write("<div class=\"");
+            writer.write((String) dynamicAttributes.get("type"));
+            writer.write("\">");
+
+            writeLabel(name, optionValue);
+
+            writeTag(jspContext.getOut(), "input", false, false);
+            appendTagAttributes(writer, optionValue);
+
+            writer.write(Char.SLASH);
+            writer.write(Char.GREATER_THAN);
+
+            // See if there is a translated version of the label in the message properties.
+            String i18nOptionLabel = messageResolver.resolve(new StringBuilder(name).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+
+            if (!Str.isEmpty(i18nOptionLabel)) {
+                writer.write(i18nOptionLabel);
+            } else {
+                writer.write(optionLabel);
+            }
+
+            writer.write("</label>\n");
+            writer.write("</div>\n");
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected void writeOptionsFromMap(Map mapValues) throws IOException, JspException {
+        JspWriter writer = jspContext.getOut();
+
+        ReflectionProvider reflectionProvider = injector.getInstance(ReflectionProvider.class);
+
+        Set<Entry> mapEntries = mapValues.entrySet();
+
+        for (Entry<?, ?> entry : mapEntries) {
+            if (isMapKeySimpleType == null)
+                isMapKeySimpleType = reflectionProvider.isSimpleType(entry.getKey().getClass());
+
+            if (isMapValueSimpleType == null)
+                isMapValueSimpleType = reflectionProvider.isSimpleType(entry.getValue().getClass());
+
+            Object optionValue = optionValue(entry);
+            String optionLabel = optionLabel(entry);
+
+            writer.write("<div class=\"");
+            writer.write((String) dynamicAttributes.get("type"));
+            writer.write("\">");
+
+            writeLabel(name, optionValue);
+
+            writeTag(jspContext.getOut(), "input", false, false);
+            appendTagAttributes(writer, optionValue);
+
+            writer.write(Char.SLASH);
+            writer.write(Char.GREATER_THAN);
+
+            // See if there is a translated version of the label in the message properties.
+            String i18nOptionLabel = messageResolver.resolve(new StringBuilder(name).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+
+            if (!Str.isEmpty(i18nOptionLabel)) {
+                writer.write(i18nOptionLabel);
+            } else {
+                writer.write(optionLabel == null ? String.valueOf(optionValue) : optionLabel);
+            }
+
+            writer.write("</label>\n");
+            writer.write("</div>\n");
         }
     }
 
@@ -115,31 +215,21 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
         writer.write(">\n");
 
-        writer.write("<div class=\"");
-        writer.write((String) dynamicAttributes.get("type"));
-        writer.write("\">");
+        // Wrap checkboxes
+        writer.write("<div>");
 
-        writeLabel(name, value);
+        // writer.write("<div class=\"");
+        // writer.write((String) dynamicAttributes.get("type"));
+        // writer.write("\">");
+
+        // writeLabel(name, value);
     }
 
     @Override
     public void writePostFieldBlock(String fieldName) throws JspException, IOException {
-        if (fieldOnly)
-            return;
-
         JspWriter writer = jspContext.getOut();
 
-        if (!Str.isEmpty(optionLabel)) {
-            writer.write(this.optionLabel);
-        } else {
-            String optionLabel = messageResolver.resolve(new StringBuilder(name).append(Char.DOT).append(value).toString(), requestContext(), true);
-            if (!Str.isEmpty(optionLabel)) {
-                writer.write(optionLabel);
-            }
-        }
-
-        writer.write("</label>\n");
-        writer.write("</div>\n");
+        writer.write("</div>");
 
         String hint = getHint();
 
@@ -200,13 +290,17 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
     @Override
     protected void appendTagAttributes(JspWriter writer) throws JspException {
+
+    }
+
+    protected void appendTagAttributes(JspWriter writer, Object value) throws JspException {
         try {
             String name = getName();
             String id = getId();
-            String value = getValue() == null ? null : String.valueOf(getValue());
+            String strValue = value == null ? Str.EMPTY : String.valueOf(value);
 
             if (id == null)
-                id = toElementId(name, value);
+                id = toElementId(name, strValue);
 
             // Id attribute.
             writer.write(Char.SPACE);
@@ -229,7 +323,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             writer.write("value");
             writer.write(Char.EQUALS);
             writer.write(Char.DOUBLE_QUOTE);
-            writer.write(value == null ? Str.EMPTY : value);
+            writer.write(value == null ? Str.EMPTY : strValue);
             writer.write(Char.DOUBLE_QUOTE);
 
             if (isValueSelected(value)) {
@@ -281,9 +375,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
         if (!Str.isEmpty(optionLabelClass))
             labelTagSupport.setDynamicAttribute(null, "class", optionLabelClass);
 
-        if (!Str.isEmpty(optionLabel)) {
-            labelTagSupport.setLabel("");
-        }
+        labelTagSupport.setLabel("");
 
         labelTagSupport.doTag();
     }
@@ -316,22 +408,6 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public String getOptionLabel() {
-        return optionLabel;
-    }
-
-    public void setOptionLabel(String optionLabel) {
-        this.optionLabel = optionLabel;
     }
 
     public String getOptionLabelClass() {

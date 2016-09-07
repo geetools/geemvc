@@ -24,18 +24,18 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.geemvc.mock.controller.TestController9;
 import org.junit.Test;
 
 import com.geemvc.RequestContext;
 import com.geemvc.matcher.PathMatcherKey;
+import com.geemvc.mock.controller.TestController9;
 import com.geemvc.test.BaseTest;
 
 public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9a() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"update"});
+        params.put("cmd", new String[] { "update" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", params);
 
@@ -53,7 +53,8 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9a", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
@@ -67,7 +68,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9b() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"delete"});
+        params.put("cmd", new String[] { "delete" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", params);
 
@@ -85,7 +86,8 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9b", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
@@ -99,8 +101,8 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9c() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("cmd", new String[]{"delete"});
-        params.put("id", new String[]{"12345"});
+        params.put("cmd", new String[] { "delete" });
+        params.put("id", new String[] { "12345" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9/handler", params);
 
@@ -118,12 +120,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"cmd=delete", "id=/\\d+/"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "cmd=delete", "id=/\\d+/" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -132,7 +135,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9d() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("param", new String[]{"one", "two", "three", "four",});
+        params.put("param", new String[] { "one", "two", "three", "four", });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9/handler", params);
 
@@ -150,12 +153,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9d", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"param=one", "param=two", "param=/thr.+/", "param=/fou.*/"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "param=one", "param=two", "param=/thr.+/", "param=/fou.*/" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -164,7 +168,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9e() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("orParam", new String[]{"two"});
+        params.put("orParam", new String[] { "two" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9/handler", params);
 
@@ -182,12 +186,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("/handler", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"orParam=/^(?iu:ONE|TWO|THREE|FOUR)$/"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "orParam=/^(?iu:ONE|TWO|THREE|FOUR)$/" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9/handler", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -214,12 +219,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9f", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"paramExists"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "paramExists" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -248,12 +254,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9g", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"paramOneExists", "paramTwoExists"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "paramOneExists", "paramTwoExists" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -282,12 +289,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9gg", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"paramOneExists", "paramTwoExists"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "paramOneExists", "paramTwoExists" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -296,7 +304,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9h() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("booleanParam", new String[]{"false"});
+        params.put("booleanParam", new String[] { "false" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -314,12 +322,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9h", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"booleanParam!=true"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "booleanParam!=true" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -328,8 +337,8 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9i() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("booleanParamOne", new String[]{"true"});
-        params.put("booleanParamTwo", new String[]{"false"});
+        params.put("booleanParamOne", new String[] { "true" });
+        params.put("booleanParamTwo", new String[] { "false" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -347,12 +356,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9i", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"booleanParamOne=true", "booleanParamTwo!=true"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "booleanParamOne=true", "booleanParamTwo!=true" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -361,7 +371,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9ii() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("booleanParamOne", new String[]{"true"});
+        params.put("booleanParamOne", new String[] { "true" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -379,12 +389,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9ii", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"booleanParamOne=true"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "booleanParamOne=true" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -393,8 +404,8 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9j() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("jParamOne", new String[]{"false"});
-        params.put("jParamTwo", new String[]{"false"});
+        params.put("jParamOne", new String[] { "false" });
+        params.put("jParamTwo", new String[] { "false" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -412,12 +423,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9j", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"jParamOne != /^notTr[ue]+/", "jParamTwo!=/tru.*/"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "jParamOne != /^notTr[ue]+/", "jParamTwo!=/tru.*/" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -426,7 +438,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9k() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("kParamOne", new String[]{"false"});
+        params.put("kParamOne", new String[] { "false" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -444,12 +456,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9k", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"kParamOne != /^notTr[ue]+$/", "kParamOne!=/tru.*/"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "kParamOne != /^notTr[ue]+$/", "kParamOne!=/tru.*/" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -458,9 +471,9 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9l() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"101"});
-        params.put("paramTwo", new String[]{"202"});
-        params.put("paramThree", new String[]{"303"});
+        params.put("paramOne", new String[] { "101" });
+        params.put("paramTwo", new String[] { "202" });
+        params.put("paramThree", new String[] { "303" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -478,12 +491,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9l", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: paramOne > 100", "(paramTwo as int) > 200", "mvel: paramThree > 300"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "js: paramOne > 100", "(paramTwo as int) > 200", "mvel: paramThree > 300" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -492,9 +506,9 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9m() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"one"});
-        params.put("paramTwo", new String[]{"two"});
-        params.put("paramThree", new String[]{"three"});
+        params.put("paramOne", new String[] { "one" });
+        params.put("paramTwo", new String[] { "two" });
+        params.put("paramThree", new String[] { "three" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -512,12 +526,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9m", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: paramOne == 'one'", "paramTwo == 'two'", "mvel: paramThree == 'three'"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "js: paramOne == 'one'", "paramTwo == 'two'", "mvel: paramThree == 'three'" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -526,9 +541,9 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9n() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"not one"});
-        params.put("paramTwo", new String[]{"not two"});
-        params.put("paramThree", new String[]{"not three"});
+        params.put("paramOne", new String[] { "not one" });
+        params.put("paramTwo", new String[] { "not two" });
+        params.put("paramThree", new String[] { "not three" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -546,13 +561,14 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9n", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: paramOne != 'one' && paramOne != 101 && paramOne != 11", "paramTwo != 'two' && paramTwo != '202' && paramTwo != '22'",
-                "mvel: paramThree != 'three' && paramThree != 303 && paramThree != 33"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "js: paramOne != 'one' && paramOne != 101 && paramOne != 11", "paramTwo != 'two' && paramTwo != '202' && paramTwo != '22'",
+                "mvel: paramThree != 'three' && paramThree != 303 && paramThree != 33" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -561,9 +577,9 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9o() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"11"});
-        params.put("paramTwo", new String[]{"11"});
-        params.put("paramThree", new String[]{"11"});
+        params.put("paramOne", new String[] { "11" });
+        params.put("paramTwo", new String[] { "11" });
+        params.put("paramThree", new String[] { "11" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -581,12 +597,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9o", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: paramOne <= 100 && paramOne == paramTwo", "(paramTwo as int) <= 100 && paramTwo == paramThree", "mvel: paramThree <= 100 && paramThree == paramOne"},
+        assertTrue(mappedParametersExists(new String[] { "js: paramOne <= 100 && paramOne == paramTwo", "(paramTwo as int) <= 100 && paramTwo == paramThree", "mvel: paramThree <= 100 && paramThree == paramOne" },
                 requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
@@ -596,9 +613,9 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9p() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"11"});
-        params.put("paramTwo", new String[]{"22"});
-        params.put("paramThree", new String[]{"33"});
+        params.put("paramOne", new String[] { "11" });
+        params.put("paramTwo", new String[] { "22" });
+        params.put("paramThree", new String[] { "33" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -616,12 +633,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9p", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: paramOne == 100 || paramOne == 11", "(paramTwo as int) == 200 || (paramTwo as int) == 22", "mvel: paramThree == 300 || paramThree == 33"}, requestHandler.handlerRequestMapping()));
+        assertTrue(mappedParametersExists(new String[] { "js: paramOne == 100 || paramOne == 11", "(paramTwo as int) == 200 || (paramTwo as int) == 22", "mvel: paramThree == 300 || paramThree == 33" }, requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
 
@@ -630,7 +648,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9q() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"handlerQQ"});
+        params.put("paramOne", new String[] { "handlerQQ" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -648,12 +666,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9q", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"js: 1 == 0 || (/handler[q]+/igm.test(paramOne))", "1 == 0 || (paramOne ==~ /(?im)handler[q]+/)", "mvel: 1 == 0 || (paramOne ~= '(?im)handler[q]+')"},
+        assertTrue(mappedParametersExists(new String[] { "js: 1 == 0 || (/handler[q]+/igm.test(paramOne))", "1 == 0 || (paramOne ==~ /(?im)handler[q]+/)", "mvel: 1 == 0 || (paramOne ~= '(?im)handler[q]+')" },
                 requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
@@ -662,7 +681,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9r() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramOne", new String[]{"handlerRR"});
+        params.put("paramOne", new String[] { "handlerRR" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -680,12 +699,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9r", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"1 == 0 || (paramOne ==~ /(?im)handler[r]+/)"},
+        assertTrue(mappedParametersExists(new String[] { "1 == 0 || (paramOne ==~ /(?im)handler[r]+/)" },
                 requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
@@ -694,7 +714,7 @@ public class ResolveHandlerByParametersTest extends BaseTest {
     @Test
     public void testFindController9s() {
         Map<String, String[]> params = new HashMap<>();
-        params.put("paramTwo", new String[]{"handlerS"});
+        params.put("paramTwo", new String[] { "handlerS" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller9", "GET", params);
 
@@ -712,12 +732,13 @@ public class ResolveHandlerByParametersTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNotNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController9.class);
         assertEquals("handler9s", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller9", controllers.values()));
         assertTrue(mappedPathExists("", requestHandler.handlerRequestMapping()));
-        assertTrue(mappedParametersExists(new String[]{"paramTwo == 'handlerS'"},
+        assertTrue(mappedParametersExists(new String[] { "paramTwo == 'handlerS'" },
                 requestHandler.handlerRequestMapping()));
         assertTrue(mappedPathExists("/controller9", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());

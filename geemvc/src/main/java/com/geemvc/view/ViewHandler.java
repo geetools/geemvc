@@ -21,8 +21,8 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import com.geemvc.RequestContext;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 
 public interface ViewHandler {
-    void handle(View view, RequestContext requestCtx) throws ServletException, IOException;
+    void handle(Result result, RequestContext requestCtx) throws ServletException, IOException;
 }

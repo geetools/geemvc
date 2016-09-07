@@ -16,12 +16,12 @@
 
 package com.geemvc.mock.controller;
 
-import com.geemvc.Views;
+import com.geemvc.Results;
 import com.geemvc.annotation.Controller;
 import com.geemvc.annotation.Request;
 import com.geemvc.mock.Id;
 import com.geemvc.mock.bean.RootBean;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -32,17 +32,17 @@ public class TestController19 {
     protected Injector injector;
 
     @Request("handler19a")
-    public View handler19a() {
-        return Views.forward("forward/to");
+    public Result handler19a() {
+        return Results.view("forward/to");
     }
 
     @Request("handler19b")
-    public View handler19b() {
-        return Views.redirect("redirect/to");
+    public Result handler19b() {
+        return Results.redirect("redirect/to");
     }
 
     @Request("handler19c")
-    public View handler19c() {
-        return Views.forward("forward/to").bind("var1", "value1").bind("var2", Id.valueOf("2")).bind("var3", injector.getInstance(RootBean.class));
+    public Result handler19c() {
+        return Results.view("forward/to").bind("var1", "value1").bind("var2", Id.valueOf("2")).bind("var3", injector.getInstance(RootBean.class));
     }
 }

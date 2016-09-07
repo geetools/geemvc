@@ -22,6 +22,10 @@ import java.util.List;
 import com.geemvc.RequestContext;
 
 public interface HandlerResolver {
+    RequestHandler resolve(Class<?> controllerClass, String handlerMethod);
+
+    RequestHandler resolveByName(String uniqueName);
+
     List<RequestHandler> resolve(String requestURI);
 
     List<RequestHandler> resolve(String requestURI, String httpMethod);

@@ -97,10 +97,12 @@ public class InputLabelTagSupport extends HtmlTagSupport {
             }
 
             if (label == null) {
-                label = messageResolver.resolve(name, requestContext());
+                label = messageResolver.resolve(name, requestContext(), true);
             }
 
-            writer.write(label);
+            if (label != null)
+                writer.write(label);
+            
         } catch (Throwable t) {
             throw new JspException(t);
         } finally {

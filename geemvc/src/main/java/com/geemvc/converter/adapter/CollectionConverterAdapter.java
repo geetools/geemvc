@@ -40,9 +40,14 @@ import com.google.inject.Injector;
 @Adapter
 public class CollectionConverterAdapter implements ConverterAdapter<Collection<Object>> {
     @Inject
-    Injector injector;
+    protected Injector injector;
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public boolean canConvert(List<String> values, ConverterContext ctx) {
+        return true;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Collection<Object> fromStrings(List<String> values, ConverterContext ctx) {
         SimpleConverter simpleConverter = injector.getInstance(SimpleConverter.class);

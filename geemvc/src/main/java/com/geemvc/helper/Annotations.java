@@ -31,7 +31,7 @@ public interface Annotations {
 
     Class<? extends Annotation> toType(Annotation annotation);
 
-    String[] paths(Request requestMapping);
+    String path(Request requestMapping);
 
     Request requestMapping(final Class<?> clazz);
 

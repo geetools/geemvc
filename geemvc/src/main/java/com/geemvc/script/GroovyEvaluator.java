@@ -27,6 +27,7 @@ import groovy.lang.GroovyShell;
 @Evaluator("groovy:")
 public class GroovyEvaluator extends AbstractEvaluator implements ScriptEvaluator {
     protected String mappedExpression = null;
+    protected String Test = null;
 
     @Override
     public GroovyEvaluator build(String expression) {
@@ -62,6 +63,12 @@ public class GroovyEvaluator extends AbstractEvaluator implements ScriptEvaluato
                     binding.setVariable(name, ctx.value(name));
                 }
             }
+            
+            Object selfBean = findSelfBean(expression, ctx);
+
+            if (selfBean != null)
+                binding.setVariable("self", selfBean);
+
         } else {
             binding.setVariable("req", ctx.requestContext().getRequest());
         }

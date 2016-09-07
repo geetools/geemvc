@@ -34,7 +34,7 @@ import com.geemvc.config.Configurations;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.annotation.Logger;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -53,30 +53,30 @@ public class DefaultStreamViewHandler implements StreamViewHandler {
     }
 
     @Override
-    public void handle(View view, RequestContext requestCtx) throws ServletException, IOException {
+    public void handle(Result result, RequestContext requestCtx) throws ServletException, IOException {
         HttpServletResponse response = (HttpServletResponse) requestCtx.getResponse();
 
-        if (view.length() > 0) {
-            response.setContentLength((int) view.length());
+        if (result.length() > 0) {
+            response.setContentLength((int) result.length());
         }
 
-        if (view.filename() != null) {
-            if (view.attachment()) {
-                response.setHeader("Content-disposition", "attachment; filename=" + view.filename());
+        if (result.filename() != null) {
+            if (result.attachment()) {
+                response.setHeader("Content-disposition", "attachment; filename=" + result.filename());
             } else {
-                response.setHeader("Content-disposition", "filename=" + view.filename());
+                response.setHeader("Content-disposition", "filename=" + result.filename());
             }
         }
 
-        if (view.contentType() != null) {
-            response.setContentType(view.contentType());
+        if (result.contentType() != null) {
+            response.setContentType(result.contentType());
         }
 
-        if (view.rangeSupport()) {
+        if (result.rangeSupport()) {
             // TODO: range-support
         }
 
-        if (view.result() != null) {
+        if (result.result() != null) {
             RequestHandler requestHandler = requestCtx.requestHandler();
             Method handlerMethod = requestHandler.handlerMethod();
 
@@ -86,27 +86,27 @@ public class DefaultStreamViewHandler implements StreamViewHandler {
                 if (mbw != null && mbw.isWriteable(handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(), MediaType.valueOf(response.getContentType()))) {
                     MultivaluedMap<String, Object> httpResponseHeaders = injector.getInstance(MultivaluedMap.class);
 
-                    mbw.writeTo(view.result(), handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(),
+                    mbw.writeTo(result.result(), handlerMethod.getReturnType(), handlerMethod.getGenericReturnType(), handlerMethod.getAnnotations(),
                             MediaType.valueOf(response.getContentType()), httpResponseHeaders, response.getOutputStream());
                 } else {
                     response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
                 }
             } else {
-                log.info("Unable to convert the result object of type '{}' to the media type '{}' as the JAX-RS runtime has been disabled.", () -> view.result().getClass().getName(), () -> response.getContentType());
+                log.info("Unable to convert the result object of type '{}' to the media type '{}' as the JAX-RS runtime has been disabled.", () -> result.result().getClass().getName(), () -> response.getContentType());
                 response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             }
 
             return;
         }
 
-        if (view.stream() != null) {
-            IOUtils.copy(view.stream(), response.getOutputStream());
-        } else if (view.reader() != null) {
-            IOUtils.copy(view.reader(), response.getOutputStream(), view.characterEncoding());
-        } else if (view.output() != null) {
-            response.getOutputStream().write(view.output().getBytes());
+        if (result.stream() != null) {
+            IOUtils.copy(result.stream(), response.getOutputStream());
+        } else if (result.reader() != null) {
+            IOUtils.copy(result.reader(), response.getOutputStream(), result.characterEncoding());
+        } else if (result.output() != null) {
+            response.getOutputStream().write(result.output().getBytes());
         } else {
-            throw new IllegalStateException("You must provide either a stream, a reader or a string output when using Views.stream(). ");
+            throw new IllegalStateException("You must provide either a stream, a reader or a string output when using Results.stream(). ");
         }
     }
 }

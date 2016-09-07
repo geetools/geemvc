@@ -24,18 +24,17 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.geemvc.handler.RequestHandler;
 
-public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
+public class DefaultInternalRequestContext extends DefaultRequestContext implements InternalRequestContext {
     protected String requestURI = null;
     protected String servletPath = null;
     protected String method = null;
-
-    protected RequestHandler requestHandler;
-
-    protected boolean isInitialized = false;
+    protected Map<String, String[]> parameters = null;
 
     @Override
     public RequestContext build(ServletRequest request, ServletResponse response, ServletContext servletContext) {
@@ -43,7 +42,7 @@ public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
     }
 
     @Override
-    public PathOnlyRequestContext build(String requestURI) {
+    public InternalRequestContext build(String requestURI) {
         if (isInitialized)
             throw new IllegalStateException("PathOnlyRequestContext can only be initialized once");
 
@@ -55,12 +54,43 @@ public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
     }
 
     @Override
-    public PathOnlyRequestContext build(String requestURI, String method) {
+    public InternalRequestContext build(String requestURI, String method) {
         if (isInitialized)
             throw new IllegalStateException("PathOnlyRequestContext can only be initialized once");
 
         this.requestURI = requestURI;
         this.method = method;
+
+        this.isInitialized = true;
+
+        return this;
+    }
+
+    @Override
+    public InternalRequestContext build(String requestURI, String method, Map<String, String[]> parameters) {
+        if (isInitialized)
+            throw new IllegalStateException("PathOnlyRequestContext can only be initialized once");
+
+        this.requestURI = requestURI;
+        this.method = method;
+        this.parameters = parameters;
+
+        this.isInitialized = true;
+
+        return this;
+    }
+
+    @Override
+    public InternalRequestContext build(String requestURI, String method, Map<String, String[]> parameters, ServletRequest request, ServletResponse response, ServletContext servletContext) {
+        if (isInitialized)
+            throw new IllegalStateException("PathOnlyRequestContext can only be initialized once");
+
+        this.requestURI = requestURI;
+        this.method = method;
+        this.parameters = parameters;
+        this.request = (HttpServletRequest) request;
+        this.response = (HttpServletResponse) response;
+        this.servletContext = servletContext;
 
         this.isInitialized = true;
 
@@ -84,72 +114,77 @@ public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
     }
 
     public Map<String, String[]> getPathParameters() {
-        return null;
+        return requestHandler == null || requestHandler.pathMatcher() == null ? null : requestHandler.pathMatcher().parameters(requestURI);
     }
 
     @Override
     public String getMethod() {
-        return method;
+        return method == null ? super.getMethod() : method;
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return null;
+        return parameters;
     }
 
     @Override
     public Map<String, String[]> getHeaderMap() {
-        return null;
+        return super.getHeaderMap();
     }
 
     @Override
     public Map<String, String[]> getCookieMap() {
-        return null;
+        return super.getCookieMap();
     }
 
     @Override
     public Collection<String> getHeaderNames() {
-        return null;
+        return super.getHeaderNames();
     }
 
     @Override
     public String getHeader(String name) {
-        return null;
+        return super.getHeader(name);
     }
 
     @Override
     public Collection<String> getHeaders(String name) {
-        return null;
+        return super.getHeaders(name);
     }
 
     @Override
     public String contentType() {
-        return null;
+        return super.contentType();
     }
 
     @Override
     public Collection<String> accepts() {
-        return null;
+        return super.accepts();
     }
 
     @Override
     public Collection<String> getAttributeNames() {
-        return null;
+        return super.getAttributeNames();
     }
 
     @Override
     public Object getAttribute(String name) {
-        return null;
+        return super.getAttribute(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        super.setAttribute(name, value);
     }
 
     @Override
     public Map<String, String> getCookies() {
-        return null;
+        return super.getCookies();
     }
 
     @Override
     public ServletRequest getRequest() {
-        return null;
+        return super.getRequest();
     }
 
     @Override
@@ -164,26 +199,26 @@ public class DefaultPathOnlyRequestContext implements PathOnlyRequestContext {
 
     @Override
     public HttpSession getSession() {
-        return null;
+        return super.getSession();
     }
 
     @Override
     public HttpSession getSession(boolean create) {
-        return null;
+        return super.getSession();
     }
 
     @Override
     public Enumeration<Locale> getLocales() {
-        return null;
+        return super.getLocales();
     }
 
     @Override
     public RequestContext currentLocale(Locale locale) {
-        return null;
+        return super.currentLocale(locale);
     }
 
     @Override
     public Locale currentLocale() {
-        return null;
+        return super.currentLocale();
     }
 }

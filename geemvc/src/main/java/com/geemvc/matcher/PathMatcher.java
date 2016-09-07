@@ -18,14 +18,12 @@ package com.geemvc.matcher;
 
 import java.util.Map;
 
-import com.geemvc.RequestContext;
-
 public interface PathMatcher extends Matcher {
     PathMatcher build(String path);
 
     PathMatcher build(String parentPath, String path);
 
-    Map<String, String[]> parameters(RequestContext requestCtx);
+    Map<String, String[]> parameters(String requestURI);
 
     int parameterCount();
 

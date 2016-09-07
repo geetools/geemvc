@@ -16,6 +16,15 @@
 
 package com.geemvc.matcher;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.geemvc.Char;
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
@@ -24,10 +33,6 @@ import com.geemvc.config.Configurations;
 import com.geemvc.script.Regex;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DefaultPathMatcher implements PathMatcher {
     private static final long serialVersionUID = 8682403475843946688L;
@@ -187,11 +192,9 @@ public class DefaultPathMatcher implements PathMatcher {
      * Returns a map of path-parameters that were retrieved using the regular-expression.
      */
     @Override
-    public Map<String, String[]> parameters(RequestContext requestCtx) {
+    public Map<String, String[]> parameters(String requestURI) {
         if (this.pathRegex != null) {
-            String path = requestCtx.getPath();
-
-            Matcher m = this.pathRegex.matcher(path);
+            Matcher m = this.pathRegex.matcher(requestURI);
 
             Map<String, String[]> parameters = new LinkedHashMap<>();
 
@@ -199,7 +202,7 @@ public class DefaultPathMatcher implements PathMatcher {
                 int count = m.groupCount();
 
                 for (int i = 0; i < count; i++) {
-                    parameters.put(this.parameterNames.get(i), new String[]{m.group(i + 1)});
+                    parameters.put(this.parameterNames.get(i), new String[] { m.group(i + 1) });
                 }
             }
 

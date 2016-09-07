@@ -16,8 +16,18 @@
 
 package com.geemvc;
 
-public interface PathOnlyRequestContext extends RequestContext {
-    public PathOnlyRequestContext build(String requestURI);
+import java.util.Map;
 
-    public PathOnlyRequestContext build(String requestURI, String method);
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+public interface InternalRequestContext extends RequestContext {
+    InternalRequestContext build(String requestURI);
+
+    InternalRequestContext build(String requestURI, String method);
+
+    InternalRequestContext build(String requestURI, String method, Map<String, String[]> parameters);
+
+    InternalRequestContext build(String requestURI, String method, Map<String, String[]> parameters, ServletRequest request, ServletResponse response, ServletContext servletContext);
 }

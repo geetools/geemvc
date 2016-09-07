@@ -33,7 +33,12 @@ import com.google.inject.Injector;
 @Adapter
 public class ArrayConverterAdapter implements ConverterAdapter<Object[]> {
     @Inject
-    Injector injector;
+    protected Injector injector;
+
+    @Override
+    public boolean canConvert(List<String> values, ConverterContext ctx) {
+        return true;
+    }
 
     @Override
     public Object[] fromStrings(List<String> values, ConverterContext ctx) {

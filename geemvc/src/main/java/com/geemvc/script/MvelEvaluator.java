@@ -62,6 +62,12 @@ public class MvelEvaluator extends AbstractEvaluator implements ScriptEvaluator 
                     bindings.put(name, ctx.value(name));
                 }
             }
+
+            Object selfBean = findSelfBean(expression, ctx);
+
+            if (selfBean != null)
+                bindings.put("self", selfBean);
+            
         } else {
             bindings.put("req", ctx.requestContext().getRequest());
         }

@@ -16,18 +16,6 @@
 
 package com.geemvc.helper;
 
-import com.geemvc.HttpMethod;
-import com.geemvc.Str;
-import com.geemvc.annotation.Request;
-import com.geemvc.intercept.OnView;
-import com.geemvc.intercept.When;
-import com.geemvc.intercept.annotation.*;
-import com.geemvc.reflect.ReflectionsWrapper;
-import com.geemvc.validation.Validator;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,14 +25,43 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import com.geemvc.HttpMethod;
+import com.geemvc.Str;
+import com.geemvc.annotation.Request;
+import com.geemvc.intercept.OnView;
+import com.geemvc.intercept.When;
+import com.geemvc.intercept.annotation.Lifecycle;
+import com.geemvc.intercept.annotation.PostBinding;
+import com.geemvc.intercept.annotation.PostHandle;
+import com.geemvc.intercept.annotation.PostValidation;
+import com.geemvc.intercept.annotation.PostView;
+import com.geemvc.intercept.annotation.PreBinding;
+import com.geemvc.intercept.annotation.PreHandle;
+import com.geemvc.intercept.annotation.PreValidation;
+import com.geemvc.intercept.annotation.PreView;
+import com.geemvc.reflect.ReflectionsWrapper;
+import com.geemvc.validation.Validator;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 @Singleton
 public class DefaultAnnotations implements Annotations {
     protected final ReflectionsWrapper reflectionsWrapper;
 
-    protected String[] emptyStringArray = new String[]{Str.EMPTY};
-    protected String[] zeroLengthStringArray = new String[]{};
-    protected Class[] zeroLengthClassArray = new Class[]{};
-    protected String[] defaultHttpMethodsArray = new String[]{HttpMethod.GET};
+    protected String[] emptyStringArray = new String[] { Str.EMPTY };
+    protected String[] zeroLengthStringArray = new String[] {};
+    protected Class[] zeroLengthClassArray = new Class[] {};
+    protected String[] defaultHttpMethodsArray = new String[] { HttpMethod.GET };
 
     protected String valueMethodName = "value";
 
@@ -118,13 +135,11 @@ public class DefaultAnnotations implements Annotations {
     }
 
     @Override
-    public String[] paths(Request requestMapping) {
+    public String path(Request requestMapping) {
         if (requestMapping == null)
-            return emptyStringArray;
+            return Str.EMPTY;
 
-        String[] paths = requestMapping.path() == null || requestMapping.path().length == 0 ? requestMapping.value() : requestMapping.path();
-
-        return paths == null || paths.length == 0 ? emptyStringArray : paths;
+        return Str.isEmpty(requestMapping.path()) ? requestMapping.value() : requestMapping.path();
     }
 
     @Override
@@ -172,14 +187,14 @@ public class DefaultAnnotations implements Annotations {
             }
 
             @Override
-            public String[] value() {
-                String[] reqMappingPaths = paths(requestMapping);
-                String[] jsr311Paths = jsr311Path == null ? null : new String[]{jsr311Path.value()};
+            public String value() {
+                String _reqMappingPath = DefaultAnnotations.this.path(requestMapping);
+                String _jsr311Path = jsr311Path == null ? null : jsr311Path.value();
 
-                if ((reqMappingPaths.length > 1 || !reqMappingPaths[0].isEmpty()) && jsr311Paths != null && !jsr311Paths[0].isEmpty())
+                if (!Str.isEmpty(_reqMappingPath) && !Str.isEmpty(_jsr311Path))
                     throw new IllegalStateException("You cannot specify a path in both the @Request annotation and the jsr311 @Path annotation. Please choose one of the two.");
 
-                return jsr311Paths == null ? reqMappingPaths : jsr311Paths;
+                return _jsr311Path == null ? _reqMappingPath : _jsr311Path;
             }
 
             @Override
@@ -203,7 +218,7 @@ public class DefaultAnnotations implements Annotations {
             }
 
             @Override
-            public String[] path() {
+            public String path() {
                 return value();
             }
 
@@ -310,14 +325,14 @@ public class DefaultAnnotations implements Annotations {
             }
 
             @Override
-            public String[] value() {
-                String[] reqMappingPaths = paths(requestMapping);
-                String[] jsr311Paths = jsr311Path == null ? null : new String[]{jsr311Path.value()};
+            public String value() {
+                String _reqMappingPath = DefaultAnnotations.this.path(requestMapping);
+                String _jsr311Path = jsr311Path == null ? null : jsr311Path.value();
 
-                if ((reqMappingPaths.length > 1 || !reqMappingPaths[0].isEmpty()) && jsr311Paths != null && !jsr311Paths[0].isEmpty())
+                if (!Str.isEmpty(_reqMappingPath) && !Str.isEmpty(_jsr311Path))
                     throw new IllegalStateException("You cannot specify a path in both the @Request annotation and the jsr311 @Path annotation. Please choose one of the two.");
 
-                return jsr311Paths == null ? reqMappingPaths : jsr311Paths;
+                return _jsr311Path == null ? _reqMappingPath : _jsr311Path;
             }
 
             @Override
@@ -341,7 +356,7 @@ public class DefaultAnnotations implements Annotations {
             }
 
             @Override
-            public String[] path() {
+            public String path() {
                 return value();
             }
 

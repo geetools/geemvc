@@ -23,15 +23,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import com.geemvc.mock.bean.RootBeanImpl;
 import org.junit.Test;
 
 import com.geemvc.RequestContext;
 import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.mock.Id;
+import com.geemvc.mock.bean.RootBeanImpl;
 import com.geemvc.mock.controller.TestController19;
 import com.geemvc.test.BaseTest;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 
 public class InvokeHandlerTest extends BaseTest {
     @Test
@@ -61,7 +61,7 @@ public class InvokeHandlerTest extends BaseTest {
         assertTrue(mappedPathExists("/controller19/handler19a", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
         assertNotNull(result);
-        assertEquals("forward/to", ((View) result).forward());
+        assertEquals("forward/to", ((Result) result).view());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class InvokeHandlerTest extends BaseTest {
         assertTrue(mappedPathExists("/controller19/handler19b", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
         assertNotNull(result);
-        assertEquals("redirect/to", ((View) result).redirect());
+        assertEquals("redirect/to", ((Result) result).redirect());
     }
 
     @Test
@@ -121,11 +121,12 @@ public class InvokeHandlerTest extends BaseTest {
         assertTrue(mappedPathExists("/controller19/handler19c", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
         assertNotNull(result);
-        assertEquals("forward/to", ((View) result).forward());
-        assertEquals(3, ((View) result).size());
-        assertEquals("value1", ((View) result).get("var1"));
-        assertEquals(Id.valueOf("2"), ((View) result).get("var2"));
-        assertEquals(RootBeanImpl.class, ((View) result).get("var3").getClass());
+        assertNotNull(((Result) result).bindings());
+        assertEquals("forward/to", ((Result) result).view());
+        assertEquals(3, ((Result) result).bindings().size());
+        assertEquals("value1", ((Result) result).binding("var1"));
+        assertEquals(Id.valueOf("2"), ((Result) result).binding("var2"));
+        assertEquals(RootBeanImpl.class, ((Result) result).binding("var3").getClass());
     }
 
     @Test
@@ -155,10 +156,11 @@ public class InvokeHandlerTest extends BaseTest {
         assertTrue(mappedPathExists("/controller19/handler19c", requestHandler.pathMatcher()));
         assertNull(requestHandler.pathMatcher().getRegexPath());
         assertNotNull(result);
-        assertEquals("forward/to", ((View) result).forward());
-        assertEquals(3, ((View) result).size());
-        assertEquals("value1", ((View) result).get("var1"));
-        assertEquals(Id.valueOf("2"), ((View) result).get("var2"));
-        assertEquals(RootBeanImpl.class, ((View) result).get("var3").getClass());
+        assertNotNull(((Result) result).bindings());
+        assertEquals("forward/to", ((Result) result).view());
+        assertEquals(3, ((Result) result).bindings().size());
+        assertEquals("value1", ((Result) result).binding("var1"));
+        assertEquals(Id.valueOf("2"), ((Result) result).binding("var2"));
+        assertEquals(RootBeanImpl.class, ((Result) result).binding("var3").getClass());
     }
 }

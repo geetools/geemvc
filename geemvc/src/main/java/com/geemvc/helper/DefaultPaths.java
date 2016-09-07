@@ -29,7 +29,7 @@ public class DefaultPaths implements Paths {
 
     @Override
     public boolean isValidForRequest(String[] on, RequestHandler requestHandler, RequestContext requestCtx) {
-        String[] mappedHandlerPaths = requestHandler.handlerRequestMapping().path();
+        String mappedHandlerPath = requestHandler.handlerRequestMapping().path();
         String resolvedMappedPath = requestHandler.pathMatcher().getMappedPath();
         String handlerEventName = requestHandler.handlerRequestMapping().name();
         String handlerMethodName = requestHandler.handlerMethod().getName();
@@ -55,7 +55,7 @@ public class DefaultPaths implements Paths {
 
             // Assuming path mapping.
             if (trimmedOn.startsWith(Str.SLASH)) {
-                pathMatches = pathExists(trimmedOn, mappedHandlerPaths, resolvedMappedPath);
+                pathMatches = pathExists(trimmedOn, mappedHandlerPath, resolvedMappedPath);
             } else {
                 // Assuming event name or method name mapping.
                 pathMatches = trimmedOn.equals(handlerEventName) || trimmedOn.equals(handlerMethodName);
@@ -68,18 +68,15 @@ public class DefaultPaths implements Paths {
         return pathMatches;
     }
 
-    protected boolean pathExists(String onPath, String[] mappedPaths, String resolvedMappedPath) {
+    protected boolean pathExists(String onPath, String mappedPath, String resolvedMappedPath) {
         if (resolvedMappedPath.equals(onPath))
             return true;
 
-        for (String mappedPath : mappedPaths) {
-            if (!mappedPath.startsWith(Str.SLASH))
-                mappedPath = Str.SLASH + mappedPath;
+        if (!mappedPath.startsWith(Str.SLASH))
+            mappedPath = Str.SLASH + mappedPath;
 
-            if (mappedPath.equals(onPath)) {
-                return true;
-            }
-        }
+        if (mappedPath.equals(onPath))
+            return true;
 
         return false;
     }

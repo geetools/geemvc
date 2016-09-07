@@ -17,7 +17,6 @@
 package com.geemvc.handler;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ import com.geemvc.bind.MethodParam;
 import com.geemvc.matcher.PathMatcher;
 
 public interface RequestHandler extends Comparable<RequestHandler> {
-    RequestHandler build(Class<?> controllerClass, Method handlerMethod, String consumes, String produces);
+    RequestHandler build(Class<?> controllerClass, Method handlerMethod);
 
     Class<?> controllerClass();
 
@@ -36,31 +35,9 @@ public interface RequestHandler extends Comparable<RequestHandler> {
 
     RequestHandler name(String name);
 
-    String consumes();
-
-    String produces();
-
     RequestHandler pathMatcher(PathMatcher pathMatcher);
 
     PathMatcher pathMatcher();
-
-    Collection<String> resolvedParameters();
-
-    RequestHandler resolvedParameters(Collection<String> resolvedParameters);
-
-    Collection<String> resolvedHeaders();
-
-    RequestHandler resolvedHeaders(Collection<String> resolvedHeaders);
-
-    Collection<String> resolvedCookies();
-
-    RequestHandler resolvedCookies(Collection<String> resolvedCookes);
-
-    Collection<String> resolvedHandlesScripts();
-
-    RequestHandler resolvedHandlesScripts(Collection<String> resolvedHandlesScripts);
-
-    HandlerResolverStats handlerResolverStats();
 
     Request controllerRequestMapping();
 

@@ -11,13 +11,13 @@ import com.cb.examples.jpajsp.geeticket.repository.Comments;
 import com.cb.examples.jpajsp.geeticket.repository.Users;
 import com.cb.examples.jpajsp.geeticket.service.TicketService;
 import com.geemvc.HttpMethod;
-import com.geemvc.Views;
+import com.geemvc.Results;
 import com.geemvc.annotation.Controller;
 import com.geemvc.annotation.Request;
 import com.geemvc.bind.param.annotation.Data;
 import com.geemvc.bind.param.annotation.Param;
 import com.geemvc.bind.param.annotation.PathParam;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -43,45 +43,45 @@ public class TicketController {
     }
 
     @Request("/")
-    public View viewTickets() {
+    public Result viewTickets() {
         List<Ticket> tickets = ticketService.getTickets();
-        return Views.forward("ticket/list")
+        return Results.view("ticket/list")
                 .bind("tickets", tickets);
     }
 
     @Request("/details/{id}")
-    public View viewTicketDetails(@PathParam("id") Long ticketId) {
+    public Result viewTicketDetails(@PathParam("id") Long ticketId) {
         Ticket ticket = ticketService.getTicket(ticketId);
-        return Views.forward("ticket/details")
+        return Results.view("ticket/details")
                 .bind("ticket", ticket)
                 .bind("users", users.all());
     }
 
     @Request("/edit/{id}")
-    public View editTicketForm(@PathParam("id") Long ticketId) {
+    public Result editTicketForm(@PathParam("id") Long ticketId) {
         Ticket ticket = ticketService.getTicket(ticketId);
 
-        return Views.forward("ticket/edit_form")
+        return Results.view("ticket/edit_form")
                 .bind("ticket", ticket)
                 .bind("users", users.all());
     }
 
     @Request(value = "/update/{id}", method = HttpMethod.POST)
-    public View updateTicket(@PathParam("id") Long ticketId, @Data Ticket ticket) {
+    public Result updateTicket(@PathParam("id") Long ticketId, @Data Ticket ticket) {
         Ticket updatedTicket = ticketService.save(ticket);
 
-        return Views.forward("ticket/details")
+        return Results.view("ticket/details")
                 .bind("ticket", updatedTicket);
     }
 
     @Request(value = "/new-ticket")
-    public View newTicketForm() {
-        return Views.forward("ticket/new_form")
+    public Result newTicketForm() {
+        return Results.view("ticket/new_form")
                 .bind("users", users.all());
     }
 
     @Request(value = "/create-ticket", method = HttpMethod.POST)
-    public View createTicket(Ticket ticket) {
+    public Result createTicket(Ticket ticket) {
 
         if (ticket != null) {
             User assignee = users.havingId(ticket.getAssignee().getId());
@@ -92,17 +92,17 @@ public class TicketController {
             ticketService.save(ticket);
         }
 
-        return Views.redirect("/tickets");
+        return Results.redirect("/tickets");
     }
 
     @Request("/delete/{id}")
-    public View deleteTicket(@Data Ticket ticket) {
+    public Result deleteTicket(@Data Ticket ticket) {
         ticketService.remove(ticket);
-        return Views.redirect("/tickets");
+        return Results.redirect("/tickets");
     }
 
     @Request(value = "/comment/add/{id}", method = HttpMethod.POST)
-    public View addComment(@PathParam("id") Long ticketId, @Param("comment") String comment, @Param("userId") Long userId) {
+    public Result addComment(@PathParam("id") Long ticketId, @Param("comment") String comment, @Param("userId") Long userId) {
         Ticket ticket = ticketService.getTicket(ticketId);
 
         Comment c = injector.getInstance(Comment.class);
@@ -119,7 +119,7 @@ public class TicketController {
             }
         }
 
-        return Views.redirect("/tickets/details/" + ticketId);
+        return Results.redirect("/tickets/details/" + ticketId);
     }
 
 }

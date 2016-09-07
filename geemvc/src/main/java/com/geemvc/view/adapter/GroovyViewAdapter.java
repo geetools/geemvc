@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.geemvc.RequestContext;
 import com.geemvc.annotation.Adapter;
 import com.geemvc.view.ViewAdapter;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -47,9 +47,9 @@ public class GroovyViewAdapter implements ViewAdapter {
     }
 
     @Override
-    public ViewAdapter prepare(View view, RequestContext requestCtx) {
-        if (!view.isEmpty()) {
-            Set<Entry<String, Object>> entries = view.entrySet();
+    public ViewAdapter prepare(Result view, RequestContext requestCtx) {
+        if (view.hasBindings()) {
+            Set<Entry<String, Object>> entries = view.bindings().entrySet();
 
             if (entries != null && !entries.isEmpty()) {
                 HttpServletRequest request = (HttpServletRequest) requestCtx.getRequest();

@@ -74,6 +74,7 @@ public class Str {
     public static final String NEWLINE = String.valueOf(Char.NEWLINE);
     public static final String PROTOCOL_SUFFIX = "://";
     public static final String EMPTY = "";
+    public static final String[] EMPTY_ARRAY = {};
     public static final String NUL = String.valueOf(Char.NUL);
     public static final String NULL_STRING = "null";
     public static final String TILDE = String.valueOf(Char.TILDE);

@@ -250,8 +250,7 @@ public class FormTagSupport extends HtmlTagSupport {
         Annotations annotations = injector.getInstance(Annotations.class);
 
         String basePath = controllers.getBasePath(controllerClass);
-        String[] paths = annotations.paths(handlerMethod.getAnnotation(Request.class));
-        String path = paths == null || paths.length == 0 ? null : paths[0];
+        String path = annotations.path(handlerMethod.getAnnotation(Request.class));
 
         if (basePath == null)
             basePath = Str.EMPTY;

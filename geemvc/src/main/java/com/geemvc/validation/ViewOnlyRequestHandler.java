@@ -17,11 +17,11 @@
 package com.geemvc.validation;
 
 import com.geemvc.handler.RequestHandler;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 
 /**
  * Created by Michael on 13.07.2016.
  */
 public interface ViewOnlyRequestHandler extends RequestHandler {
-    RequestHandler build(View view, RequestHandler requestHandler);
+    RequestHandler build(Result result, RequestHandler requestHandler);
 }

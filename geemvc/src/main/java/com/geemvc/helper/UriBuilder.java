@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package com.geemvc.view;
+package com.geemvc.helper;
 
-import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
 
-import javax.servlet.ServletException;
+public interface UriBuilder {
+    String build(Class<?> controllerClass, Method handlerMethod);
 
-import com.geemvc.RequestContext;
-import com.geemvc.view.bean.Result;
-
-public interface ViewAdapter {
-    String name();
-
-    boolean canHandle(String path);
-
-    ViewAdapter prepare(Result view, RequestContext requestCtx);
-
-    void forward(String path, RequestContext requestCtx) throws ServletException, IOException;
+    String build(Class<?> controllerClass, Method handlerMethod, Map<String, String[]> parameters);
 }

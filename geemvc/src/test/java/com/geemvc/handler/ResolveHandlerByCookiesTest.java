@@ -56,7 +56,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11a", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -88,7 +89,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11b", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -121,7 +123,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11c", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -153,7 +156,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11e", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -185,7 +189,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11f", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -219,7 +224,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11g", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -253,7 +259,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11gg", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -285,7 +292,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11h", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -318,7 +326,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11i", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -350,7 +359,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11ii", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -383,7 +393,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11j", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -415,7 +426,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11k", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -449,7 +461,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11l", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -483,7 +496,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11m", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -517,7 +531,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11n", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -552,7 +567,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11o", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -587,7 +603,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11p", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));
@@ -620,7 +637,8 @@ public class ResolveHandlerByCookiesTest extends BaseTest {
         assertNotNull(requestHandler.controllerRequestMapping());
         assertNotNull(requestHandler.handlerRequestMapping());
         assertNotNull(requestHandler.pathMatcher());
-        assertNull(requestHandler.resolvedParameters());
+        assertNotNull(reqCtx.handlerResolutionPlan(requestHandler));
+        assertNull(reqCtx.handlerResolutionPlan(requestHandler).resolvedParameters());
         assertEquals(requestHandler.controllerClass(), TestController11.class);
         assertEquals("handler11q", requestHandler.handlerMethod().getName());
         assertTrue(controllerPathExists("/controller11", controllers.values()));

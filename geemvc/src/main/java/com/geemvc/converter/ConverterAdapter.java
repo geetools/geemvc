@@ -19,6 +19,8 @@ package com.geemvc.converter;
 import java.util.List;
 
 public interface ConverterAdapter<T> {
+    boolean canConvert(List<String> values, ConverterContext ctx);
+    
     T fromStrings(List<String> values, ConverterContext ctx);
 
     String toString(T value);

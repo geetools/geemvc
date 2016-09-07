@@ -49,7 +49,7 @@ import com.geemvc.intercept.annotation.PreValidation;
 import com.geemvc.intercept.annotation.PreView;
 import com.geemvc.reflect.ReflectionProvider;
 import com.geemvc.validation.Errors;
-import com.geemvc.view.bean.View;
+import com.geemvc.view.bean.Result;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -161,8 +161,8 @@ public class DefaultLifecycleInterceptor implements LifecycleInterceptor {
             return injector.getInstance(Messages.class);
         } else if (Bindings.class.isAssignableFrom(type)) {
             return lifecycleCtx.bindings();
-        } else if (View.class.isAssignableFrom(type)) {
-            return lifecycleCtx.view();
+        } else if (Result.class.isAssignableFrom(type)) {
+            return lifecycleCtx.result();
         } else if (Map.class.isAssignableFrom(type)) {
             if (genericType != null && genericType.size() == 2 && String.class == genericType.get(0) && String[].class == genericType.get(1)) {
                 return request.getParameterMap();
