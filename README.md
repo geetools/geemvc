@@ -163,7 +163,7 @@ public class HelloWorldController {
 ```
 
 ## Passing Parameters to the View
-Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
+Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "Result" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
 
 ```java
 import static com.geemvc.Results.*;
@@ -602,8 +602,8 @@ public class preViewInterceptor {
     /**
      * Add countries and languages before forwarding to view.
      */
-    public void intercept(View view) {
-        view.bind("countries", service.getCountries()).bind("languages", service.getLanguages());
+    public void intercept(Result result) {
+        result.bind("countries", service.getCountries()).bind("languages", service.getLanguages());
     }
 }
 ```
