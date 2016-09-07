@@ -54,9 +54,9 @@ import com.geemvc.logging.annotation.Logger;
 import com.geemvc.matcher.PathMatcher;
 import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.validation.Errors;
+import com.geemvc.validation.ResultOnlyRequestHandler;
 import com.geemvc.validation.ValidationContext;
 import com.geemvc.validation.Validator;
-import com.geemvc.validation.ViewOnlyRequestHandler;
 import com.geemvc.view.GeemvcKey;
 import com.geemvc.view.ViewHandler;
 import com.geemvc.view.bean.Result;
@@ -190,9 +190,23 @@ public class DefaultRequestRunner implements RequestRunner {
             lifecycleCtx.result(postValidationResult);
         }
 
+        // Check if any previous interceptors or validators have returned a result object.
         if (lifecycleCtx.result() != null) {
-            return result(intercept(injector.getInstance(ViewOnlyRequestHandler.class).build(lifecycleCtx.result(), requestHandler), bindings.typedValues(), requestCtx, errors, notices));
+            // If a result object exists, see if we are dealing with a chained handler or a view.
+            if (isInvokeNextHandler(lifecycleCtx.result())) {
+                RequestHandlerInfo requestHandlerInfo = injector.getInstance(RequestHandlerInfo.class).from(lifecycleCtx.result(), requestCtx);
+                bindings = bindings(requestHandlerInfo.requestHandler(), requestHandlerInfo.internalRequestContext(), errors, notices);
+                lifecycleCtx.bindings(bindings);
+                lifecycleCtx.invokeHandler(true);
+
+                // Attempt to forward to another request handler.
+                return invokeRequestHandler(requestHandlerInfo.requestHandler(), requestHandlerInfo.internalRequestContext(), errors, notices, bindings.typedValues(), lifecycleCtx);
+            } else {
+                // Forward to a view.
+                return result(intercept(injector.getInstance(ResultOnlyRequestHandler.class).build(lifecycleCtx.result(), requestHandler), bindings.typedValues(), requestCtx, errors, notices));
+            }
         } else {
+            // Continue with normal request processing.
             return invokeRequestHandler(requestHandler, requestCtx, errors, notices, bindings.typedValues(), lifecycleCtx);
         }
     }
@@ -270,8 +284,8 @@ public class DefaultRequestRunner implements RequestRunner {
         if (!Str.isEmpty(handlerRequestMapping.onError())) {
             String onError = handlerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("view:") && !onError.startsWith("handler:")) {
-                onError = "view:" + onError;
+            if (!onError.startsWith("view:") && !onError.startsWith("handler:") && !onError.startsWith("redirect:")) {
+                onError = "view: " + onError;
             }
 
             return onError;
@@ -280,8 +294,8 @@ public class DefaultRequestRunner implements RequestRunner {
         if (!Str.isEmpty(controllerRequestMapping.onError())) {
             String onError = controllerRequestMapping.onError().trim();
 
-            if (!onError.startsWith("view:") && !onError.startsWith("handler:")) {
-                onError = "view:" + onError;
+            if (!onError.startsWith("view:") && !onError.startsWith("handler:") && !onError.startsWith("redirect:")) {
+                onError = "view: " + onError;
             }
 
             return onError;
@@ -365,29 +379,8 @@ public class DefaultRequestRunner implements RequestRunner {
     protected Result result(Object handlerResult) {
         if (handlerResult == null || handlerResult instanceof Result)
             return (Result) handlerResult;
-
         if (handlerResult instanceof String) {
-            String result = ((String) handlerResult).trim();
-
-            if (result.startsWith("view:")) {
-                return Results.view(result.substring(5).trim());
-            } else if (result.startsWith("redirect:")) {
-                return Results.redirect(result.substring(9).trim());
-            } else if (result.startsWith("handler:")) {
-                return Results.handler(result.substring(8).trim());
-            } else if (result.startsWith("status:")) {
-                String statusAndMessage = result.substring(7).trim();
-                int pos = statusAndMessage.indexOf(Char.SPACE);
-                if (pos != -1) {
-                    return Results.status(Integer.valueOf(statusAndMessage.substring(0, pos)), statusAndMessage.substring(pos + 1).trim());
-
-                } else {
-                    return Results.status(Integer.valueOf(statusAndMessage));
-                }
-            } else {
-                // Content-type is set automatically later.
-                return Results.stream((String) null, result);
-            }
+            return Results.from((String) handlerResult);
         } else {
             return Results.stream(null, handlerResult);
         }

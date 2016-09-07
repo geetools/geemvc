@@ -21,6 +21,8 @@ import java.io.Reader;
 import java.util.Map;
 
 public interface Result {
+    Result from(String value);
+
     Result view(String path);
 
     String view();
@@ -34,6 +36,8 @@ public interface Result {
     Result handler(String path, String httpMethod);
 
     String handlerPath();
+
+    Result httpMethod(String httpMethod);
 
     String httpMethod();
 

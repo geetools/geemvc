@@ -29,7 +29,7 @@ import com.geemvc.view.bean.Result;
 /**
  * Created by Michael on 13.07.2016.
  */
-public class DefaultViewOnlyRequestHandler implements ViewOnlyRequestHandler {
+public class DefaultResultOnlyRequestHandler implements ResultOnlyRequestHandler {
     protected Result result;
     protected RequestHandler requestHandler;
 

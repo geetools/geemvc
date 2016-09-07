@@ -153,21 +153,27 @@ public class DefaultPathMatcher implements PathMatcher {
      */
     @Override
     public boolean matches(RequestContext requestCtx, MatcherContext matcherCtx) {
-        String path = requestCtx.getPath();
+        return matches(requestCtx.getPath());
+    }
+
+    @Override
+    public boolean matches(String requestURI) {
+        if (requestURI == null)
+            return false;
 
         if (this.pathRegex != null) {
-            return pathRegex.matches(path);
+            return pathRegex.matches(requestURI);
         } else if (this.mappedPath != null) {
             if (isCompletePath) {
-                boolean matches = path.equals(this.mappedPath);
+                boolean matches = requestURI.equals(this.mappedPath);
 
-                if (!matches && path.indexOf(Char.DOT) != -1) {
-                    matches = matchesWithSuffix(path);
+                if (!matches && requestURI.indexOf(Char.DOT) != -1) {
+                    matches = matchesWithSuffix(requestURI);
                 }
 
                 return matches;
             } else {
-                return path.startsWith(this.mappedPath);
+                return requestURI.startsWith(this.mappedPath);
             }
         }
 

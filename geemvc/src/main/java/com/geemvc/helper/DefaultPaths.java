@@ -68,6 +68,26 @@ public class DefaultPaths implements Paths {
         return pathMatches;
     }
 
+    @Override
+    public boolean startsWithHttpMethod(String path) {
+        if (path.startsWith(HttpMethod.GET + Str.SPACE)
+                || path.startsWith(HttpMethod.POST + Str.SPACE)
+                || path.startsWith(HttpMethod.PUT + Str.SPACE)
+                || path.startsWith(HttpMethod.DELETE + Str.SPACE)
+                || path.startsWith(HttpMethod.OPTIONS + Str.SPACE)
+                || path.startsWith(HttpMethod.HEAD + Str.SPACE)
+                || path.startsWith(HttpMethod.TRACE + Str.SPACE)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean containsHttpMethod(String path, String httpMethod) {
+        return path.startsWith(httpMethod);
+    }
+
     protected boolean pathExists(String onPath, String mappedPath, String resolvedMappedPath) {
         if (resolvedMappedPath.equals(onPath))
             return true;
@@ -79,23 +99,5 @@ public class DefaultPaths implements Paths {
             return true;
 
         return false;
-    }
-
-    protected boolean startsWithHttpMethod(String on) {
-        if (on.startsWith(HttpMethod.GET + Str.SPACE)
-                || on.startsWith(HttpMethod.POST + Str.SPACE)
-                || on.startsWith(HttpMethod.PUT + Str.SPACE)
-                || on.startsWith(HttpMethod.DELETE + Str.SPACE)
-                || on.startsWith(HttpMethod.OPTIONS + Str.SPACE)
-                || on.startsWith(HttpMethod.HEAD + Str.SPACE)
-                || on.startsWith(HttpMethod.TRACE + Str.SPACE)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected boolean containsHttpMethod(String on, String requestMethod) {
-        return on.startsWith(requestMethod);
     }
 }

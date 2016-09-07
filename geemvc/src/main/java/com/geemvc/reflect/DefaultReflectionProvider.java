@@ -16,6 +16,35 @@
 
 package com.geemvc.reflect;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.ws.rs.Path;
+
 import com.geemvc.Char;
 import com.geemvc.annotation.Adapter;
 import com.geemvc.annotation.Controller;
@@ -41,22 +70,10 @@ import com.geemvc.validation.ValidationAdapterKey;
 import com.geemvc.validation.Validator;
 import com.geemvc.validation.annotation.CheckBean;
 import com.geemvc.view.ViewAdapter;
+import com.geemvc.view.binding.Bindable;
+import com.geemvc.view.binding.annotation.Binding;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-
-import javax.ws.rs.Path;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DefaultReflectionProvider implements ReflectionProvider {
     protected final ReflectionsWrapper reflectionsWrapper;
@@ -81,13 +98,13 @@ public class DefaultReflectionProvider implements ReflectionProvider {
     protected static final String CACHE_KEY_LOCATED_VALIDATION_ADAPTERS = "geemvc/validationAdapters";
     protected static final String CACHE_KEY_LOCATED_BEAN_VALIDATORS = "geemvc/beanValidators/%s";
     protected static final String CACHE_KEY_LOCATED_VIEW_ADAPTERS = "geemvc/viewAdapters";
+    protected static final String CACHE_KEY_LOCATED_VIEW_BINDINGS = "geemvc/viewBindings";
     protected static final String CACHE_KEY_LOCATED_DATA_ADAPTERS = "geemvc/dataAdapters";
     protected static final String CACHE_KEY_GENERIC_TYPE1 = "geemvc/genericType#1/%s";
     protected static final String CACHE_KEY_GENERIC_TYPE2 = "geemvc/genericType#2/%s";
     protected static final String CACHE_KEY_GENERIC_TYPE3 = "geemvc/genericType#3/%s/%s";
     protected static final String CACHE_KEY_MUTABLE_FIELDS = "geemvc/mutableFields/%s";
     protected static final String CACHE_KEY_FIELDS_ANNOTATED_WITH = "geemvc/mutableFields/%s/%s";
-
 
     protected static final String CACHE_KEY_LOCATED_EVALUATORS = "geemvc/evaluators";
 
@@ -268,6 +285,31 @@ public class DefaultReflectionProvider implements ReflectionProvider {
     }
 
     @Override
+    public Set<Bindable> locateBindings() {
+        return (Set<Bindable>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_VIEW_BINDINGS, () -> {
+            Set<Bindable> viewBindings = new LinkedHashSet<>();
+
+            Set<Class<?>> bindingClasses = reflectionsWrapper.getTypesAnnotatedWith(Binding.class, true);
+
+            List<Class<?>> viewBindingClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> bindingClass : bindingClasses) {
+                if (Bindable.class.isAssignableFrom(bindingClass))
+                    viewBindingClasses.add(bindingClass);
+            }
+
+            viewBindingClasses.sort((cl1, cl2) -> cl1.getAnnotation(Binding.class).weight() - cl2.getAnnotation(Binding.class).weight());
+
+            for (Class<?> viewBindingClass : viewBindingClasses) {
+                Bindable viewBinding = (Bindable) injector.getInstance(viewBindingClass);
+                viewBindings.add(viewBinding);
+            }
+
+            return viewBindings;
+        });
+    }
+
+    @Override
     public Set<Class<?>> locateEvaluators() {
         return (Set<Class<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_EVALUATORS, () -> {
             return reflectionsWrapper.getTypesAnnotatedWith(Evaluator.class, true);
@@ -318,7 +360,7 @@ public class DefaultReflectionProvider implements ReflectionProvider {
         if (predicate != null)
             stream = stream.filter(predicate);
 
-        requestMappings = stream.sorted(Map.Entry.<RequestMappingKey, Method>comparingByKey((k1, k2) -> k2.requestMapping().priority() - k1.requestMapping().priority())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+        requestMappings = stream.sorted(Map.Entry.<RequestMappingKey, Method> comparingByKey((k1, k2) -> k2.requestMapping().priority() - k1.requestMapping().priority())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
             throw new AssertionError();
         }, LinkedHashMap::new));
 

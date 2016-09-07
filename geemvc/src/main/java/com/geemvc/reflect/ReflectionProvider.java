@@ -43,6 +43,7 @@ import com.geemvc.validation.ValidationAdapter;
 import com.geemvc.validation.ValidationAdapterKey;
 import com.geemvc.validation.Validator;
 import com.geemvc.view.ViewAdapter;
+import com.geemvc.view.binding.Bindable;
 
 public interface ReflectionProvider {
     Set<Class<?>> locateControllers();
@@ -58,6 +59,8 @@ public interface ReflectionProvider {
     Set<LifecycleInterceptor> locateLifecycleInterceptors(Class<? extends Annotation> lifecycleAnnotation, Class<?> controllerClass);
 
     Set<LifecycleInterceptor> locateLifecycleInterceptors(Class<? extends Annotation> lifecycleAnnotation);
+
+    Set<Bindable> locateBindings();
 
     Set<Class<?>> locateEvaluators();
 

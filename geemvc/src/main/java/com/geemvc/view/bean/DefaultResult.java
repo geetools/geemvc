@@ -21,6 +21,11 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.geemvc.Char;
+import com.geemvc.Results;
+import com.geemvc.helper.Paths;
+import com.google.inject.Inject;
+
 public class DefaultResult implements Result {
     protected Map<String, Object> bindings = null;
 
@@ -68,6 +73,50 @@ public class DefaultResult implements Result {
 
     protected String message = null;
 
+    protected final Paths paths;
+
+    @Inject
+    public DefaultResult(Paths paths) {
+        this.paths = paths;
+    }
+
+    @Override
+    public Result from(String value) {
+        String result = value.trim();
+
+        if (result.startsWith("view:")) {
+            return view(result.substring(5).trim());
+        } else if (result.startsWith("redirect:")) {
+            return redirect(result.substring(9).trim());
+        } else if (result.startsWith("handler:")) {
+            String methodAndPath = result.substring(8).trim();
+            String httpMethod = null;
+            String path = null;
+
+            if (paths.startsWithHttpMethod(methodAndPath)) {
+                int spacePos = methodAndPath.indexOf(Char.SPACE);
+                httpMethod = methodAndPath.substring(0, spacePos).trim();
+                path = methodAndPath.substring(spacePos + 1).trim();
+            } else {
+                path = methodAndPath;
+            }
+
+            return Results.handler(path, httpMethod);
+        } else if (result.startsWith("status:")) {
+            String statusAndMessage = result.substring(7).trim();
+            int pos = statusAndMessage.indexOf(Char.SPACE);
+            if (pos != -1) {
+                return status(Integer.valueOf(statusAndMessage.substring(0, pos)), statusAndMessage.substring(pos + 1).trim());
+
+            } else {
+                return status(Integer.valueOf(statusAndMessage));
+            }
+        } else {
+            // Content-type is set automatically later.
+            return stream((String) null, result);
+        }
+    }
+
     @Override
     public Result view(String path) {
         this.forward = path;
@@ -106,6 +155,12 @@ public class DefaultResult implements Result {
     @Override
     public String handlerPath() {
         return handlerPath;
+    }
+
+    @Override
+    public Result httpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
+        return this;
     }
 
     @Override

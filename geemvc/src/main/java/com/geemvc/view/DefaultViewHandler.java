@@ -18,6 +18,7 @@ package com.geemvc.view;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -38,13 +39,21 @@ import com.geemvc.intercept.annotation.PreView;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.annotation.Logger;
 import com.geemvc.view.bean.Result;
+import com.geemvc.view.binding.Bindable;
+import com.geemvc.view.binding.BindingContext;
+import com.geemvc.view.binding.BindingResolver;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class DefaultViewHandler implements ViewHandler {
     protected final ViewAdapterFactory viewAdapterFactory;
     protected final StreamViewHandler streamViewHandler;
     protected final Requests requests;
     protected final Interceptors interceptors;
+    protected final BindingResolver bindingResolver;
+
+    @Inject
+    protected Injector injector;
 
     @Logger
     protected Log log;
@@ -52,11 +61,12 @@ public class DefaultViewHandler implements ViewHandler {
     protected Configuration configuration = Configurations.get();
 
     @Inject
-    protected DefaultViewHandler(ViewAdapterFactory viewAdapterFactory, StreamViewHandler streamViewHandler, Requests requests, Interceptors interceptors) {
+    protected DefaultViewHandler(ViewAdapterFactory viewAdapterFactory, StreamViewHandler streamViewHandler, Requests requests, Interceptors interceptors, BindingResolver bindingResolver) {
         this.viewAdapterFactory = viewAdapterFactory;
         this.streamViewHandler = streamViewHandler;
         this.requests = requests;
         this.interceptors = interceptors;
+        this.bindingResolver = bindingResolver;
     }
 
     @Override
@@ -71,18 +81,19 @@ public class DefaultViewHandler implements ViewHandler {
 
             log.debug("Processing forward view '{}' with adapter '{}'.", () -> viewPath, () -> viewAdapter.getClass().getName());
 
+            LifecycleContext lifecycleCtx = (LifecycleContext) ThreadStash.get(LifecycleContext.class);
+
             processIncomingFlashVars(requestCtx);
+            processViewBinders(result, requestCtx, lifecycleCtx);
 
             // ---------- Intercept lifecycle: PreView.
-            interceptors.interceptLifecycle(PreView.class, (LifecycleContext) ThreadStash.get(LifecycleContext.class));
+            interceptors.interceptLifecycle(PreView.class, lifecycleCtx);
 
             log.trace("Preparing data before forwarding request to view servlet.");
             viewAdapter.prepare(result, requestCtx);
 
             log.trace("Forwarding request to view servlet.");
             viewAdapter.forward(viewPath, requestCtx);
-
-            LifecycleContext lifecycleCtx = (LifecycleContext) ThreadStash.get(LifecycleContext.class);
 
             // ---------- Intercept lifecycle: PostView.
             interceptors.interceptLifecycle(PostView.class, lifecycleCtx);
@@ -105,6 +116,23 @@ public class DefaultViewHandler implements ViewHandler {
         else {
             log.debug("Streaming data to user for path '{}'.", () -> requestCtx.getPath());
             streamViewHandler.handle(result, requestCtx);
+        }
+    }
+
+    protected void processViewBinders(Result result, RequestContext requestCtx, LifecycleContext lifecycleCtx) {
+        HttpServletRequest request = (HttpServletRequest) requestCtx.getRequest();
+
+        BindingContext bindingCtx = injector.getInstance(BindingContext.class).build(requestCtx.requestHandler(), requestCtx, lifecycleCtx.errors(), lifecycleCtx.notices())
+                .bindings(lifecycleCtx.bindings())
+                .result(result);
+
+        Set<Bindable> viewBindings = bindingResolver.resolveBindings(bindingCtx);
+
+        if (viewBindings != null && !viewBindings.isEmpty()) {
+            for (Bindable viewBinding : viewBindings) {
+                log.debug("Binding variable '{}' from '{}' for path '{}'.", () -> viewBinding.key(), () -> viewBinding.getClass().getName(), () -> result.view());
+                request.setAttribute(viewBinding.key(), viewBinding.value());
+            }
         }
     }
 

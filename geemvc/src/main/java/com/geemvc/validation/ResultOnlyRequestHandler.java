@@ -22,6 +22,6 @@ import com.geemvc.view.bean.Result;
 /**
  * Created by Michael on 13.07.2016.
  */
-public interface ViewOnlyRequestHandler extends RequestHandler {
+public interface ResultOnlyRequestHandler extends RequestHandler {
     RequestHandler build(Result result, RequestHandler requestHandler);
 }

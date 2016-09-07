@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.geemvc.helper;
+package com.geemvc.view.binding.annotation;
 
-import com.geemvc.RequestContext;
-import com.geemvc.handler.RequestHandler;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * Created by Michael on 14.07.2016.
- */
-public interface Paths {
-    boolean isValidForRequest(String[] on, RequestHandler requestHandler, RequestContext requestCtx);
+import com.geemvc.intercept.When;
 
-    public boolean startsWithHttpMethod(String path);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Binding {
+    String[] view() default {};
 
-    public boolean containsHttpMethod(String path, String httpMethod);
+    String[] ignore() default {};
+
+    When when() default When.ALWAYS;
+
+    int weight() default 0;
 }

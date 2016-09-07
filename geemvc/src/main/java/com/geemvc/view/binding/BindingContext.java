@@ -14,18 +14,37 @@
  * limitations under the License.
  */
 
-package com.geemvc.helper;
+package com.geemvc.view.binding;
 
+import java.lang.reflect.Method;
+
+import com.geemvc.Bindings;
 import com.geemvc.RequestContext;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.validation.Errors;
+import com.geemvc.view.bean.Result;
 
-/**
- * Created by Michael on 14.07.2016.
- */
-public interface Paths {
-    boolean isValidForRequest(String[] on, RequestHandler requestHandler, RequestContext requestCtx);
+public interface BindingContext {
+    BindingContext build(RequestHandler requestHandler, RequestContext requestCtx, Errors errors, Notices notices);
 
-    public boolean startsWithHttpMethod(String path);
+    RequestHandler requestHandler();
 
-    public boolean containsHttpMethod(String path, String httpMethod);
+    Errors errors();
+
+    Notices notices();
+
+    Bindings bindings();
+
+    BindingContext bindings(Bindings bindings);
+
+    Result result();
+
+    BindingContext result(Result result);
+
+    RequestContext requestCtx();
+
+    Class<?> controllerClass();
+
+    Method handlerMethod();
 }

@@ -170,22 +170,22 @@ import com.geemvc.script.ScriptEvaluator;
 import com.geemvc.script.SimpleEvaluator;
 import com.geemvc.validation.DefaultError;
 import com.geemvc.validation.DefaultErrors;
+import com.geemvc.validation.DefaultResultOnlyRequestHandler;
 import com.geemvc.validation.DefaultValidation;
 import com.geemvc.validation.DefaultValidationAdapterFactory;
 import com.geemvc.validation.DefaultValidationAdapterKey;
 import com.geemvc.validation.DefaultValidationContext;
 import com.geemvc.validation.DefaultValidations;
 import com.geemvc.validation.DefaultValidator;
-import com.geemvc.validation.DefaultViewOnlyRequestHandler;
 import com.geemvc.validation.Error;
 import com.geemvc.validation.Errors;
+import com.geemvc.validation.ResultOnlyRequestHandler;
 import com.geemvc.validation.Validation;
 import com.geemvc.validation.ValidationAdapterFactory;
 import com.geemvc.validation.ValidationAdapterKey;
 import com.geemvc.validation.ValidationContext;
 import com.geemvc.validation.Validations;
 import com.geemvc.validation.Validator;
-import com.geemvc.validation.ViewOnlyRequestHandler;
 import com.geemvc.view.DefaultStreamViewHandler;
 import com.geemvc.view.DefaultViewAdapterFactory;
 import com.geemvc.view.DefaultViewHandler;
@@ -194,6 +194,10 @@ import com.geemvc.view.ViewAdapterFactory;
 import com.geemvc.view.ViewHandler;
 import com.geemvc.view.bean.DefaultResult;
 import com.geemvc.view.bean.Result;
+import com.geemvc.view.binding.BindingContext;
+import com.geemvc.view.binding.BindingResolver;
+import com.geemvc.view.binding.DefaultBindingContext;
+import com.geemvc.view.binding.DefaultBindingResolver;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
@@ -262,6 +266,8 @@ public class GeeMvcModule extends AbstractModule {
         configureInvocationContext();
         configureLifecycleInterceptor();
         configureLifecycleContext();
+        configureBindingResolver();
+        configureBindingContext();
         configureNotice();
         configureNotices();
         configureError();
@@ -362,7 +368,7 @@ public class GeeMvcModule extends AbstractModule {
     }
 
     protected void configureViewOnlyRequestHandler() {
-        bind(ViewOnlyRequestHandler.class).to(DefaultViewOnlyRequestHandler.class);
+        bind(ResultOnlyRequestHandler.class).to(DefaultResultOnlyRequestHandler.class);
     }
 
     protected void configureBindings() {
@@ -651,6 +657,14 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureLifecycleContext() {
         bind(LifecycleContext.class).to(DefaultLifecycleContext.class);
+    }
+
+    protected void configureBindingResolver() {
+        bind(BindingResolver.class).to(DefaultBindingResolver.class);
+    }
+
+    protected void configureBindingContext() {
+        bind(BindingContext.class).to(DefaultBindingContext.class);
     }
 
     protected void configureUriBuilder() {

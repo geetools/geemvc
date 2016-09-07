@@ -23,6 +23,10 @@ import com.geemvc.inject.Injectors;
 import com.geemvc.view.bean.Result;
 
 public class Results {
+    public static Result from(String value) {
+        return Injectors.provide().getInstance(Result.class).from(value);
+    }
+    
     public static Result view(String path) {
         return Injectors.provide().getInstance(Result.class).view(path);
     }

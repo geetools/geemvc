@@ -23,6 +23,8 @@ public interface PathMatcher extends Matcher {
 
     PathMatcher build(String parentPath, String path);
 
+    boolean matches(String requestURI);
+
     Map<String, String[]> parameters(String requestURI);
 
     int parameterCount();
