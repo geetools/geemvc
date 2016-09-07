@@ -183,9 +183,8 @@ public class HelloWorldController {
     public Result helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
-	// Results.view() lets you bind parameters to the view.
-        return view("hello-world")
-                .bind("myViewParam", someService.getById(id));
+        // Results.view() lets you bind parameters to the view.
+        return view("hello-world").bind("myViewParam", someService.getById(id));
     }
 }
 ```
@@ -218,8 +217,7 @@ public class HelloWorldController {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return view("hello-world")
-                .bind("myViewParam", someService.getById(id));
+        return view("hello-world").bind("myViewParam", someService.getById(id));
     }
 }
 ```
@@ -250,13 +248,12 @@ public class HelloWorldController {
             errors.add("Hey, I also want to add this error message!");
             
             // Now we tell geeMVC where to go in case of a validation error.
-            return view("some-other") // Located at /WEB-INF/jsp/pages/some-other.jsp
-                    .bind("myViewParam", someService.getById(id));
+            // Located at /WEB-INF/jsp/pages/some-other.jsp.
+            return view("some-other").bind("myViewParam", someService.getById(id));
         }
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return view("hello-world")
-                .bind("myViewParam", someService.getById(id));
+        return view("hello-world").bind("myViewParam", someService.getById(id));
     }
 }
 ```
@@ -298,23 +295,20 @@ public class HelloWorldController {
         if (bindings.hasErrors()) {
 
             // Now we tell geeMVC where to go in case of a validation error.
-            return view("hello-world-form")
-                    .bind(bindings.typedValues()); // Re-bind values to view.
+            return view("hello-world-form").bind(bindings.typedValues()); // Re-bind values to view.
         }
 
         if (!worldIsValid(world)) {
             errors.add("World is not valid, please check again.");
 
-            return view("hello-world-form")
-                    .bind(bindings.typedValues()); // Re-bind values to view.
+            return view("hello-world-form").bind(bindings.typedValues()); // Re-bind values to view.
         }
 
         // Save the bean.
         WorldBean savedWorld = service.add(world);
 
         // Located at /WEB-INF/jsp/pages/hello-world-success.jsp
-        return view("hello-world-success")
-                .bind("savedWorld", savedWorld);
+        return view("hello-world-success").bind("savedWorld", savedWorld);
     }
     
     /**
@@ -609,8 +603,7 @@ public class preViewInterceptor {
      * Add countries and languages before forwarding to view.
      */
     public void intercept(View view) {
-        view.bind("countries", service.getCountries())
-                .bind("languages", service.getLanguages());
+        view.bind("countries", service.getCountries()).bind("languages", service.getLanguages());
     }
 }
 ```
