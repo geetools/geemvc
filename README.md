@@ -166,6 +166,8 @@ public class HelloWorldController {
 Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
 
 ```java
+import static com.geemvc.Results.*;
+
 @Controller
 @Request("/hello")
 public class HelloWorldController {
@@ -178,11 +180,11 @@ public class HelloWorldController {
     }
 
     @Request("/world/{id}")
-    public View helloWorld(@PathParam Long id, @Param String myQueryParam) {
+    public Result helloWorld(@PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
-	// The Views class is simply a small helper that builds the view object for you.
-        return Views.forward("hello-world")
+	// Results.view() lets you bind parameters to the view.
+        return view("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -192,6 +194,8 @@ public class HelloWorldController {
 The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by geeMVC (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells geeMVC where to go incase of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
 
 ```java
+import static com.geemvc.Results.*;
+
 @Controller
 @Request("/hello")
 public class HelloWorldController {
@@ -210,11 +214,11 @@ public class HelloWorldController {
      * following this one.
      */
     @Request(path = "/world/{id}", onError="hello-world")
-    public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
+    public Result helloWorld(@Required @PathParam Long id, @Param String myQueryParam) {
         System.out.println("Cool, I am passing the parameter 'myViewParam' to the view!");
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return Views.forward("hello-world")
+        return view("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -224,6 +228,8 @@ public class HelloWorldController {
 geeMVC automatically passes two objects into your handler method in order to let you check if any validation errors exist. For this, simply add the "Bindings" and/or "Errors" object(s) to your method signature.
 
 ```java
+import static com.geemvc.Results.*;
+
 @Controller
 @Request("/hello")
 public class HelloWorldController {
@@ -236,7 +242,7 @@ public class HelloWorldController {
     }
 
     @Request(path = "/world/{id}")
-    public View helloWorld(@Required @PathParam Long id, @Param String myQueryParam, Bindings bindings, Errors errors) {
+    public Result helloWorld(@Required @PathParam Long id, @Param String myQueryParam, Bindings bindings, Errors errors) {
 
         // Lets check if validation errors exist.
         if (bindings.hasErrors()) {
@@ -244,12 +250,12 @@ public class HelloWorldController {
             errors.add("Hey, I also want to add this error message!");
             
             // Now we tell geeMVC where to go in case of a validation error.
-            return Views.forward("some-other") // Located at /WEB-INF/jsp/pages/some-other.jsp
+            return view("some-other") // Located at /WEB-INF/jsp/pages/some-other.jsp
                     .bind("myViewParam", someService.getById(id));
         }
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return Views.forward("hello-world")
+        return view("hello-world")
                 .bind("myViewParam", someService.getById(id));
     }
 }
@@ -260,6 +266,8 @@ public class HelloWorldController {
 ### The Controller
 
 ```java
+import static com.geemvc.Results.*;
+
 @Controller
 @Request("/hello")
 public class HelloWorldController {
@@ -284,20 +292,20 @@ public class HelloWorldController {
      * Attempts to save the form. If a validation error occurs we go back to the form, otherwise we show the success page.
      */
     @Request(path = "save-world-form", method = HttpMethod.POST)
-    public View saveWorld(@Valid WorldBean world, Bindings bindings, Errors errors) {
+    public Result saveWorld(@Valid WorldBean world, Bindings bindings, Errors errors) {
 
         // Lets check if validation errors exist.
         if (bindings.hasErrors()) {
 
             // Now we tell geeMVC where to go in case of a validation error.
-            return Views.forward("hello-world-form")
+            return view("hello-world-form")
                     .bind(bindings.typedValues()); // Re-bind values to view.
         }
 
         if (!worldIsValid(world)) {
             errors.add("World is not valid, please check again.");
 
-            return Views.forward("hello-world-form")
+            return view("hello-world-form")
                     .bind(bindings.typedValues()); // Re-bind values to view.
         }
 
@@ -305,7 +313,7 @@ public class HelloWorldController {
         WorldBean savedWorld = service.add(world);
 
         // Located at /WEB-INF/jsp/pages/hello-world-success.jsp
-        return Views.forward("hello-world-success")
+        return view("hello-world-success")
                 .bind("savedWorld", savedWorld);
     }
     
