@@ -88,25 +88,29 @@ public class CheckValidationAdapter extends AbstractValidator implements Validat
                 Object value = validationCtx.value(param);
 
                 if (!validateRequired(checkAnnotation.required(), value)) {
-                    errors.add(param, "validation.error.required");
+                    errors.add(param, message("validation.error.required", checkAnnotation));
                 } else if (!validateMin(checkAnnotation.min(), value) && !validateMax(checkAnnotation.max(), value)) {
-                    errors.add(param, "validation.error.between", value, checkAnnotation.min(), checkAnnotation.max());
+                    errors.add(param, message("validation.error.between", checkAnnotation), value, checkAnnotation.min(), checkAnnotation.max());
                 } else if (!validateMin(checkAnnotation.min(), value)) {
-                    errors.add(param, "validation.error.min", value, checkAnnotation.min());
+                    errors.add(param, message("validation.error.min", checkAnnotation), value, checkAnnotation.min());
                 } else if (!validateMax(checkAnnotation.max(), value)) {
-                    errors.add(param, "validation.error.max", value, checkAnnotation.max());
+                    errors.add(param, message("validation.error.max", checkAnnotation), value, checkAnnotation.max());
                 } else if (!validateMinLength(checkAnnotation.minLength(), value) && !validateMaxLength(checkAnnotation.maxLength(), value)) {
-                    errors.add(param, "validation.error.betweenLength", value, checkAnnotation.minLength(), checkAnnotation.maxLength());
+                    errors.add(param, message("validation.error.betweenLength", checkAnnotation), value, checkAnnotation.minLength(), checkAnnotation.maxLength());
                 } else if (!validateMinLength(checkAnnotation.minLength(), value)) {
-                    errors.add(param, "validation.error.minLength", value, checkAnnotation.minLength());
+                    errors.add(param, message("validation.error.minLength", checkAnnotation), value, checkAnnotation.minLength());
                 } else if (!validateMaxLength(checkAnnotation.maxLength(), value)) {
-                    errors.add(param, "validation.error.maxLength", value, checkAnnotation.maxLength());
+                    errors.add(param, message("validation.error.maxLength", checkAnnotation), value, checkAnnotation.maxLength());
                 } else if (!validateIs(checkAnnotation, param, validationCtx)) {
-                    errors.add(param, "validation.error.is");
+                    errors.add(param, message("validation.error.is", checkAnnotation));
                 }
             }
         } else if (!validateIs(checkAnnotation, name, validationCtx)) {
-            errors.add(null, "validation.error.is");
+            errors.add(null, message("validation.error.is", checkAnnotation));
         }
+    }
+
+    protected String message(String defaultMessage, Check checkAnnotation) {
+        return Str.isEmpty(checkAnnotation.message()) ? defaultMessage : checkAnnotation.message();
     }
 }
