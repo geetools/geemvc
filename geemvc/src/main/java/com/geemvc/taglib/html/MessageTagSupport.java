@@ -31,14 +31,15 @@ import java.util.stream.Collectors;
 
 import javax.servlet.jsp.JspException;
 
-import com.geemvc.taglib.HtmlTagSupport;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.i18n.message.CompositeMessageResolver;
+import com.geemvc.taglib.HtmlTagSupport;
 
 public class MessageTagSupport extends HtmlTagSupport {
-    protected String key;
+    protected Object key;
 
     protected Locale locale;
 
@@ -57,7 +58,7 @@ public class MessageTagSupport extends HtmlTagSupport {
     @Override
     public void doTag() throws JspException {
         if (locale != null && (lang != null || country != null))
-            throw new JspException("You cannot set both the 'locale' and a 'language/country' combination.");
+            throw new JspException("You can only set one of of either 'locale' or a 'language/country' combination.");
 
         if (lang != null && country != null)
             locale = new Locale(lang, country);
@@ -65,7 +66,24 @@ public class MessageTagSupport extends HtmlTagSupport {
         else if (lang != null)
             locale = new Locale(lang);
 
-        String label = messageResolver.resolve(key, locale, requestContext(), true);
+        String label = null;
+
+        // Handle string keys normally.
+        if (key instanceof String) {
+            label = messageResolver.resolve((String) key, locale, requestContext(), true);
+        } else if (key.getClass().isEnum()) {
+            // Attempt to resolve <enun-fqn>.<enum-value>.
+            label = messageResolver.resolve(new StringBuilder(key.getClass().getName()).append(Char.DOT).append(key).toString(), requestContext(), true);
+
+            // Attempt to resolve <enun-simple-name>.<enum-value>.
+            if (label == null)
+                label = messageResolver.resolve(new StringBuilder(key.getClass().getSimpleName()).append(Char.DOT).append(key).toString(), requestContext(), true);
+        } else if (key instanceof Boolean) {
+            // Attempt to resolve Boolean.true or Boolean.false.
+            label = messageResolver.resolve(new StringBuilder(Boolean.class.getSimpleName()).append(Char.DOT).append(String.valueOf(key).toLowerCase()).toString(), requestContext(), true);
+        } else {
+            throw new JspException("The type '" + key.getClass().getName() + "' cannot be used as a message key in MessageTagSupport. Only the types String, Boolean or enums are supported.");
+        }
 
         if (label != null) {
             if (escapeHTML)
@@ -130,7 +148,7 @@ public class MessageTagSupport extends HtmlTagSupport {
 
             Map<Integer, Object> sortedParameters = parameterMap.entrySet().stream()
                     .sorted(Map.Entry.comparingByKey())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, 
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                             (e1, e2) -> e2, LinkedHashMap::new));
 
             parameters = new ArrayList<>(sortedParameters.values());
@@ -139,11 +157,11 @@ public class MessageTagSupport extends HtmlTagSupport {
         return parameters;
     }
 
-    public String getKey() {
+    public Object getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(Object key) {
         this.key = key;
     }
 

@@ -16,6 +16,14 @@
 
 package com.geemvc.taglib.form;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.MessageFormat;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.JspTag;
+
 import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.i18n.notice.Notice;
@@ -24,13 +32,6 @@ import com.geemvc.taglib.GeemvcTagSupport;
 import com.geemvc.taglib.HtmlTagSupport;
 import com.geemvc.validation.Error;
 import com.geemvc.validation.Errors;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.JspTag;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.MessageFormat;
 
 /**
  * Created by Michael on 05.07.2016.
@@ -151,7 +152,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
     public void writeLabel(String name, Object value) throws JspException {
         String id = getId();
 
-        InputLabelTagSupport labelTagSupport = new InputLabelTagSupport();
+        LabelTagSupport labelTagSupport = new LabelTagSupport();
         labelTagSupport.setJspContext(jspContext);
         labelTagSupport.setName(name);
         labelTagSupport.setValue(value);
@@ -162,7 +163,7 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         if (!Str.isEmpty(getLabelClass()))
             labelTagSupport.setDynamicAttribute(null, "class", getLabelClass());
 
-        if (!Str.isEmpty(label)) {
+        if (label != null) {
             labelTagSupport.setLabel(this.label);
         }
 
@@ -275,7 +276,6 @@ public class FormFieldTagSupport extends HtmlTagSupport {
         this.errorClass = errorClass;
     }
 
-
     protected boolean hasError(String fieldName) {
         Errors errors = validationErrors();
         return errors != null && errors.exist(fieldName);
@@ -307,7 +307,6 @@ public class FormFieldTagSupport extends HtmlTagSupport {
 
                 resolvedErrorMessage = messageResolver.resolve(errorMsgKey, requestContext(), true);
             }
-
 
             if (resolvedErrorMessage == null) {
                 resolvedErrorMessage = messageResolver.resolve(error.message(), requestContext(), true);

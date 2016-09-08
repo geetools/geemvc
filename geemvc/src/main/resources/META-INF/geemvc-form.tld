@@ -638,7 +638,7 @@
     </tag>
     <tag>
         <name>label</name>
-        <tag-class>com.geemvc.taglib.form.InputLabelTagSupport</tag-class>
+        <tag-class>com.geemvc.taglib.form.LabelTagSupport</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>name</name>

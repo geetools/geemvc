@@ -87,7 +87,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
 
         String label = getLabel();
 
-        if (Str.isEmpty(label)) {
+        if (label == null) {
             // See if there is a translated version of the label in the message properties.
             String i18nOptionLabel = messageResolver.resolve(name, requestContext(), true);
 
@@ -102,7 +102,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
             writer.write("\"");
         }
         writer.write(">\n");
-        writer.write(Str.isEmpty(label) ? "&nbsp;" : label);
+        writer.write(label == null ? "&nbsp;" : label);
         writer.write("</label>");
 
         writer.write("<div");
@@ -269,7 +269,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
     public void writeLabel(String name, Object value) throws JspException {
         String id = getId();
 
-        InputLabelTagSupport labelTagSupport = new InputLabelTagSupport();
+        LabelTagSupport labelTagSupport = new LabelTagSupport();
         labelTagSupport.setJspContext(jspContext);
         labelTagSupport.setName(name);
         labelTagSupport.setValue(value);
@@ -281,9 +281,7 @@ public class InputCheckboxTagSupport extends OptionTagSupport {
         if (!Str.isEmpty(optionLabelClass))
             labelTagSupport.setDynamicAttribute(null, "class", optionLabelClass);
 
-        if (!Str.isEmpty(optionLabel)) {
-            labelTagSupport.setLabel("");
-        }
+        labelTagSupport.setLabel("");
 
         labelTagSupport.doTag();
     }

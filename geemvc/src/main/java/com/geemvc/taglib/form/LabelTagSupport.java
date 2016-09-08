@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.StringWriter;
 
-public class InputLabelTagSupport extends HtmlTagSupport {
+public class LabelTagSupport extends HtmlTagSupport {
     protected String name;
 
     protected Object value;
@@ -37,7 +37,7 @@ public class InputLabelTagSupport extends HtmlTagSupport {
 
     protected final CompositeMessageResolver messageResolver;
 
-    public InputLabelTagSupport() {
+    public LabelTagSupport() {
         this.messageResolver = injector.getInstance(CompositeMessageResolver.class);
     }
 
