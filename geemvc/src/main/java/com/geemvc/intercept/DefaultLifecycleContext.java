@@ -18,6 +18,7 @@ package com.geemvc.intercept;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import com.geemvc.Bindings;
 import com.geemvc.RequestContext;
@@ -90,8 +91,28 @@ public class DefaultLifecycleContext implements LifecycleContext {
 
     @Override
     public LifecycleContext result(Result result) {
-        this.result = result;
+        // Merge previous result (bindings) with new one.
+        if (this.result != null && result != null) {
+            // Make sure that the bindings from the previous result object are not lost.
+            // Bindings with the same key will not be overridden.
+            this.result = merge(result, this.result);
+        } else {
+            this.result = result;
+        }
+
         return this;
+    }
+
+    protected Result merge(Result newResult, Result previousResult) {
+        if (previousResult.hasBindings()) {
+            for (Map.Entry<String, Object> entry : previousResult.bindings().entrySet()) {
+                if (!newResult.containsBinding(entry.getKey())) {
+                    newResult.bind(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        return newResult;
     }
 
     @Override

@@ -83,7 +83,12 @@ public class DefaultRequestHandlers implements RequestHandlers {
         } else if (result.controllerClass() != null && !Str.isEmpty(result.handlerMethod())) {
             requestHandler = handlerResolver.resolve(result.controllerClass(), result.handlerMethod());
         } else if (!Str.isEmpty(result.handlerPath())) {
-            List<RequestHandler> requestHandlers = handlerResolver.resolve(result.handlerPath(), result.httpMethod());
+            String handlerPath = result.handlerPath().trim();
+
+            if (!handlerPath.startsWith(Str.SLASH))
+                handlerPath = Str.SLASH + handlerPath;
+
+            List<RequestHandler> requestHandlers = handlerResolver.resolve(handlerPath, result.httpMethod());
 
             if (requestHandlers.size() == 0)
                 throw new IllegalStateException(

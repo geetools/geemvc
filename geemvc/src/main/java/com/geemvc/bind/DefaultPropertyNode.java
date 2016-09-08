@@ -16,19 +16,33 @@
 
 package com.geemvc.bind;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.geemvc.Char;
 import com.geemvc.Str;
 import com.geemvc.Val;
 import com.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import jodd.bean.BeanUtil;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import jodd.bean.BeanUtil;
 
 public class DefaultPropertyNode implements PropertyNode {
     protected String name;
@@ -289,7 +303,7 @@ public class DefaultPropertyNode implements PropertyNode {
     }
 
     protected Object validValue(Object value, Class<?> targetType) {
-        if (!targetType.isPrimitive())
+        if (!targetType.isPrimitive() && !targetType.isEnum())
             return value;
 
         if (value instanceof String && !Str.isEmpty((String) value) && !Str.NULL_STRING.equals(value)) {
@@ -314,9 +328,53 @@ public class DefaultPropertyNode implements PropertyNode {
             return Val.DEFAULT_BOOEAN;
         } else if (targetType == char.class) {
             return Val.DEFAULT_CHAR;
+        } else if (targetType.isEnum()) {
+            return asEnum((Class<? extends Enum>) targetType, value);
         }
 
         return null;
+    }
+
+    protected <E extends Enum<E>> E asEnum(Class<E> enumType, Object value) {
+        if (value.getClass().isEnum()) {
+            return (E) value;
+        } else if (value instanceof String) {
+            String enumVal = (String) value;
+
+            if (Str.isEmpty(enumVal))
+                return null;
+
+            try {
+                Method m = enumType.getDeclaredMethod("fromString", String.class);
+                return (E) m.invoke(null, enumVal);
+            } catch (NoSuchMethodException e) {
+                return Enum.valueOf(enumType, enumVal);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        } else if (value instanceof Integer) {
+            Integer enumVal = (Integer) value;
+
+            try {
+                Method m = enumType.getDeclaredMethod("fromId", int.class);
+                return (E) m.invoke(null, enumVal);
+            } catch (NoSuchMethodException e) {
+                // Try finding by ordinal() if fromId() does not exist.
+                E[] enums = enumType.getEnumConstants();
+
+                for (E constant : enums) {
+                    if (constant.ordinal() == enumVal) {
+                        return constant;
+                    }
+                }
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+
+            return null;
+        } else {
+            throw new IllegalStateException("Unable to convert object of type " + value.getClass().getName() + " to " + enumType.getName());
+        }
     }
 
     protected String stripBrackets(String expression) {

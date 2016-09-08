@@ -22,10 +22,10 @@ import java.util.Enumeration;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import jodd.typeconverter.TypeConversionException;
-
 import com.geemvc.Char;
 import com.geemvc.converter.SimpleConverter;
+
+import jodd.typeconverter.TypeConversionException;
 
 public class OptionTagSupport extends FormFieldTagSupport {
     protected Object value;
@@ -111,7 +111,7 @@ public class OptionTagSupport extends FormFieldTagSupport {
         if (converter.canConvert(selectedValueClass)) {
             try {
                 Object convertedOptionValue = converter.fromString(String.valueOf(optionValue), selectedValueClass);
-                return convertedOptionValue.equals(selectedValue);
+                return convertedOptionValue != null && convertedOptionValue.equals(selectedValue);
             } catch (TypeConversionException e) {
                 // Conversion failed. Try String comparison next.
             }
