@@ -29,6 +29,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.geemvc.Char;
+import com.geemvc.Str;
 import com.geemvc.reflect.ReflectionProvider;
 
 import jodd.bean.BeanUtil;
@@ -130,7 +131,18 @@ public class OptionsTagSupport extends OptionTagSupport {
             }
 
             writer.write(Char.GREATER_THAN);
-            writer.write(String.valueOf(optionLabel == null ? optionValue : optionLabel));
+
+            // See if there is a translated version of the label in the message properties.
+            String i18nOptionLabel = messageResolver.resolve(new StringBuilder(optionValue.getClass().getName()).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+
+            if (i18nOptionLabel == null)
+                i18nOptionLabel = messageResolver.resolve(new StringBuilder(optionValue.getClass().getSimpleName()).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+
+            if (!Str.isEmpty(i18nOptionLabel)) {
+                writer.write(i18nOptionLabel);
+            } else {
+                writer.write(optionLabel == null ? String.valueOf(optionValue) : String.valueOf(optionLabel));
+            }
 
             writeCloseTag(writer, "option", true);
         }

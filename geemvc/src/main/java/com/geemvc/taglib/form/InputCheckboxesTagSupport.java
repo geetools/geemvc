@@ -100,8 +100,18 @@ public class InputCheckboxesTagSupport extends OptionsTagSupport {
             writer.write(Char.SLASH);
             writer.write(Char.GREATER_THAN);
 
-            // See if there is a translated version of the label in the message properties.
-            String i18nOptionLabel = messageResolver.resolve(new StringBuilder(name).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+            String i18nOptionLabel = null;
+
+            // Attempt to find a translated version of the enum.
+            if (optionValue.getClass().isEnum()) {
+                messageResolver.resolve(new StringBuilder(optionValue.getClass().getName()).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+
+                if (i18nOptionLabel == null)
+                    i18nOptionLabel = messageResolver.resolve(new StringBuilder(optionValue.getClass().getSimpleName()).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+            } else {
+                // See if there is a translated version of the label in the message properties.
+                i18nOptionLabel = messageResolver.resolve(new StringBuilder(name).append(Char.DOT).append(optionValue).toString(), requestContext(), true);
+            }
 
             if (!Str.isEmpty(i18nOptionLabel)) {
                 writer.write(i18nOptionLabel);
