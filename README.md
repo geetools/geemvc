@@ -111,7 +111,7 @@ public class HelloWorldController {
         System.out.println("Well done! You have successfully called the /hello/world controller.");        
         
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
@@ -129,7 +129,7 @@ public class HelloWorldController {
         System.out.println("Well done! You can now use the id path parameter in your code. The id is: " + id);
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
@@ -157,13 +157,13 @@ public class HelloWorldController {
         System.out.println("Thanks, you sent the following query parameter: " + myQueryParam);
 
         // Located at /WEB-INF/jsp/pages/hello-world.jsp
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }    
 ```
 
 ## Passing Parameters to the View
-Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "View" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
+Here we are getting some fictitious value from an injected service and passing it to the view - our JSP page. Notice that previously we simply returned a string informing geeMVC where we want to forward the request to. In the following example we have exchanged the string for a geeMVC "Result" object. This allows you to bind values to the view that you will be able to access in your JSP page or templating engine.
 
 ```java
 import static com.geemvc.Results.*;
@@ -282,7 +282,7 @@ public class HelloWorldController {
     @Request("world-form")
     public String helloWorld() {
         // Located at /WEB-INF/jsp/pages/hello-world-form.jsp
-        return "forward: hello-world-form";
+        return "view: hello-world-form";
     }
 
     /**
@@ -486,7 +486,7 @@ public class HelloWorldController {
         // Inject your object.
         WorldBean world = injector.getInstance(WorldBean.class);
 
-        return "forward: hello-world";
+        return "view: hello-world";
     }
 }
 ```
@@ -602,8 +602,8 @@ public class preViewInterceptor {
     /**
      * Add countries and languages before forwarding to view.
      */
-    public void intercept(View view) {
-        view.bind("countries", service.getCountries()).bind("languages", service.getLanguages());
+    public void intercept(Result result) {
+        result.bind("countries", service.getCountries()).bind("languages", service.getLanguages());
     }
 }
 ```
