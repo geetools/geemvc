@@ -17,7 +17,10 @@
 package com.geemvc;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -28,6 +31,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.geemvc.config.Configuration;
 import com.geemvc.config.Configurations;
@@ -46,6 +50,8 @@ import jodd.typeconverter.TypeConverterManager;
 @Singleton
 public class DispatcherServlet extends HttpServlet {
     private static final long serialVersionUID = 6824931404770992086L;
+
+    protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss z");
 
     protected InjectorProvider ínjectorProvider;
 
@@ -118,8 +124,14 @@ public class DispatcherServlet extends HttpServlet {
             RequestRunner requestRunner = injector.getInstance(RequestRunner.class);
             requestRunner.process(requestCtx);
         } catch (IOException | ServletException e) {
+            String requestInfo = getRequestInfo(request, response);
+            System.out.println(requestInfo);
+            
             throw e;
         } catch (Exception e) {
+            String requestInfo = getRequestInfo(request, response);
+            System.out.println(requestInfo);
+
             throw new ServletException(e);
         } finally {
             Injectors.clear();
@@ -172,5 +184,69 @@ public class DispatcherServlet extends HttpServlet {
         Injectors.set(ínjectorProvider);
 
         return ínjectorProvider.provide();
+    }
+
+    protected String getRequestInfo(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        HttpSession sess = httpRequest.getSession(false);
+
+        Enumeration<String> headerNames = httpRequest.getHeaderNames();
+
+        StringBuilder headers = new StringBuilder(Char.SQUARE_BRACKET_OPEN);
+
+        if (headerNames != null) {
+            int x = 0;
+            while (headerNames.hasMoreElements()) {
+                if (x > 0)
+                    headers.append(Char.COMMA).append(Char.SPACE);
+
+                String headerName = headerNames.nextElement();
+                headers.append(headerName).append(Char.EQUALS).append(httpRequest.getHeader(headerName));
+
+                x++;
+            }
+        }
+
+        headers.append(Char.SQUARE_BRACKET_CLOSE);
+
+        StringBuilder info = new StringBuilder();
+        info.append(Char.NEWLINE).append("--------------------------------------------------------------------").append(Char.NEWLINE);
+        info.append("Exception in DispatcherServlet on: ").append(dateFormat.format(new Date())).append(Char.NEWLINE);
+        info.append("Request URL: ").append(httpRequest.getRequestURL()).append(Char.NEWLINE);
+        info.append("Request URI: ").append(httpRequest.getRequestURI()).append(Char.NEWLINE);
+        info.append("Request QueryString: ").append(httpRequest.getQueryString()).append(Char.NEWLINE);
+        info.append("Method: ").append(httpRequest.getMethod()).append(Char.NEWLINE);
+        info.append("Session Id: ").append(sess == null ? null : sess.getId()).append(Char.NEWLINE);
+        info.append("Thread: ").append(Thread.currentThread().getName()).append(Char.NEWLINE);
+        info.append("Headers: ").append(headers.toString()).append(Char.NEWLINE);
+        info.append("Remote Addr: ").append(httpRequest.getRemoteAddr()).append(Char.NEWLINE);
+
+        Collection<String> respHeaderNames = httpResponse.getHeaderNames();
+
+        StringBuilder respHeaders = new StringBuilder(Char.SQUARE_BRACKET_OPEN);
+
+        if (respHeaderNames != null) {
+            int x = 0;
+            for (String headerName : respHeaderNames) {
+                if (x > 0)
+                    headers.append(Char.COMMA).append(Char.SPACE);
+
+                respHeaders.append(headerName).append(Char.EQUALS).append(httpResponse.getHeader(headerName));
+
+                x++;
+            }
+        }
+
+        respHeaders.append(Char.SQUARE_BRACKET_CLOSE);
+
+        info.append("Response Locale: ").append(httpResponse.getLocale()).append(Char.NEWLINE);
+        info.append("Response Encoding: ").append(httpResponse.getCharacterEncoding()).append(Char.NEWLINE);
+        info.append("Response Content-Type: ").append(httpResponse.getContentType()).append(Char.NEWLINE);
+        info.append("Response Status: ").append(httpResponse.getStatus()).append(Char.NEWLINE);
+        info.append("Response Commited: ").append(httpResponse.isCommitted()).append(Char.NEWLINE);
+        info.append("Response Headers: ").append(respHeaders).append(Char.NEWLINE);
+
+        info.append("--------------------------------------------------------------------").append(Char.NEWLINE);
+
+        return info.toString();
     }
 }

@@ -25,8 +25,10 @@ import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.SimpleConverter;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 @Adapter
+@Singleton
 public class LongArrayConverterAdapter implements ConverterAdapter<long[]> {
     @Inject
     protected Injector injector;

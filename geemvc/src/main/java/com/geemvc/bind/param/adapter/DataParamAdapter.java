@@ -28,8 +28,9 @@ import com.geemvc.bind.param.ParamAdapters;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
 import com.geemvc.bind.param.annotation.Data;
-import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.SimpleConverter;
+import com.geemvc.converter.bean.BeanConverterAdapter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
 import com.geemvc.data.DataAdapter;
 import com.geemvc.data.DataAdapterFactory;
 import com.geemvc.reflect.ReflectionProvider;
@@ -44,18 +45,18 @@ public class DataParamAdapter implements TypedParamAdapter<Data> {
     protected DataAdapterFactory dataAdapterFactory;
     protected ReflectionProvider reflectionProvider;
     protected SimpleConverter simpleConverter;
-    protected BeanConverter beanConverter;
+    protected BeanConverterAdapterFactory beanConverterAdapterFactory;
 
     @Inject
     protected Injector injector;
 
     @Inject
-    protected DataParamAdapter(ParamAdapters paramAdapters, DataAdapterFactory dataAdapterFactory, ReflectionProvider reflectionProvider, SimpleConverter simpleConverter, BeanConverter beanConverter) {
+    protected DataParamAdapter(ParamAdapters paramAdapters, DataAdapterFactory dataAdapterFactory, ReflectionProvider reflectionProvider, SimpleConverter simpleConverter, BeanConverterAdapterFactory beanConverterAdapterFactory) {
         this.paramAdapters = paramAdapters;
         this.dataAdapterFactory = dataAdapterFactory;
         this.reflectionProvider = reflectionProvider;
         this.simpleConverter = simpleConverter;
-        this.beanConverter = beanConverter;
+        this.beanConverterAdapterFactory = beanConverterAdapterFactory;
     }
 
     @Override
@@ -117,7 +118,7 @@ public class DataParamAdapter implements TypedParamAdapter<Data> {
                 RequestContext requestCtx = paramCtx.requestCtx();
 
                 if ((idValue == null || idValue.isEmpty()) && HttpMethod.PUT.equals(requestCtx.getMethod()))
-                    throw new IllegalStateException("You must provide a valid bean identifier for bean '" + beanClass.getName() + "' when using the @Data param annotation and HTTP methodd 'PUT'.");
+                    throw new IllegalStateException("You must provide a valid bean identifier for bean '" + beanClass.getName() + "' when using the @Data param annotation and HTTP method 'PUT'.");
 
                 // We only deal with primary key types that the SimpleConverter can convert.
                 if (idValue != null && !idValue.isEmpty() && simpleConverter.canConvert(identifier.getValue()))
@@ -134,8 +135,16 @@ public class DataParamAdapter implements TypedParamAdapter<Data> {
                     List<String> beanData = paramAdapters.getRequestValues(paramName, paramCtx.requestCtx());
 
                     // Bind the properties if any were found.
-                    if (beanData != null && !beanData.isEmpty())
-                        beanConverter.bindProperties(beanData, paramName, entity);
+                    if (beanData != null && !beanData.isEmpty()) {
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(beanClass, null);
+
+                        if (beanConverter != null) {
+                            beanConverter.bindProperties(beanData, paramName, entity);
+                        } else {
+                            throw new IllegalStateException(
+                                    "Unable to find a compatible bean converter for the bean '" + beanClass.getName() + "' which is needed for the @Data(" + paramName + ") param when the HTTP method is either 'POST' or 'PUT'.");
+                        }
+                    }
                 }
             }
         }

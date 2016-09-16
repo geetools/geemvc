@@ -32,11 +32,13 @@ import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterContext;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 import jodd.typeconverter.TypeConverter;
 import jodd.typeconverter.impl.DateConverter;
 
 @Adapter
+@Singleton
 public class DateConverterAdapter implements ConverterAdapter<Date>, TypeConverter<Date> {
     @Inject
     protected Injector injector;

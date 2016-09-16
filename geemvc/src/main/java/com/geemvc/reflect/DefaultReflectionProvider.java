@@ -56,6 +56,7 @@ import com.geemvc.bind.param.TypedParamAdapter;
 import com.geemvc.cache.Cache;
 import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterAdapterKey;
+import com.geemvc.converter.bean.BeanConverterAdapter;
 import com.geemvc.data.DataAdapter;
 import com.geemvc.handler.ControllerResolver;
 import com.geemvc.handler.HandlerResolver;
@@ -94,6 +95,7 @@ public class DefaultReflectionProvider implements ReflectionProvider {
     protected static final String CACHE_KEY_LOCATED_LIFECYCLE_INTERCEPTORS2 = "geemvc/lifecycleInterceptors/%s";
     protected static final String CACHE_KEY_LOCATED_REQUEST_HANDLER_METHODS = "geemvc/requestHandlerMethods/%s";
     protected static final String CACHE_KEY_LOCATED_CONVERTER_ADAPTERS = "geemvc/converterAdapters";
+    protected static final String CACHE_KEY_LOCATED_BEAN_CONVERTER_ADAPTERS = "geemvc/beanConverterAdapters";
     protected static final String CACHE_KEY_LOCATED_PARAM_ADAPTERS = "geemvc/paramAdapters";
     protected static final String CACHE_KEY_LOCATED_VALIDATION_ADAPTERS = "geemvc/validationAdapters";
     protected static final String CACHE_KEY_LOCATED_BEAN_VALIDATORS = "geemvc/beanValidators/%s";
@@ -406,6 +408,52 @@ public class DefaultReflectionProvider implements ReflectionProvider {
             }
 
             Map<ConverterAdapterKey, ConverterAdapter<?>> sortedConverters = converters.entrySet().stream().sorted((e1, e2) -> e2.getKey().weight() - e1.getKey().weight())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+            return sortedConverters;
+        });
+    }
+
+    @Override
+    public Map<ConverterAdapterKey, BeanConverterAdapter<?>> locateBeanConverterAdapters() {
+        return (Map<ConverterAdapterKey, BeanConverterAdapter<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_BEAN_CONVERTER_ADAPTERS, () -> {
+
+            Map<ConverterAdapterKey, BeanConverterAdapter<?>> beanConverters = new LinkedHashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> beanConverterClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> adapterClass : adapterClasses) {
+                if (BeanConverterAdapter.class.isAssignableFrom(adapterClass))
+                    beanConverterClasses.add(adapterClass);
+            }
+
+            beanConverterClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl1.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> beanConverterClass : beanConverterClasses) {
+                Type[] inferfaces = beanConverterClass.getGenericInterfaces();
+
+                for (Type type : inferfaces) {
+                    if (type instanceof ParameterizedType) {
+                        Type rawClass = ((ParameterizedType) type).getRawType();
+
+                        if (rawClass == BeanConverterAdapter.class) {
+                            List<Class<?>> genericType = getGenericType(type);
+
+                            if (genericType.size() == 1) {
+                                beanConverters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0)).weight(beanConverterClass.getAnnotation(Adapter.class).weight()),
+                                        (BeanConverterAdapter<?>) injector.getInstance(beanConverterClass));
+                            } else if (genericType.size() > 1) {
+                                beanConverters.put(injector.getInstance(ConverterAdapterKey.class).build(genericType.get(0), genericType.subList(1, genericType.size())).weight(beanConverterClass.getAnnotation(Adapter.class).weight()),
+                                        (BeanConverterAdapter<?>) injector.getInstance(beanConverterClass));
+                            }
+                        }
+                    }
+                }
+            }
+
+            Map<ConverterAdapterKey, BeanConverterAdapter<?>> sortedConverters = beanConverters.entrySet().stream().sorted((e1, e2) -> e2.getKey().weight() - e1.getKey().weight())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
             return sortedConverters;

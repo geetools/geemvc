@@ -28,11 +28,12 @@ import com.geemvc.bind.param.ParamAdapter;
 import com.geemvc.bind.param.ParamAdapterFactory;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
-import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterAdapterFactory;
 import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.SimpleConverter;
+import com.geemvc.converter.bean.BeanConverterAdapter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
 import com.geemvc.handler.RequestHandler;
 import com.geemvc.logging.Log;
 import com.geemvc.logging.annotation.Logger;
@@ -43,6 +44,7 @@ import com.google.inject.Injector;
 public class DefaultMethodParams implements MethodParams {
     protected final ParamAdapterFactory paramAdapterFactory;
     protected final ConverterAdapterFactory converterAdapterFactory;
+    protected final BeanConverterAdapterFactory beanConverterAdapterFactory;
     protected final ReflectionProvider reflectionProvider;
 
     @Inject
@@ -52,9 +54,10 @@ public class DefaultMethodParams implements MethodParams {
     protected Log log;
 
     @Inject
-    public DefaultMethodParams(ParamAdapterFactory paramAdapterFactory, ConverterAdapterFactory converterAdapterFactory, ReflectionProvider reflectionProvider) {
+    public DefaultMethodParams(ParamAdapterFactory paramAdapterFactory, ConverterAdapterFactory converterAdapterFactory, BeanConverterAdapterFactory beanConverterAdapterFactory, ReflectionProvider reflectionProvider) {
         this.paramAdapterFactory = paramAdapterFactory;
         this.converterAdapterFactory = converterAdapterFactory;
+        this.beanConverterAdapterFactory = beanConverterAdapterFactory;
         this.reflectionProvider = reflectionProvider;
     }
 
@@ -90,7 +93,6 @@ public class DefaultMethodParams implements MethodParams {
     @Override
     public Map<String, Object> typedValues(Map<String, List<String>> requestValues, List<MethodParam> methodParams, RequestContext requestCtx) {
         SimpleConverter simpleConverter = injector.getInstance(SimpleConverter.class);
-        BeanConverter beanConverter = injector.getInstance(BeanConverter.class);
 
         Map<String, Object> typedValues = new LinkedHashMap<>();
 
@@ -119,7 +121,14 @@ public class DefaultMethodParams implements MethodParams {
                 if (value == null) {
                     // If parameter is a bean and @Nullable is not set, we create a new empty instance.
                     if (!methodParam.isNullable() && !simpleConverter.canConvert((Class<?>) type)) {
-                        typedValues.put(name, beanConverter.newInstance(type));
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(type, methodParam.parameterizedType());
+
+                        if (beanConverter != null) {
+                            typedValues.put(name, beanConverter.newInstance(type));
+                        } else {
+                            log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the method param '{}'. Binding 'null' instead.", () -> type.getName(), () -> methodParam.name());
+                            typedValues.put(name, null);
+                        }
                     } else {
                         // Otherwise we simply pass a null value to the handler.
                         typedValues.put(name, null);
@@ -152,8 +161,15 @@ public class DefaultMethodParams implements MethodParams {
                             typedValues.put(name, null);
                         }
                     } else {
-                        Object bean = beanConverter.fromStrings(value, name, type);
-                        typedValues.put(name, bean);
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(type, methodParam.parameterizedType());
+
+                        if (beanConverter != null) {
+                            Object bean = beanConverter.fromStrings(value, name, type);
+                            typedValues.put(name, bean);
+                        } else {
+                            log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the method param '{}'. Binding 'null' instead.", () -> type.getName(), () -> methodParam.name());
+                            typedValues.put(name, null);
+                        }
                     }
                 }
             }

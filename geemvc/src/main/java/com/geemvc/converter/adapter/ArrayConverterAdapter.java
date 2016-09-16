@@ -23,15 +23,26 @@ import java.util.TreeSet;
 
 import com.geemvc.Char;
 import com.geemvc.annotation.Adapter;
-import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.SimpleConverter;
+import com.geemvc.converter.bean.BeanConverterAdapter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 @Adapter
+@Singleton
 public class ArrayConverterAdapter implements ConverterAdapter<Object[]> {
+    @Inject
+    protected BeanConverterAdapterFactory beanConverterAdapterFactory;
+
+    @Logger
+    protected Log log;
+
     @Inject
     protected Injector injector;
 
@@ -43,7 +54,6 @@ public class ArrayConverterAdapter implements ConverterAdapter<Object[]> {
     @Override
     public Object[] fromStrings(List<String> values, ConverterContext ctx) {
         SimpleConverter simpleConverter = injector.getInstance(SimpleConverter.class);
-        BeanConverter beanConverter = injector.getInstance(BeanConverter.class);
 
         Object[] returnValue = null;
 
@@ -64,6 +74,13 @@ public class ArrayConverterAdapter implements ConverterAdapter<Object[]> {
         } else if (type.isArray()) {
             Set<Integer> arrayPositions = arraysPositions(values);
             Object arr = Array.newInstance(type.getComponentType(), arrayPositions.size());
+
+            BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(type.getComponentType(), null);
+
+            if (beanConverter == null) {
+                log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in array.", type.getComponentType());
+                return null;
+            }
 
             for (Integer index : arrayPositions) {
                 Object bean = beanConverter.fromStrings(values, name, type.getComponentType(), index);

@@ -26,7 +26,10 @@ import com.geemvc.bind.param.ParamAdapters;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
 import com.geemvc.bind.param.annotation.Session;
-import com.geemvc.converter.BeanConverter;
+import com.geemvc.converter.bean.BeanConverterAdapter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.geemvc.reflect.ReflectionProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,16 +38,19 @@ import com.google.inject.Injector;
 public class SessionAdapter implements TypedParamAdapter<Session> {
     protected ParamAdapters paramAdapters;
     protected ReflectionProvider reflectionProvider;
-    protected BeanConverter beanConverter;
+    protected BeanConverterAdapterFactory beanConverterAdapterFactory;
+
+    @Logger
+    protected Log log;
 
     @Inject
     protected Injector injector;
 
     @Inject
-    protected SessionAdapter(ParamAdapters paramAdapters, ReflectionProvider reflectionProvider, BeanConverter beanConverter) {
+    protected SessionAdapter(ParamAdapters paramAdapters, ReflectionProvider reflectionProvider, BeanConverterAdapterFactory beanConverterAdapterFactory) {
         this.paramAdapters = paramAdapters;
         this.reflectionProvider = reflectionProvider;
-        this.beanConverter = beanConverter;
+        this.beanConverterAdapterFactory = beanConverterAdapterFactory;
     }
 
     @Override
@@ -67,8 +73,15 @@ public class SessionAdapter implements TypedParamAdapter<Session> {
                 if (value != null) {
                     List<String> requestValues = getValue(sessionParam, paramName, paramCtx);
 
-                    if (requestValues != null && !requestValues.isEmpty())
-                        beanConverter.bindProperties(requestValues, paramName, value);
+                    if (requestValues != null && !requestValues.isEmpty()) {
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(type, null);
+
+                        if (beanConverter != null) {
+                            beanConverter.bindProperties(requestValues, paramName, value);
+                        } else {
+                            log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the @Session({}) param.", type.getName(), paramName);
+                        }
+                    }
 
                     session.setAttribute(paramName, value);
                 }
@@ -76,8 +89,15 @@ public class SessionAdapter implements TypedParamAdapter<Session> {
         } else {
             List<String> requestValues = getValue(sessionParam, paramName, paramCtx);
 
-            if (requestValues != null && !requestValues.isEmpty())
-                beanConverter.bindProperties(requestValues, paramName, value);
+            if (requestValues != null && !requestValues.isEmpty()) {
+                BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(value.getClass(), null);
+
+                if (beanConverter != null) {
+                    beanConverter.bindProperties(requestValues, paramName, value);
+                } else {
+                    log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the @Session({}) param.", value.getClass().getName(), paramName);
+                }
+            }
         }
 
         return value;

@@ -32,6 +32,7 @@ import com.geemvc.bind.param.ParamAdapter;
 import com.geemvc.bind.param.ParamAdapterKey;
 import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterAdapterKey;
+import com.geemvc.converter.bean.BeanConverterAdapter;
 import com.geemvc.data.DataAdapter;
 import com.geemvc.handler.ControllerResolver;
 import com.geemvc.handler.HandlerResolver;
@@ -73,6 +74,8 @@ public interface ReflectionProvider {
     Map<RequestMappingKey, Method> getRequestHandlerMethods(Class<?> controllerClass, Predicate<Entry<RequestMappingKey, Method>> predicate);
 
     Map<ConverterAdapterKey, ConverterAdapter<?>> locateConverterAdapters();
+
+    Map<ConverterAdapterKey, BeanConverterAdapter<?>> locateBeanConverterAdapters();
 
     Map<ParamAdapterKey, ParamAdapter<?>> locateParamAdapters();
 

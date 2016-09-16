@@ -30,15 +30,27 @@ import java.util.TreeSet;
 
 import com.geemvc.Char;
 import com.geemvc.annotation.Adapter;
-import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.ConverterAdapter;
 import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.SimpleConverter;
+import com.geemvc.converter.bean.BeanConverterAdapter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
+import com.geemvc.logging.Log;
+import com.geemvc.logging.annotation.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 @Adapter
+@Singleton
 public class CollectionConverterAdapter implements ConverterAdapter<Collection<Object>> {
+
+    @Inject
+    protected BeanConverterAdapterFactory beanConverterAdapterFactory;
+
+    @Logger
+    protected Log log;
+
     @Inject
     protected Injector injector;
 
@@ -51,7 +63,6 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
     @Override
     public Collection<Object> fromStrings(List<String> values, ConverterContext ctx) {
         SimpleConverter simpleConverter = injector.getInstance(SimpleConverter.class);
-        BeanConverter beanConverter = injector.getInstance(BeanConverter.class);
 
         Collection returnValue = null;
 
@@ -71,8 +82,14 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
                         Object typedVal = simpleConverter.fromString(val, setType);
                         valueSet.add(typedVal);
                     } else {
-                        Object bean = beanConverter.fromStrings(values, name, type);
-                        valueSet.add(bean);
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(setType, null);
+
+                        if (beanConverter != null) {
+                            Object bean = beanConverter.fromStrings(values, name, type);
+                            valueSet.add(bean);
+                        } else {
+                            log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in set.", setType.getName());
+                        }
                     }
                 }
 
@@ -116,17 +133,29 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
                                         }
                                     }
                                 } else {
-                                    Object bean = beanConverter.fromStrings(values, name, mapValueType, pos, mapKey);
-                                    valueMap.put(typedMapKey, bean);
+                                    BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(mapValueType, null);
+
+                                    if (beanConverter != null) {
+                                        Object bean = beanConverter.fromStrings(values, name, mapValueType, pos, mapKey);
+                                        valueMap.put(typedMapKey, bean);
+                                    } else {
+                                        log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in map.", mapValueType.getName());
+                                    }
                                 }
                             }
 
                             valueList.add(valueMap);
                         }
                     } else {
-                        for (Integer pos : beanPositions) {
-                            Object bean = beanConverter.fromStrings(values, name, genericType.get(0), pos);
-                            valueList.add(bean);
+                        BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(genericType.get(0), null);
+
+                        if (beanConverter != null) {
+                            for (Integer pos : beanPositions) {
+                                Object bean = beanConverter.fromStrings(values, name, genericType.get(0), pos);
+                                valueList.add(bean);
+                            }
+                        } else {
+                            log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in list.", genericType.get(0).getName());
                         }
                     }
                 }

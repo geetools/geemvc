@@ -52,16 +52,16 @@ import com.geemvc.cache.DefaultCache;
 import com.geemvc.cache.DefaultCacheEntry;
 import com.geemvc.config.Configuration;
 import com.geemvc.config.Configurations;
-import com.geemvc.converter.BeanConverter;
 import com.geemvc.converter.ConverterAdapterFactory;
 import com.geemvc.converter.ConverterAdapterKey;
 import com.geemvc.converter.ConverterContext;
-import com.geemvc.converter.DefaultBeanConverter;
 import com.geemvc.converter.DefaultConverterAdapterFactory;
 import com.geemvc.converter.DefaultConverterAdapterKey;
 import com.geemvc.converter.DefaultConverterContext;
 import com.geemvc.converter.DefaultSimpleConverter;
 import com.geemvc.converter.SimpleConverter;
+import com.geemvc.converter.bean.BeanConverterAdapterFactory;
+import com.geemvc.converter.bean.DefaultBeanConverterAdapterFactory;
 import com.geemvc.data.DataAdapterFactory;
 import com.geemvc.data.DefaultDataAdapterFactory;
 import com.geemvc.handler.CompositeControllerResolver;
@@ -246,7 +246,7 @@ public class GeeMvcModule extends AbstractModule {
         configureConverterAdapterKey();
         configureConverterContext();
         configureSimpleConverter();
-        configureBeanConverter();
+        configureBeanConverterAdapterFactory();
         configureParamAdapterFactory();
         configureParamAdapterKey();
         configureParamAdapters();
@@ -467,8 +467,8 @@ public class GeeMvcModule extends AbstractModule {
         bind(SimpleConverter.class).to(DefaultSimpleConverter.class);
     }
 
-    protected void configureBeanConverter() {
-        bind(BeanConverter.class).to(DefaultBeanConverter.class);
+    protected void configureBeanConverterAdapterFactory() {
+        bind(BeanConverterAdapterFactory.class).to(DefaultBeanConverterAdapterFactory.class);
     }
 
     protected void configureRequestHandler() {

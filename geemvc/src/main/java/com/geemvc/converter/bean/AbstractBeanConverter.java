@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.geemvc.converter;
+package com.geemvc.converter.bean;
 
 import java.util.List;
 
@@ -24,26 +24,22 @@ import com.geemvc.bind.PropertyNode;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class DefaultBeanConverter implements BeanConverter {
+public abstract class AbstractBeanConverter {
 
     @Inject
     protected Injector injector;
 
-    @Override
-    public BeanConverter bindProperty(Object beanInstance, String expression, List<String> value) {
+    public void _bindProperty(Object beanInstance, String expression, List<String> value) {
         if (value != null && value.size() > 1) {
             for (String val : value) {
-                bindProperty(beanInstance, expression, val);
+                _bindProperty(beanInstance, expression, val);
             }
         } else if (value != null) {
-            bindProperty(beanInstance, expression, value.get(0));
+            _bindProperty(beanInstance, expression, value.get(0));
         }
-
-        return this;
     }
 
-    @Override
-    public BeanConverter bindProperty(Object beanInstance, String expression, String value) {
+    public void _bindProperty(Object beanInstance, String expression, String value) {
         PropertyNode propertyNode = injector.getInstance(PropertyNode.class).build(expression, beanInstance.getClass());
 
         if (expression.contains(Str.SQUARE_BRACKET_OPEN)) {
@@ -51,12 +47,9 @@ public class DefaultBeanConverter implements BeanConverter {
         } else {
             propertyNode.set(beanInstance, value);
         }
-
-        return this;
     }
 
-    @Override
-    public BeanConverter bindProperties(List<String> values, String beanName, Object beanInstance) {
+    public void _bindProperties(List<String> values, String beanName, Object beanInstance) {
         if (beanName != null) {
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -66,19 +59,16 @@ public class DefaultBeanConverter implements BeanConverter {
                 int dotPos = propertyExpression.indexOf(Char.DOT);
                 String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
             }
         }
-
-        return this;
     }
 
-    @Override
-    public Object fromStrings(List<String> values, String beanName, Class<?> beanType) {
+    public Object _fromStrings(List<String> values, String beanName, Class<?> beanType) {
         Object beanInstance = null;
 
         if (beanName != null && beanType != null) {
-            beanInstance = newInstance(beanType);
+            beanInstance = _newInstance(beanType);
 
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -88,19 +78,18 @@ public class DefaultBeanConverter implements BeanConverter {
                 int dotPos = propertyExpression.indexOf(Char.DOT);
                 String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
             }
         }
 
         return beanInstance;
     }
 
-    @Override
-    public Object fromStrings(List<String> values, String beanName, Class<?> beanType, int index) {
+    public Object _fromStrings(List<String> values, String beanName, Class<?> beanType, int index) {
         Object beanInstance = null;
 
         if (beanName != null && beanType != null) {
-            beanInstance = newInstance(beanType);
+            beanInstance = _newInstance(beanType);
 
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -112,7 +101,7 @@ public class DefaultBeanConverter implements BeanConverter {
                     int dotPos = propertyExpression.indexOf(Char.DOT);
                     String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                    bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
                 }
             }
         }
@@ -120,12 +109,11 @@ public class DefaultBeanConverter implements BeanConverter {
         return beanInstance;
     }
 
-    @Override
-    public Object fromStrings(List<String> values, String beanName, Class<?> beanType, int index, String mapKey) {
+    public Object _fromStrings(List<String> values, String beanName, Class<?> beanType, int index, String mapKey) {
         Object beanInstance = null;
 
         if (beanName != null && beanType != null) {
-            beanInstance = newInstance(beanType);
+            beanInstance = _newInstance(beanType);
 
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -138,7 +126,7 @@ public class DefaultBeanConverter implements BeanConverter {
                     int dotPos = propertyExpression.indexOf(Char.DOT);
                     String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                    bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
                 }
             }
         }
@@ -146,12 +134,11 @@ public class DefaultBeanConverter implements BeanConverter {
         return beanInstance;
     }
 
-    @Override
-    public Object fromStrings(List<String> values, String beanName, Class<?> beanType, String mapKey) {
+    public Object _fromStrings(List<String> values, String beanName, Class<?> beanType, String mapKey) {
         Object beanInstance = null;
 
         if (beanName != null && beanType != null) {
-            beanInstance = newInstance(beanType);
+            beanInstance = _newInstance(beanType);
 
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -163,7 +150,7 @@ public class DefaultBeanConverter implements BeanConverter {
                     int dotPos = propertyExpression.indexOf(Char.DOT);
                     String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                    bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
                 }
             }
         }
@@ -171,12 +158,11 @@ public class DefaultBeanConverter implements BeanConverter {
         return beanInstance;
     }
 
-    @Override
-    public Object fromStrings(List<String> values, String beanName, Class<?> beanType, String mapKey, int index) {
+    public Object _fromStrings(List<String> values, String beanName, Class<?> beanType, String mapKey, int index) {
         Object beanInstance = null;
 
         if (beanName != null && beanType != null) {
-            beanInstance = newInstance(beanType);
+            beanInstance = _newInstance(beanType);
 
             for (String val : values) {
                 int equalsPos = val.indexOf(Char.EQUALS);
@@ -189,7 +175,7 @@ public class DefaultBeanConverter implements BeanConverter {
                     int dotPos = propertyExpression.indexOf(Char.DOT);
                     String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
 
-                    bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
                 }
             }
         }
@@ -197,8 +183,7 @@ public class DefaultBeanConverter implements BeanConverter {
         return beanInstance;
     }
 
-    @Override
-    public Object newInstance(Class<?> beanType) {
+    public Object _newInstance(Class<?> beanType) {
         return injector.getInstance(beanType);
     }
 }
