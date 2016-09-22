@@ -16,11 +16,11 @@
 
 package com.geemvc.taglib.form;
 
-import com.geemvc.Char;
-import com.geemvc.Str;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+
+import com.geemvc.Char;
+import com.geemvc.Str;
 
 public class InputTagSupport extends FormFieldTagSupport {
     protected String id;
@@ -80,6 +80,12 @@ public class InputTagSupport extends FormFieldTagSupport {
             if (val == null) {
                 Object beanInstance = attribute(normalizeName(name));
                 val = beanPropertyValue(validExpression(name), beanInstance);
+
+                // If value is not set because of some exception during binding (e.g. NumberFormatException),
+                // attempt to get the original value from the request parameter map.
+                if (val == null && hasError(name)) {
+                    val = requestContext().getRequest().getParameter(name);
+                }
             }
 
             String fieldType = (String) dynamicAttributes.get("type");

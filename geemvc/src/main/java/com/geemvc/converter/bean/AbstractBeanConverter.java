@@ -40,10 +40,13 @@ public abstract class AbstractBeanConverter {
     }
 
     public void _bindProperty(Object beanInstance, String expression, String value) {
-        PropertyNode propertyNode = injector.getInstance(PropertyNode.class).build(expression, beanInstance.getClass());
+        int dotPos = expression.indexOf(Char.DOT);
+        String propertyExpression = expression.substring(dotPos + 1);
 
-        if (expression.contains(Str.SQUARE_BRACKET_OPEN)) {
-            propertyNode.set(beanInstance, value, expression);
+        PropertyNode propertyNode = injector.getInstance(PropertyNode.class).build(propertyExpression, beanInstance.getClass());
+
+        if (propertyExpression.contains(Str.SQUARE_BRACKET_OPEN)) {
+            propertyNode.set(beanInstance, value, propertyExpression);
         } else {
             propertyNode.set(beanInstance, value);
         }
@@ -56,10 +59,7 @@ public abstract class AbstractBeanConverter {
                 String propertyExpression = val.substring(0, equalsPos);
                 String properyValue = val.substring(equalsPos + 1);
 
-                int dotPos = propertyExpression.indexOf(Char.DOT);
-                String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                _bindProperty(beanInstance, propertyExpression, properyValue);
             }
         }
     }
@@ -75,10 +75,7 @@ public abstract class AbstractBeanConverter {
                 String propertyExpression = val.substring(0, equalsPos);
                 String properyValue = val.substring(equalsPos + 1);
 
-                int dotPos = propertyExpression.indexOf(Char.DOT);
-                String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                _bindProperty(beanInstance, propertyExpression, properyValue);
             }
         }
 
@@ -98,10 +95,7 @@ public abstract class AbstractBeanConverter {
                 if (propertyExpression.startsWith(new StringBuilder(beanName).append(Char.SQUARE_BRACKET_OPEN).append(index).append(Char.SQUARE_BRACKET_CLOSE).toString())) {
                     String properyValue = val.substring(equalsPos + 1);
 
-                    int dotPos = propertyExpression.indexOf(Char.DOT);
-                    String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, propertyExpression, properyValue);
                 }
             }
         }
@@ -123,10 +117,7 @@ public abstract class AbstractBeanConverter {
                         .toString())) {
                     String properyValue = val.substring(equalsPos + 1);
 
-                    int dotPos = propertyExpression.indexOf(Char.DOT);
-                    String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, propertyExpression, properyValue);
                 }
             }
         }
@@ -147,10 +138,7 @@ public abstract class AbstractBeanConverter {
                 if (propertyExpression.startsWith(new StringBuilder(beanName).append(Char.SQUARE_BRACKET_OPEN).append(mapKey).append(Char.SQUARE_BRACKET_CLOSE).toString())) {
                     String properyValue = val.substring(equalsPos + 1);
 
-                    int dotPos = propertyExpression.indexOf(Char.DOT);
-                    String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, propertyExpression, properyValue);
                 }
             }
         }
@@ -172,10 +160,7 @@ public abstract class AbstractBeanConverter {
                         .toString())) {
                     String properyValue = val.substring(equalsPos + 1);
 
-                    int dotPos = propertyExpression.indexOf(Char.DOT);
-                    String normalizedPropertyExpression = propertyExpression.substring(dotPos + 1);
-
-                    _bindProperty(beanInstance, normalizedPropertyExpression, properyValue);
+                    _bindProperty(beanInstance, propertyExpression, properyValue);
                 }
             }
         }

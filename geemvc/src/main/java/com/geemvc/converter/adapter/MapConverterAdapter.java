@@ -162,7 +162,7 @@ public class MapConverterAdapter implements ConverterAdapter<Map<Object, Object>
                     List<Object> valueList = new ArrayList<>();
 
                     for (Integer index : listPositions) {
-                        Object bean = beanConverter.fromStrings(values, name, mapValueType, mapKey, index);
+                        Object bean = beanConverter.fromStrings(values, name, mapValueType, mapKey, index, ctx);
                         valueList.add(bean);
                     }
 
@@ -185,7 +185,7 @@ public class MapConverterAdapter implements ConverterAdapter<Map<Object, Object>
                 Set<String> mapKeys = mapKeys(values);
 
                 for (String mapKey : mapKeys) {
-                    Object bean = beanConverter.fromStrings(values, name, mapValueType, mapKey);
+                    Object bean = beanConverter.fromStrings(values, name, mapValueType, mapKey, ctx);
                     Object typedMapKey = mapKeyType == String.class ? mapKey : simpleConverter.fromString(mapKey, mapKeyType);
 
                     beanValueMap.put(typedMapKey, bean);

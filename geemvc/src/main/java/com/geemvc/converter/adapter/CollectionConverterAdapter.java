@@ -85,7 +85,7 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
                         BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(setType, null);
 
                         if (beanConverter != null) {
-                            Object bean = beanConverter.fromStrings(values, name, type);
+                            Object bean = beanConverter.fromStrings(values, name, type, ctx);
                             valueSet.add(bean);
                         } else {
                             log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in set.", setType.getName());
@@ -136,7 +136,7 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
                                     BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(mapValueType, null);
 
                                     if (beanConverter != null) {
-                                        Object bean = beanConverter.fromStrings(values, name, mapValueType, pos, mapKey);
+                                        Object bean = beanConverter.fromStrings(values, name, mapValueType, pos, mapKey, ctx);
                                         valueMap.put(typedMapKey, bean);
                                     } else {
                                         log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values in map.", mapValueType.getName());
@@ -151,7 +151,7 @@ public class CollectionConverterAdapter implements ConverterAdapter<Collection<O
 
                         if (beanConverter != null) {
                             for (Integer pos : beanPositions) {
-                                Object bean = beanConverter.fromStrings(values, name, genericType.get(0), pos);
+                                Object bean = beanConverter.fromStrings(values, name, genericType.get(0), pos, ctx);
                                 valueList.add(bean);
                             }
                         } else {

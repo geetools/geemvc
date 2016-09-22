@@ -32,17 +32,18 @@ import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTag;
 
-import com.geemvc.i18n.message.CompositeMessageResolver;
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.bind.PropertyNode;
-import com.geemvc.validation.Errors;
-import com.geemvc.view.GeemvcKey;
 import org.apache.commons.io.IOUtils;
 
 import com.geemvc.Char;
 import com.geemvc.RequestContext;
 import com.geemvc.Str;
+import com.geemvc.i18n.message.CompositeMessageResolver;
+import com.geemvc.i18n.notice.Notices;
 import com.geemvc.inject.Injectors;
+import com.geemvc.reader.bean.BeanReaderAdapter;
+import com.geemvc.reader.bean.BeanReaderAdapterFactory;
+import com.geemvc.validation.Errors;
+import com.geemvc.view.GeemvcKey;
 import com.google.common.base.CaseFormat;
 import com.google.inject.Injector;
 
@@ -238,11 +239,15 @@ public class GeemvcTagSupport implements SimpleTag {
         if (expression == null || beanInstance == null)
             return null;
 
-        Injector injector = Injectors.provide();
+        BeanReaderAdapter beanReader = injector.getInstance(BeanReaderAdapterFactory.class).create(beanInstance.getClass(), beanInstance.getClass());
 
-        PropertyNode propertyNode = injector.getInstance(PropertyNode.class).build(expression, beanInstance.getClass());
-
-        return propertyNode.get(beanInstance);
+        if (beanReader != null) {
+            return beanReader.lookup(expression, beanInstance);
+        } else {
+            // log.warn("Unable to find a compatible bean reader for the bean '{}' while attempting to read property value in form taglib '{}'.
+            // Returning 'null' instead.", () -> beanInstance.getClass(), () -> getClass().getName());
+            return null;
+        }
     }
 
     @Override
@@ -301,12 +306,12 @@ public class GeemvcTagSupport implements SimpleTag {
             return PageContext.PAGE_SCOPE;
 
         switch (scope.toLowerCase().trim()) {
-            case REQUEST_SCOPE:
-                return PageContext.REQUEST_SCOPE;
-            case SESSION_SCOPE:
-                return PageContext.SESSION_SCOPE;
-            default:
-                return PageContext.PAGE_SCOPE;
+        case REQUEST_SCOPE:
+            return PageContext.REQUEST_SCOPE;
+        case SESSION_SCOPE:
+            return PageContext.SESSION_SCOPE;
+        default:
+            return PageContext.PAGE_SCOPE;
         }
     }
 

@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package com.geemvc.converter;
+package com.geemvc.reader.bean.adapter;
 
-import java.util.List;
-import java.util.Map;
+import com.geemvc.annotation.Adapter;
+import com.geemvc.reader.bean.AbstractBeanReader;
+import com.geemvc.reader.bean.BeanReaderAdapter;
+import com.google.inject.Singleton;
 
-import com.geemvc.RequestContext;
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.validation.Errors;
-
-public interface ConverterContext {
-    ConverterContext build(String name, Class<?> type, List<Class<?>> genericType, RequestContext requestCtx, Map<String, List<String>> requestValues, Errors errors, Notices notices);
-
-    String name();
-
-    Class<?> type();
-
-    List<Class<?>> genericType();
-
-    RequestContext requestCtx();
-
-    Map<String, List<String>> requestValues();
-
-    Errors errors();
-
-    Notices notices();
+@Adapter
+@Singleton
+public class DefaultBeanReaderAdapter extends AbstractBeanReader implements BeanReaderAdapter<Object> {
+    @Override
+    public Object lookup(String expression, Object beanInstance) {
+        return _lookup(expression, beanInstance);
+    }
 }

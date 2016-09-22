@@ -29,6 +29,7 @@ import com.geemvc.i18n.notice.Notices;
 import com.geemvc.RequestContext;
 import com.geemvc.ThreadStash;
 import com.geemvc.bind.MethodParams;
+import com.geemvc.converter.ConverterContext;
 import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
 import com.geemvc.handler.RequestHandler;
@@ -47,9 +48,9 @@ public class ValidationTest extends BaseTest {
         Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("person.forename", new String[]{"Michael"});
-        requestParams.put("person.surname", new String[]{"Delamere"});
-        requestParams.put("person.age", new String[]{"10"});
+        requestParams.put("person.forename", new String[] { "Michael" });
+        requestParams.put("person.surname", new String[] { "Delamere" });
+        requestParams.put("person.age", new String[] { "10" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/createPerson", "POST", requestParams);
         ThreadStash.prepare((HttpServletRequest) reqCtx.getRequest());
@@ -65,8 +66,9 @@ public class ValidationTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(reqCtx, typedValues, n);
 

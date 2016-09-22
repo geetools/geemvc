@@ -28,6 +28,7 @@ import com.geemvc.bind.param.ParamAdapters;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
 import com.geemvc.bind.param.annotation.Data;
+import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.SimpleConverter;
 import com.geemvc.converter.bean.BeanConverterAdapter;
 import com.geemvc.converter.bean.BeanConverterAdapterFactory;
@@ -139,7 +140,9 @@ public class DataParamAdapter implements TypedParamAdapter<Data> {
                         BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(beanClass, null);
 
                         if (beanConverter != null) {
-                            beanConverter.bindProperties(beanData, paramName, entity);
+                            ConverterContext converterCtx = injector.getInstance(ConverterContext.class).build(paramName, beanClass, null, requestCtx, paramCtx.requestValues(), paramCtx.errors(), paramCtx.notices());
+
+                            beanConverter.bindProperties(beanData, paramName, entity, converterCtx);
                         } else {
                             throw new IllegalStateException(
                                     "Unable to find a compatible bean converter for the bean '" + beanClass.getName() + "' which is needed for the @Data(" + paramName + ") param when the HTTP method is either 'POST' or 'PUT'.");

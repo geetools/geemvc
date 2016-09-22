@@ -22,9 +22,11 @@ import java.util.Map;
 import com.geemvc.RequestContext;
 import com.geemvc.bind.MethodParam;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.validation.Errors;
 
 public interface ParamContext {
-    ParamContext build(MethodParam methodParam, Map<String, List<String>> requestValues, Map<String, Object> typedValues, RequestContext requestCtx);
+    ParamContext build(MethodParam methodParam, Map<String, List<String>> requestValues, Map<String, Object> typedValues, RequestContext requestCtx, Errors errors, Notices notices);
 
     MethodParam methodParam();
 
@@ -35,4 +37,8 @@ public interface ParamContext {
     RequestContext requestCtx();
 
     RequestHandler requestHandler();
+
+    Errors errors();
+
+    Notices notices();
 }

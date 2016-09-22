@@ -34,27 +34,32 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
-import com.geemvc.handler.CompositeControllerResolver;
-import com.geemvc.handler.CompositeHandlerResolver;
-import com.geemvc.handler.RequestHandler;
-import com.geemvc.mock.controller.TestController17;
-import com.geemvc.mock.converter.IdConverter;
-import com.geemvc.mock.type.StringConstructorType;
-import jodd.typeconverter.TypeConverterManager;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.geemvc.RequestContext;
+import com.geemvc.handler.CompositeControllerResolver;
+import com.geemvc.handler.CompositeHandlerResolver;
+import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
 import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.mock.Id;
+import com.geemvc.mock.controller.TestController17;
+import com.geemvc.mock.converter.IdConverter;
 import com.geemvc.mock.type.FromStringType;
+import com.geemvc.mock.type.StringConstructorType;
 import com.geemvc.mock.type.ValueOfType;
 import com.geemvc.test.BaseTest;
+import com.geemvc.validation.Errors;
+
+import jodd.typeconverter.TypeConverterManager;
 
 public class ParamBindingTest extends BaseTest {
     @Test
     public void testFindController17a() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17a/12345");
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
@@ -66,8 +71,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -89,8 +94,11 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17b() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("id", new String[]{"12345"});
+        requestParams.put("id", new String[] { "12345" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17b", requestParams);
 
@@ -103,8 +111,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -126,8 +134,11 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17c() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("id", new String[]{"12345"});
+        headers.put("id", new String[] { "12345" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17c", (Map<String, String[]>) null, headers);
 
@@ -140,8 +151,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -163,6 +174,9 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17d() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("id", "12345"));
 
@@ -177,8 +191,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -200,11 +214,14 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17e() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("price", new String[]{"19.99"});
+        requestParams.put("price", new String[] { "19.99" });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"application/json"});
+        headers.put("Accept", new String[] { "application/json" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("rememberMe", "true"));
@@ -222,8 +239,8 @@ public class ParamBindingTest extends BaseTest {
         assertNotNull(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler.handlerMethod());
         assertNotNull(requestHandler.pathMatcher());
@@ -259,15 +276,18 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17f() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("ids", new String[]{"1", "2", "3"});
-        requestParams.put("tags", new String[]{"t1", "t2", "t3"});
-        requestParams.put("tags2", new String[]{"t21", "t22", "t23"});
-        requestParams.put("prices", new String[]{"10.10", "20.20", "30.30",});
-        requestParams.put("special-prices", new String[]{"1.10", "2.20", "3.30",});
+        requestParams.put("ids", new String[] { "1", "2", "3" });
+        requestParams.put("tags", new String[] { "t1", "t2", "t3" });
+        requestParams.put("tags2", new String[] { "t21", "t22", "t23" });
+        requestParams.put("prices", new String[] { "10.10", "20.20", "30.30", });
+        requestParams.put("special-prices", new String[] { "1.10", "2.20", "3.30", });
 
         Map<String, String[]> headers = new HashMap<>();
-        headers.put("Accept", new String[]{"text/html", "application/json", "application/xml"});
+        headers.put("Accept", new String[] { "text/html", "application/json", "application/xml" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17f", "GET", requestParams, headers);
 
@@ -282,8 +302,8 @@ public class ParamBindingTest extends BaseTest {
         assertNotNull(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler.handlerMethod());
         assertNotNull(requestHandler.pathMatcher());
@@ -308,19 +328,19 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("special-prices", typedValues.containsKey("special-prices"));
         assertTrue("Accept", typedValues.containsKey("Accept"));
 
-        assertEquals(Arrays.asList(new String[]{"1", "2", "3"}), requestValues.get("ids"));
-        assertEquals(Arrays.asList(new String[]{"t1", "t2", "t3"}), requestValues.get("tags"));
-        assertEquals(Arrays.asList(new String[]{"t21", "t22", "t23"}), requestValues.get("tags2"));
-        assertEquals(Arrays.asList(new String[]{"10.10", "20.20", "30.30"}), requestValues.get("prices"));
-        assertEquals(Arrays.asList(new String[]{"1.10", "2.20", "3.30"}), requestValues.get("special-prices"));
-        assertEquals(Arrays.asList(new String[]{"text/html", "application/json", "application/xml"}), requestValues.get("Accept"));
+        assertEquals(Arrays.asList(new String[] { "1", "2", "3" }), requestValues.get("ids"));
+        assertEquals(Arrays.asList(new String[] { "t1", "t2", "t3" }), requestValues.get("tags"));
+        assertEquals(Arrays.asList(new String[] { "t21", "t22", "t23" }), requestValues.get("tags2"));
+        assertEquals(Arrays.asList(new String[] { "10.10", "20.20", "30.30" }), requestValues.get("prices"));
+        assertEquals(Arrays.asList(new String[] { "1.10", "2.20", "3.30" }), requestValues.get("special-prices"));
+        assertEquals(Arrays.asList(new String[] { "text/html", "application/json", "application/xml" }), requestValues.get("Accept"));
 
-        assertTrue(Arrays.equals(new int[]{1, 2, 3}, (int[]) typedValues.get("ids")));
-        assertTrue(Arrays.equals(new String[]{"t1", "t2", "t3"}, (String[]) typedValues.get("tags")));
-        assertEquals(Arrays.asList(new String[]{"t21", "t22", "t23"}), typedValues.get("tags2"));
-        assertArrayEquals(new BigDecimal[]{new BigDecimal("10.10"), new BigDecimal("20.20"), new BigDecimal("30.30")}, (BigDecimal[]) typedValues.get("prices"));
-        assertEquals(new ArrayList<Double>(Arrays.asList(new Double[]{Double.valueOf(1.10), Double.valueOf(2.20), Double.valueOf(3.30)})), typedValues.get("special-prices"));
-        assertEquals(new LinkedHashSet<String>(Arrays.asList(new String[]{"text/html", "application/json", "application/xml"})), typedValues.get("Accept"));
+        assertTrue(Arrays.equals(new int[] { 1, 2, 3 }, (int[]) typedValues.get("ids")));
+        assertTrue(Arrays.equals(new String[] { "t1", "t2", "t3" }, (String[]) typedValues.get("tags")));
+        assertEquals(Arrays.asList(new String[] { "t21", "t22", "t23" }), typedValues.get("tags2"));
+        assertArrayEquals(new BigDecimal[] { new BigDecimal("10.10"), new BigDecimal("20.20"), new BigDecimal("30.30") }, (BigDecimal[]) typedValues.get("prices"));
+        assertEquals(new ArrayList<Double>(Arrays.asList(new Double[] { Double.valueOf(1.10), Double.valueOf(2.20), Double.valueOf(3.30) })), typedValues.get("special-prices"));
+        assertEquals(new LinkedHashSet<String>(Arrays.asList(new String[] { "text/html", "application/json", "application/xml" })), typedValues.get("Accept"));
 
         assertEquals(int[].class, typedValues.get("ids").getClass());
         assertEquals(String[].class, typedValues.get("tags").getClass());
@@ -332,8 +352,11 @@ public class ParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController17g() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("param2", new String[]{"val2"});
+        requestParams.put("param2", new String[] { "val2" });
 
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("param3", "val3"));
@@ -351,8 +374,8 @@ public class ParamBindingTest extends BaseTest {
         assertNotNull(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler.handlerMethod());
         assertNotNull(requestHandler.pathMatcher());
@@ -384,12 +407,15 @@ public class ParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17h() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[keyOne]", new String[]{"valueOne"});
-        requestParams.put("myMap[keyTwo]", new String[]{"valueTwo"});
-        requestParams.put("myMap[keyThree]", new String[]{"valueThree"});
-        requestParams.put("myMap[keyFour]", new String[]{"valueFour"});
-        requestParams.put("myMap[keyFive]", new String[]{"valueFive"});
+        requestParams.put("myMap[keyOne]", new String[] { "valueOne" });
+        requestParams.put("myMap[keyTwo]", new String[] { "valueTwo" });
+        requestParams.put("myMap[keyThree]", new String[] { "valueThree" });
+        requestParams.put("myMap[keyFour]", new String[] { "valueFour" });
+        requestParams.put("myMap[keyFive]", new String[] { "valueFive" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17h", requestParams);
 
@@ -402,8 +428,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -420,7 +446,7 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(5, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(5, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"keyOne=valueOne", "keyTwo=valueTwo", "keyThree=valueThree", "keyFour=valueFour", "keyFive=valueFive"})), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "keyOne=valueOne", "keyTwo=valueTwo", "keyThree=valueThree", "keyFour=valueFour", "keyFive=valueFive" })), new HashSet<>(requestValues.get("myMap")));
 
         Map<String, String> expectedMap = new LinkedHashMap<>();
         expectedMap.put("keyOne", "valueOne");
@@ -435,9 +461,12 @@ public class ParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17i() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[keyOne]", new String[]{"valueOneA", "valueOneB", "valueOneC"});
-        requestParams.put("myMap[keyTwo]", new String[]{"valueTwoA", "valueTwoB", "valueTwoC"});
+        requestParams.put("myMap[keyOne]", new String[] { "valueOneA", "valueOneB", "valueOneC" });
+        requestParams.put("myMap[keyTwo]", new String[] { "valueTwoA", "valueTwoB", "valueTwoC" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17i", requestParams);
 
@@ -450,8 +479,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -468,17 +497,20 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(6, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"keyOne=valueOneA", "keyOne=valueOneB", "keyOne=valueOneC", "keyTwo=valueTwoA", "keyTwo=valueTwoB", "keyTwo=valueTwoC"})), new HashSet<>(requestValues.get("myMap")));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueOneA", "valueOneB", "valueOneC"})), new HashSet<>(Arrays.asList((String[]) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne"))));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueTwoA", "valueTwoB", "valueTwoC"})), new HashSet<>(Arrays.asList((String[]) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo"))));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "keyOne=valueOneA", "keyOne=valueOneB", "keyOne=valueOneC", "keyTwo=valueTwoA", "keyTwo=valueTwoB", "keyTwo=valueTwoC" })), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueOneA", "valueOneB", "valueOneC" })), new HashSet<>(Arrays.asList((String[]) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne"))));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueTwoA", "valueTwoB", "valueTwoC" })), new HashSet<>(Arrays.asList((String[]) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo"))));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17j() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[keyOne]", new String[]{"valueOneA", "valueOneB", "valueOneC"});
-        requestParams.put("myMap[keyTwo]", new String[]{"valueTwoA", "valueTwoB", "valueTwoC"});
+        requestParams.put("myMap[keyOne]", new String[] { "valueOneA", "valueOneB", "valueOneC" });
+        requestParams.put("myMap[keyTwo]", new String[] { "valueTwoA", "valueTwoB", "valueTwoC" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17j", requestParams);
 
@@ -491,8 +523,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -509,17 +541,20 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(6, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"keyOne=valueOneA", "keyOne=valueOneB", "keyOne=valueOneC", "keyTwo=valueTwoA", "keyTwo=valueTwoB", "keyTwo=valueTwoC"})), new HashSet<>(requestValues.get("myMap")));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueOneA", "valueOneB", "valueOneC"})), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne")));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueTwoA", "valueTwoB", "valueTwoC"})), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "keyOne=valueOneA", "keyOne=valueOneB", "keyOne=valueOneC", "keyTwo=valueTwoA", "keyTwo=valueTwoB", "keyTwo=valueTwoC" })), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueOneA", "valueOneB", "valueOneC" })), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueTwoA", "valueTwoB", "valueTwoC" })), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo")));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17k() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[keyOne]", new String[]{"11", "12", "13"});
-        requestParams.put("myMap[keyTwo]", new String[]{"21", "22", "23"});
+        requestParams.put("myMap[keyOne]", new String[] { "11", "12", "13" });
+        requestParams.put("myMap[keyTwo]", new String[] { "21", "22", "23" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17k", requestParams);
 
@@ -532,8 +567,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -550,19 +585,22 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(6, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"keyOne=11", "keyOne=12", "keyOne=13", "keyTwo=21", "keyTwo=22", "keyTwo=23"})), new HashSet<>(requestValues.get("myMap")));
-        assertEquals(new HashSet<>(Arrays.asList(new Integer[]{11, 12, 13})), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne")));
-        assertEquals(new HashSet<>(Arrays.asList(new Integer[]{21, 22, 23})), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo")));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "keyOne=11", "keyOne=12", "keyOne=13", "keyTwo=21", "keyTwo=22", "keyTwo=23" })), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new Integer[] { 11, 12, 13 })), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyOne")));
+        assertEquals(new HashSet<>(Arrays.asList(new Integer[] { 21, 22, 23 })), new HashSet<>((Collection<?>) ((Map<String, Object>) typedValues.get("myMap")).get("keyTwo")));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17l() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         TypeConverterManager.register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[12345]", new String[]{"String value for id 12345."});
-        requestParams.put("myMap[67890]", new String[]{"String value for id 67890."});
+        requestParams.put("myMap[12345]", new String[] { "String value for id 12345." });
+        requestParams.put("myMap[67890]", new String[] { "String value for id 67890." });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17l", requestParams);
 
@@ -575,8 +613,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -593,8 +631,8 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(2, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new Id[]{Id.valueOf("12345"), Id.valueOf("67890")})), ((Map<String, Object>) typedValues.get("myMap")).keySet());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"12345=String value for id 12345.", "67890=String value for id 67890."})), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new Id[] { Id.valueOf("12345"), Id.valueOf("67890") })), ((Map<String, Object>) typedValues.get("myMap")).keySet());
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "12345=String value for id 12345.", "67890=String value for id 67890." })), new HashSet<>(requestValues.get("myMap")));
         assertEquals("String value for id 12345.", (String) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("12345")));
         assertEquals("String value for id 67890.", (String) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("67890")));
     }
@@ -602,9 +640,12 @@ public class ParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17m() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap[12345]", new String[]{"11.11", "22.22", "33.33"});
-        requestParams.put("myMap[67890]", new String[]{"111.111", "222.222", "333.333"});
+        requestParams.put("myMap[12345]", new String[] { "11.11", "22.22", "33.33" });
+        requestParams.put("myMap[67890]", new String[] { "111.111", "222.222", "333.333" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17m", requestParams);
 
@@ -617,8 +658,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -635,19 +676,22 @@ public class ParamBindingTest extends BaseTest {
         assertTrue("myMap", typedValues.containsKey("myMap"));
         assertEquals(6, ((List<String>) requestValues.get("myMap")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"12345=11.11", "12345=22.22", "12345=33.33", "67890=111.111", "67890=222.222", "67890=333.333"})), new HashSet<>(requestValues.get("myMap")));
-        assertEquals(new HashSet<>(Arrays.asList(new Double[]{11.11d, 22.22d, 33.33d})), new HashSet<>(Arrays.asList((Double[]) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("12345")))));
-        assertEquals(new HashSet<>(Arrays.asList(new Double[]{111.111d, 222.222d, 333.333d})), new HashSet<>(Arrays.asList((Double[]) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("67890")))));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "12345=11.11", "12345=22.22", "12345=33.33", "67890=111.111", "67890=222.222", "67890=333.333" })), new HashSet<>(requestValues.get("myMap")));
+        assertEquals(new HashSet<>(Arrays.asList(new Double[] { 11.11d, 22.22d, 33.33d })), new HashSet<>(Arrays.asList((Double[]) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("12345")))));
+        assertEquals(new HashSet<>(Arrays.asList(new Double[] { 111.111d, 222.222d, 333.333d })), new HashSet<>(Arrays.asList((Double[]) ((Map<String, Object>) typedValues.get("myMap")).get(Id.valueOf("67890")))));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17n() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myMap1[12345]", new String[]{"11", "12", "13"});
-        requestParams.put("myMap1[67890]", new String[]{"21", "22", "23"});
-        requestParams.put("myMap2[123450]", new String[]{"110", "120", "130"});
-        requestParams.put("myMap2[678900]", new String[]{"210", "220", "230"});
+        requestParams.put("myMap1[12345]", new String[] { "11", "12", "13" });
+        requestParams.put("myMap1[67890]", new String[] { "21", "22", "23" });
+        requestParams.put("myMap2[123450]", new String[] { "110", "120", "130" });
+        requestParams.put("myMap2[678900]", new String[] { "210", "220", "230" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17n", requestParams);
 
@@ -660,8 +704,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -682,24 +726,27 @@ public class ParamBindingTest extends BaseTest {
         assertEquals(6, ((List<String>) requestValues.get("myMap2")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap1")).size());
         assertEquals(2, ((Map<String, Object>) typedValues.get("myMap2")).size());
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"12345=11", "12345=12", "12345=13", "67890=21", "67890=22", "67890=23"})), new HashSet<>(requestValues.get("myMap1")));
-        assertEquals(new HashSet<>(Arrays.asList(new Id[]{Id.valueOf("11"), Id.valueOf("12"), Id.valueOf("13")})), new HashSet<>(Arrays.asList((Id[]) ((Map<String, Object>) typedValues.get("myMap1")).get(12345l))));
-        assertEquals(new HashSet<>(Arrays.asList(new Id[]{Id.valueOf("21"), Id.valueOf("22"), Id.valueOf("23")})), new HashSet<>(Arrays.asList((Id[]) ((Map<String, Object>) typedValues.get("myMap1")).get(67890l))));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"123450=110", "123450=120", "123450=130", "678900=210", "678900=220", "678900=230"})), new HashSet<>(requestValues.get("myMap2")));
-        assertEquals(new HashSet<>(Arrays.asList(new Id[]{Id.valueOf("110"), Id.valueOf("120"), Id.valueOf("130")})), new HashSet<>((List<Id>) ((Map<String, Object>) typedValues.get("myMap2")).get(123450l)));
-        assertEquals(new HashSet<>(Arrays.asList(new Id[]{Id.valueOf("210"), Id.valueOf("220"), Id.valueOf("230")})), new HashSet<>((List<Id>) ((Map<String, Object>) typedValues.get("myMap2")).get(678900l)));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "12345=11", "12345=12", "12345=13", "67890=21", "67890=22", "67890=23" })), new HashSet<>(requestValues.get("myMap1")));
+        assertEquals(new HashSet<>(Arrays.asList(new Id[] { Id.valueOf("11"), Id.valueOf("12"), Id.valueOf("13") })), new HashSet<>(Arrays.asList((Id[]) ((Map<String, Object>) typedValues.get("myMap1")).get(12345l))));
+        assertEquals(new HashSet<>(Arrays.asList(new Id[] { Id.valueOf("21"), Id.valueOf("22"), Id.valueOf("23") })), new HashSet<>(Arrays.asList((Id[]) ((Map<String, Object>) typedValues.get("myMap1")).get(67890l))));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "123450=110", "123450=120", "123450=130", "678900=210", "678900=220", "678900=230" })), new HashSet<>(requestValues.get("myMap2")));
+        assertEquals(new HashSet<>(Arrays.asList(new Id[] { Id.valueOf("110"), Id.valueOf("120"), Id.valueOf("130") })), new HashSet<>((List<Id>) ((Map<String, Object>) typedValues.get("myMap2")).get(123450l)));
+        assertEquals(new HashSet<>(Arrays.asList(new Id[] { Id.valueOf("210"), Id.valueOf("220"), Id.valueOf("230") })), new HashSet<>((List<Id>) ((Map<String, Object>) typedValues.get("myMap2")).get(678900l)));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17o() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myListOfMaps[0][keyOneA]", new String[]{"valueOneA0"});
-        requestParams.put("myListOfMaps[0][keyOneB]", new String[]{"valueOneB0"});
-        requestParams.put("myListOfMaps[0][keyOneC]", new String[]{"valueOneC0"});
-        requestParams.put("myListOfMaps[1][keyOneA]", new String[]{"valueOneA1"});
-        requestParams.put("myListOfMaps[1][keyOneB]", new String[]{"valueOneB1"});
-        requestParams.put("myListOfMaps[1][keyOneC]", new String[]{"valueOneC1"});
+        requestParams.put("myListOfMaps[0][keyOneA]", new String[] { "valueOneA0" });
+        requestParams.put("myListOfMaps[0][keyOneB]", new String[] { "valueOneB0" });
+        requestParams.put("myListOfMaps[0][keyOneC]", new String[] { "valueOneC0" });
+        requestParams.put("myListOfMaps[1][keyOneA]", new String[] { "valueOneA1" });
+        requestParams.put("myListOfMaps[1][keyOneB]", new String[] { "valueOneB1" });
+        requestParams.put("myListOfMaps[1][keyOneC]", new String[] { "valueOneC1" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17o", requestParams);
 
@@ -712,8 +759,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -731,22 +778,25 @@ public class ParamBindingTest extends BaseTest {
         assertEquals(6, ((List<String>) requestValues.get("myListOfMaps")).size());
         assertEquals(2, ((List<Map<String, Object>>) typedValues.get("myListOfMaps")).size());
 
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"[0][keyOneA]=valueOneA0", "[0][keyOneB]=valueOneB0", "[0][keyOneC]=valueOneC0", "[1][keyOneA]=valueOneA1", "[1][keyOneB]=valueOneB1", "[1][keyOneC]=valueOneC1"})), new HashSet<>(
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "[0][keyOneA]=valueOneA0", "[0][keyOneB]=valueOneB0", "[0][keyOneC]=valueOneC0", "[1][keyOneA]=valueOneA1", "[1][keyOneB]=valueOneB1", "[1][keyOneC]=valueOneC1" })), new HashSet<>(
                 requestValues.get("myListOfMaps")));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueOneA0", "valueOneB0", "valueOneC0"})), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(0).values()));
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"valueOneA1", "valueOneB1", "valueOneC1"})), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(1).values()));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueOneA0", "valueOneB0", "valueOneC0" })), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(0).values()));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "valueOneA1", "valueOneB1", "valueOneC1" })), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(1).values()));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController17p() {
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
-        requestParams.put("myListOfMaps[0][111]", new String[]{"110"});
-        requestParams.put("myListOfMaps[0][222]", new String[]{"220"});
-        requestParams.put("myListOfMaps[0][333]", new String[]{"330"});
-        requestParams.put("myListOfMaps[1][111]", new String[]{"119"});
-        requestParams.put("myListOfMaps[1][222]", new String[]{"229"});
-        requestParams.put("myListOfMaps[1][333]", new String[]{"339"});
+        requestParams.put("myListOfMaps[0][111]", new String[] { "110" });
+        requestParams.put("myListOfMaps[0][222]", new String[] { "220" });
+        requestParams.put("myListOfMaps[0][333]", new String[] { "330" });
+        requestParams.put("myListOfMaps[1][111]", new String[] { "119" });
+        requestParams.put("myListOfMaps[1][222]", new String[] { "229" });
+        requestParams.put("myListOfMaps[1][333]", new String[] { "339" });
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller17/handler17p", requestParams);
 
@@ -759,8 +809,8 @@ public class ParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -778,8 +828,8 @@ public class ParamBindingTest extends BaseTest {
         assertEquals(6, ((List<String>) requestValues.get("myListOfMaps")).size());
         assertEquals(2, ((List<Map<String, Object>>) typedValues.get("myListOfMaps")).size());
 
-        assertEquals(new HashSet<>(Arrays.asList(new String[]{"[0][111]=110", "[0][222]=220", "[0][333]=330", "[1][111]=119", "[1][222]=229", "[1][333]=339"})), new HashSet<>(requestValues.get("myListOfMaps")));
-        assertEquals(new HashSet<>(Arrays.asList(new Integer[]{110, 220, 330})), new HashSet<>((Collection<?>) ((List<Map<Id, Integer>>) typedValues.get("myListOfMaps")).get(0).values()));
-        assertEquals(new HashSet<>(Arrays.asList(new Integer[]{119, 229, 339})), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(1).values()));
+        assertEquals(new HashSet<>(Arrays.asList(new String[] { "[0][111]=110", "[0][222]=220", "[0][333]=330", "[1][111]=119", "[1][222]=229", "[1][333]=339" })), new HashSet<>(requestValues.get("myListOfMaps")));
+        assertEquals(new HashSet<>(Arrays.asList(new Integer[] { 110, 220, 330 })), new HashSet<>((Collection<?>) ((List<Map<Id, Integer>>) typedValues.get("myListOfMaps")).get(0).values()));
+        assertEquals(new HashSet<>(Arrays.asList(new Integer[] { 119, 229, 339 })), new HashSet<>((Collection<?>) ((List<Map<String, String>>) typedValues.get("myListOfMaps")).get(1).values()));
     }
 }

@@ -17,44 +17,30 @@
 package com.geemvc.converter;
 
 import java.util.List;
+import java.util.Map;
 
 import com.geemvc.RequestContext;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.validation.Errors;
 
 public class DefaultConverterContext implements ConverterContext {
     protected String name = null;
     protected Class<?> type = null;
     protected List<Class<?>> genericType = null;
     protected RequestContext requestCtx = null;
+    protected Map<String, List<String>> requestValues = null;
+    protected Errors errors = null;
+    protected Notices notices = null;
 
     @Override
-    public ConverterContext build(Class<?> type, List<Class<?>> genericType) {
-        this.type = type;
-        this.genericType = genericType;
-        return this;
-    }
-
-    @Override
-    public ConverterContext build(String name, Class<?> type, List<Class<?>> genericType) {
-        this.name = name;
-        this.type = type;
-        this.genericType = genericType;
-        return this;
-    }
-
-    @Override
-    public ConverterContext build(Class<?> type, List<Class<?>> genericType, RequestContext requestCtx) {
-        this.type = type;
-        this.genericType = genericType;
-        this.requestCtx = requestCtx;
-        return this;
-    }
-
-    @Override
-    public ConverterContext build(String name, Class<?> type, List<Class<?>> genericType, RequestContext requestCtx) {
+    public ConverterContext build(String name, Class<?> type, List<Class<?>> genericType, RequestContext requestCtx, Map<String, List<String>> requestValues, Errors errors, Notices notices) {
         this.name = name;
         this.type = type;
         this.genericType = genericType;
         this.requestCtx = requestCtx;
+        this.requestValues = requestValues;
+        this.errors = errors;
+        this.notices = notices;
         return this;
     }
 
@@ -76,5 +62,20 @@ public class DefaultConverterContext implements ConverterContext {
     @Override
     public RequestContext requestCtx() {
         return requestCtx;
+    }
+
+    @Override
+    public Map<String, List<String>> requestValues() {
+        return requestValues;
+    }
+
+    @Override
+    public Errors errors() {
+        return errors;
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
     }
 }

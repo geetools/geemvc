@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package com.geemvc.converter;
+package com.geemvc.reader.bean;
 
-import java.util.List;
-import java.util.Map;
+import com.geemvc.bind.PropertyNode;
+import com.geemvc.inject.Injectors;
+import com.google.inject.Injector;
 
-import com.geemvc.RequestContext;
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.validation.Errors;
+public class AbstractBeanReader {
+    protected Object _lookup(String expression, Object beanInstance) {
+        if (expression == null || beanInstance == null)
+            return null;
 
-public interface ConverterContext {
-    ConverterContext build(String name, Class<?> type, List<Class<?>> genericType, RequestContext requestCtx, Map<String, List<String>> requestValues, Errors errors, Notices notices);
+        Injector injector = Injectors.provide();
 
-    String name();
+        PropertyNode propertyNode = injector.getInstance(PropertyNode.class).build(expression, beanInstance.getClass());
 
-    Class<?> type();
-
-    List<Class<?>> genericType();
-
-    RequestContext requestCtx();
-
-    Map<String, List<String>> requestValues();
-
-    Errors errors();
-
-    Notices notices();
+        return propertyNode.get(beanInstance);
+    }
 }

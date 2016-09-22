@@ -83,7 +83,7 @@ public class ArrayConverterAdapter implements ConverterAdapter<Object[]> {
             }
 
             for (Integer index : arrayPositions) {
-                Object bean = beanConverter.fromStrings(values, name, type.getComponentType(), index);
+                Object bean = beanConverter.fromStrings(values, name, type.getComponentType(), index, ctx);
                 Array.set(arr, index, bean);
             }
 

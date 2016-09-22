@@ -78,8 +78,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         ValidationContext validationCtx = injector.getInstance(ValidationContext.class).build(reqCtx, typedValues, n);
 
@@ -106,6 +106,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18b() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.id", new String[] { "1234567890" });
@@ -139,8 +141,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -190,6 +192,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18c() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[0].forename", new String[] { "Michael" });
@@ -225,8 +229,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -282,6 +286,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18d() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[customerA].forename", new String[] { "Michael" });
@@ -317,8 +323,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -374,6 +380,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18e() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[1234567890].forename", new String[] { "Michael" });
@@ -409,8 +417,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -466,6 +474,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18f() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
@@ -523,8 +533,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -617,6 +627,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18g() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
@@ -674,8 +686,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -767,6 +779,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18h() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[0].forename", new String[] { "Michael" });
@@ -802,8 +816,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -860,6 +874,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18i() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("persons[0][groupA].forename", new String[] { "Michael" });
@@ -917,8 +933,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -1010,6 +1026,8 @@ public class ModelParamBindingTest extends BaseTest {
     @Test
     public void testFindController18j() {
         TypeConverterManager.register(Id.class, new IdConverter());
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.forename", new String[] { "Michael" });
@@ -1027,8 +1045,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(requestHandler);
         assertNotNull(requestHandler.handlerMethod());
@@ -1062,8 +1080,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/personInSession", requestParams);
 
         params = methodParams.get(requestHandler, reqCtx);
-        requestValues = methodParams.values(params, reqCtx);
-        typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        requestValues = methodParams.values(params, reqCtx, e, n);
+        typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(params);
         assertNotNull(requestValues);
@@ -1106,8 +1124,8 @@ public class ModelParamBindingTest extends BaseTest {
         reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/controller18/personInSession", requestParams);
 
         params = methodParams.get(requestHandler, reqCtx);
-        requestValues = methodParams.values(params, reqCtx);
-        typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        requestValues = methodParams.values(params, reqCtx, e, n);
+        typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         assertNotNull(params);
         assertNotNull(requestValues);

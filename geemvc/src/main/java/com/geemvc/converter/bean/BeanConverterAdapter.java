@@ -18,22 +18,24 @@ package com.geemvc.converter.bean;
 
 import java.util.List;
 
+import com.geemvc.converter.ConverterContext;
+
 public interface BeanConverterAdapter<T> {
-    BeanConverterAdapter bindProperty(T bean, String expression, List<String> value);
+    BeanConverterAdapter bindProperty(T bean, String expression, List<String> value, ConverterContext converterCtx);
 
-    BeanConverterAdapter bindProperty(T bean, String expression, String value);
+    BeanConverterAdapter bindProperty(T bean, String expression, String value, ConverterContext converterCtx);
 
-    BeanConverterAdapter bindProperties(List<String> values, String beanName, T beanInstance);
+    BeanConverterAdapter bindProperties(List<String> values, String beanName, T beanInstance, ConverterContext converterCtx);
 
-    T fromStrings(List<String> values, String beanName, Class<T> beanType);
+    T fromStrings(List<String> values, String beanName, Class<T> beanType, ConverterContext converterCtx);
 
-    T fromStrings(List<String> values, String beanName, Class<T> beanType, int index);
+    T fromStrings(List<String> values, String beanName, Class<T> beanType, int index, ConverterContext converterCtx);
 
-    T fromStrings(List<String> values, String beanName, Class<T> beanType, String mapKey);
+    T fromStrings(List<String> values, String beanName, Class<T> beanType, String mapKey, ConverterContext converterCtx);
 
-    T fromStrings(List<String> values, String beanName, Class<T> beanType, String mapKey, int index);
+    T fromStrings(List<String> values, String beanName, Class<T> beanType, String mapKey, int index, ConverterContext converterCtx);
 
-    T fromStrings(List<String> values, String beanName, Class<T> beanType, int index, String mapKey);
+    T fromStrings(List<String> values, String beanName, Class<T> beanType, int index, String mapKey, ConverterContext converterCtx);
 
-    T newInstance(Class<T> beanType);
+    T newInstance(Class<T> beanType, ConverterContext converterCtx);
 }

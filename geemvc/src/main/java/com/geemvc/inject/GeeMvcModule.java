@@ -137,6 +137,10 @@ import com.geemvc.matcher.MatcherContext;
 import com.geemvc.matcher.ParamMatcher;
 import com.geemvc.matcher.PathMatcher;
 import com.geemvc.matcher.PathMatcherKey;
+import com.geemvc.reader.DefaultReaderAdapterKey;
+import com.geemvc.reader.ReaderAdapterKey;
+import com.geemvc.reader.bean.BeanReaderAdapterFactory;
+import com.geemvc.reader.bean.DefaultBeanReaderAdapterFactory;
 import com.geemvc.reflect.DefaultReflectionProvider;
 import com.geemvc.reflect.DefaultReflectionsWrapper;
 import com.geemvc.reflect.ReflectionProvider;
@@ -247,6 +251,8 @@ public class GeeMvcModule extends AbstractModule {
         configureConverterContext();
         configureSimpleConverter();
         configureBeanConverterAdapterFactory();
+        configureBeanReaderAdapterFactory();
+        configureReaderAdapterKey();
         configureParamAdapterFactory();
         configureParamAdapterKey();
         configureParamAdapters();
@@ -469,6 +475,14 @@ public class GeeMvcModule extends AbstractModule {
 
     protected void configureBeanConverterAdapterFactory() {
         bind(BeanConverterAdapterFactory.class).to(DefaultBeanConverterAdapterFactory.class);
+    }
+
+    protected void configureBeanReaderAdapterFactory() {
+        bind(BeanReaderAdapterFactory.class).to(DefaultBeanReaderAdapterFactory.class);
+    }
+
+    protected void configureReaderAdapterKey() {
+        bind(ReaderAdapterKey.class).to(DefaultReaderAdapterKey.class);
     }
 
     protected void configureRequestHandler() {

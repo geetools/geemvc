@@ -30,11 +30,13 @@ import com.geemvc.RequestContext;
 import com.geemvc.handler.CompositeControllerResolver;
 import com.geemvc.handler.CompositeHandlerResolver;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
 import com.geemvc.matcher.PathMatcherKey;
 import com.geemvc.mock.bean.Person;
 import com.geemvc.mock.controller.TestController20;
 import com.geemvc.mock.repository.Persons;
 import com.geemvc.test.BaseTest;
+import com.geemvc.validation.Errors;
 import com.geemvc.view.bean.Result;
 
 public class JpaBeanParamBindingTest extends BaseTest {
@@ -43,6 +45,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
     public void testGetAll() throws Exception {
         setupDatasource();
         initTestData();
+
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
 
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/persons");
 
@@ -55,8 +60,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         Result result = (Result) requestHandler.invoke(null);
         List<Person> persons = (List<Person>) result.binding("persons");
@@ -86,6 +92,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
         setupDatasource();
         initTestData();
 
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         RequestContext reqCtx = newRequestContext("/webapp", "/servlet", "/webapp/servlet/persons/1");
 
         CompositeHandlerResolver compositeHandlerResolver = instance(CompositeHandlerResolver.class);
@@ -97,8 +106,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         Result result = (Result) requestHandler.invoke(typedValues);
         Person person = (Person) result.binding("person");
@@ -129,6 +138,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
         setupDatasource();
         initTestData();
 
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.id", new String[] { "5" });
         requestParams.put("person.forename", new String[] { "Yulia" });
@@ -146,8 +158,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         Result result = (Result) requestHandler.invoke(typedValues);
         Person person = (Person) result.binding("person");
@@ -176,6 +188,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
         setupDatasource();
         initTestData();
 
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("person.age", new String[] { "99" });
 
@@ -190,8 +205,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         String redirect = (String) requestHandler.invoke(typedValues);
 
@@ -225,6 +240,9 @@ public class JpaBeanParamBindingTest extends BaseTest {
         setupDatasource();
         initTestData();
 
+        Errors e = instance(Errors.class);
+        Notices n = instance(Notices.class);
+
         Persons persons = instance(Persons.class);
         Person person = persons.havingId(3l);
 
@@ -248,8 +266,8 @@ public class JpaBeanParamBindingTest extends BaseTest {
         reqCtx.requestHandler(requestHandler);
 
         List<MethodParam> params = methodParams.get(requestHandler, reqCtx);
-        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx);
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx);
+        Map<String, List<String>> requestValues = methodParams.values(params, reqCtx, e, n);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, params, reqCtx, e, n);
 
         String redirect = (String) requestHandler.invoke(typedValues);
 

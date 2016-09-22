@@ -40,6 +40,8 @@ import com.geemvc.handler.RequestMappingKey;
 import com.geemvc.i18n.message.MessageResolver;
 import com.geemvc.intercept.AroundHandler;
 import com.geemvc.intercept.LifecycleInterceptor;
+import com.geemvc.reader.ReaderAdapterKey;
+import com.geemvc.reader.bean.BeanReaderAdapter;
 import com.geemvc.validation.ValidationAdapter;
 import com.geemvc.validation.ValidationAdapterKey;
 import com.geemvc.validation.Validator;
@@ -77,6 +79,8 @@ public interface ReflectionProvider {
 
     Map<ConverterAdapterKey, BeanConverterAdapter<?>> locateBeanConverterAdapters();
 
+    Map<ReaderAdapterKey, BeanReaderAdapter<?>> locateBeanReaderAdapters();
+
     Map<ParamAdapterKey, ParamAdapter<?>> locateParamAdapters();
 
     Map<ValidationAdapterKey, ValidationAdapter<? extends Annotation>> locateValidationAdapters();
@@ -86,8 +90,6 @@ public interface ReflectionProvider {
     Map<String, ViewAdapter> locateViewAdapters();
 
     Map<String, DataAdapter> locateDataAdapters();
-
-    List<Class<?>> getGenericType(Type[] inferfaces);
 
     List<Class<?>> getGenericType(Type genericType);
 

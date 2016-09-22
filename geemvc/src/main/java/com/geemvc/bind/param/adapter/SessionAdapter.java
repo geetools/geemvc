@@ -26,6 +26,7 @@ import com.geemvc.bind.param.ParamAdapters;
 import com.geemvc.bind.param.ParamContext;
 import com.geemvc.bind.param.TypedParamAdapter;
 import com.geemvc.bind.param.annotation.Session;
+import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.bean.BeanConverterAdapter;
 import com.geemvc.converter.bean.BeanConverterAdapterFactory;
 import com.geemvc.logging.Log;
@@ -77,7 +78,8 @@ public class SessionAdapter implements TypedParamAdapter<Session> {
                         BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(type, null);
 
                         if (beanConverter != null) {
-                            beanConverter.bindProperties(requestValues, paramName, value);
+                            ConverterContext converterCtx = injector.getInstance(ConverterContext.class).build(paramName, type, null, paramCtx.requestCtx(), paramCtx.requestValues(), paramCtx.errors(), paramCtx.notices());
+                            beanConverter.bindProperties(requestValues, paramName, value, converterCtx);
                         } else {
                             log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the @Session({}) param.", type.getName(), paramName);
                         }
@@ -93,7 +95,8 @@ public class SessionAdapter implements TypedParamAdapter<Session> {
                 BeanConverterAdapter beanConverter = beanConverterAdapterFactory.create(value.getClass(), null);
 
                 if (beanConverter != null) {
-                    beanConverter.bindProperties(requestValues, paramName, value);
+                    ConverterContext converterCtx = injector.getInstance(ConverterContext.class).build(paramName, value.getClass(), null, paramCtx.requestCtx(), paramCtx.requestValues(), paramCtx.errors(), paramCtx.notices());
+                    beanConverter.bindProperties(requestValues, paramName, value, converterCtx);
                 } else {
                     log.warn("Unable to find a compatible bean converter for the bean '{}' while attempting to bind values to the @Session({}) param.", value.getClass().getName(), paramName);
                 }

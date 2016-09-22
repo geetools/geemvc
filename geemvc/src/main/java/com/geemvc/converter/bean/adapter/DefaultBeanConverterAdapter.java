@@ -19,6 +19,7 @@ package com.geemvc.converter.bean.adapter;
 import java.util.List;
 
 import com.geemvc.annotation.Adapter;
+import com.geemvc.converter.ConverterContext;
 import com.geemvc.converter.bean.AbstractBeanConverter;
 import com.geemvc.converter.bean.BeanConverterAdapter;
 import com.google.inject.Singleton;
@@ -28,50 +29,50 @@ import com.google.inject.Singleton;
 public class DefaultBeanConverterAdapter extends AbstractBeanConverter implements BeanConverterAdapter<Object> {
 
     @Override
-    public BeanConverterAdapter bindProperty(Object beanInstance, String expression, List<String> value) {
+    public BeanConverterAdapter bindProperty(Object beanInstance, String expression, List<String> value, ConverterContext converterCtx) {
         super._bindProperty(beanInstance, expression, value);
         return this;
     }
 
     @Override
-    public BeanConverterAdapter bindProperty(Object beanInstance, String expression, String value) {
+    public BeanConverterAdapter bindProperty(Object beanInstance, String expression, String value, ConverterContext converterCtx) {
         super._bindProperty(beanInstance, expression, value);
         return this;
     }
 
     @Override
-    public BeanConverterAdapter bindProperties(List<String> values, String beanName, Object beanInstance) {
+    public BeanConverterAdapter bindProperties(List<String> values, String beanName, Object beanInstance, ConverterContext converterCtx) {
         super._bindProperties(values, beanName, beanInstance);
         return this;
     }
 
     @Override
-    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType) {
+    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, ConverterContext converterCtx) {
         return super._fromStrings(values, beanName, beanType);
     }
 
     @Override
-    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, int index) {
+    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, int index, ConverterContext converterCtx) {
         return super._fromStrings(values, beanName, beanType, index);
     }
 
     @Override
-    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, int index, String mapKey) {
+    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, int index, String mapKey, ConverterContext converterCtx) {
         return super._fromStrings(values, beanName, beanType, index, mapKey);
     }
 
     @Override
-    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, String mapKey) {
+    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, String mapKey, ConverterContext converterCtx) {
         return super._fromStrings(values, beanName, beanType, mapKey);
     }
 
     @Override
-    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, String mapKey, int index) {
+    public Object fromStrings(List<String> values, String beanName, Class<Object> beanType, String mapKey, int index, ConverterContext converterCtx) {
         return super._fromStrings(values, beanName, beanType, mapKey, index);
     }
 
     @Override
-    public Object newInstance(Class<Object> beanType) {
+    public Object newInstance(Class<Object> beanType, ConverterContext converterCtx) {
         return super._newInstance(beanType);
     }
 }

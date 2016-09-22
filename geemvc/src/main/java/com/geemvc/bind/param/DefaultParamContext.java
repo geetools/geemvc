@@ -22,19 +22,25 @@ import java.util.Map;
 import com.geemvc.RequestContext;
 import com.geemvc.bind.MethodParam;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.validation.Errors;
 
 public class DefaultParamContext implements ParamContext {
     protected MethodParam methodParam;
     protected Map<String, List<String>> requestValues;
     protected Map<String, Object> typedValues;
     protected RequestContext requestCtx;
+    protected Errors errors;
+    protected Notices notices;
 
     @Override
-    public ParamContext build(MethodParam methodParam, Map<String, List<String>> requestValues, Map<String, Object> typedValues, RequestContext requestCtx) {
+    public ParamContext build(MethodParam methodParam, Map<String, List<String>> requestValues, Map<String, Object> typedValues, RequestContext requestCtx, Errors errors, Notices notices) {
         this.methodParam = methodParam;
         this.requestValues = requestValues;
         this.typedValues = typedValues;
         this.requestCtx = requestCtx;
+        this.errors = errors;
+        this.notices = notices;
         return this;
     }
 
@@ -61,5 +67,15 @@ public class DefaultParamContext implements ParamContext {
     @Override
     public RequestHandler requestHandler() {
         return requestCtx.requestHandler();
+    }
+
+    @Override
+    public Errors errors() {
+        return errors;
+    }
+
+    @Override
+    public Notices notices() {
+        return notices;
     }
 }

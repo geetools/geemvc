@@ -14,29 +14,10 @@
  * limitations under the License.
  */
 
-package com.geemvc.converter;
+package com.geemvc.reader.bean;
 
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
 
-import com.geemvc.RequestContext;
-import com.geemvc.i18n.notice.Notices;
-import com.geemvc.validation.Errors;
-
-public interface ConverterContext {
-    ConverterContext build(String name, Class<?> type, List<Class<?>> genericType, RequestContext requestCtx, Map<String, List<String>> requestValues, Errors errors, Notices notices);
-
-    String name();
-
-    Class<?> type();
-
-    List<Class<?>> genericType();
-
-    RequestContext requestCtx();
-
-    Map<String, List<String>> requestValues();
-
-    Errors errors();
-
-    Notices notices();
+public interface BeanReaderAdapterFactory {
+    <T> BeanReaderAdapter<T> create(Class<T> clazz, Type parameterizedType);
 }

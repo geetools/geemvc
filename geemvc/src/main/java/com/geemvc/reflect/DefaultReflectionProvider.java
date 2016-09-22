@@ -28,7 +28,6 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,6 +65,8 @@ import com.geemvc.i18n.message.MessageResolver;
 import com.geemvc.intercept.AroundHandler;
 import com.geemvc.intercept.LifecycleInterceptor;
 import com.geemvc.intercept.annotation.Intercept;
+import com.geemvc.reader.ReaderAdapterKey;
+import com.geemvc.reader.bean.BeanReaderAdapter;
 import com.geemvc.validation.ValidationAdapter;
 import com.geemvc.validation.ValidationAdapterKey;
 import com.geemvc.validation.Validator;
@@ -96,6 +97,7 @@ public class DefaultReflectionProvider implements ReflectionProvider {
     protected static final String CACHE_KEY_LOCATED_REQUEST_HANDLER_METHODS = "geemvc/requestHandlerMethods/%s";
     protected static final String CACHE_KEY_LOCATED_CONVERTER_ADAPTERS = "geemvc/converterAdapters";
     protected static final String CACHE_KEY_LOCATED_BEAN_CONVERTER_ADAPTERS = "geemvc/beanConverterAdapters";
+    protected static final String CACHE_KEY_LOCATED_BEAN_READER_ADAPTERS = "geemvc/beanReaderAdapters";
     protected static final String CACHE_KEY_LOCATED_PARAM_ADAPTERS = "geemvc/paramAdapters";
     protected static final String CACHE_KEY_LOCATED_VALIDATION_ADAPTERS = "geemvc/validationAdapters";
     protected static final String CACHE_KEY_LOCATED_BEAN_VALIDATORS = "geemvc/beanValidators/%s";
@@ -460,6 +462,52 @@ public class DefaultReflectionProvider implements ReflectionProvider {
         });
     }
 
+    @Override
+    public Map<ReaderAdapterKey, BeanReaderAdapter<?>> locateBeanReaderAdapters() {
+        return (Map<ReaderAdapterKey, BeanReaderAdapter<?>>) cache.get(DefaultReflectionProvider.class, CACHE_KEY_LOCATED_BEAN_READER_ADAPTERS, () -> {
+
+            Map<ReaderAdapterKey, BeanReaderAdapter<?>> beanReaders = new LinkedHashMap<>();
+
+            Set<Class<?>> adapterClasses = reflectionsWrapper.getTypesAnnotatedWith(Adapter.class, true);
+
+            List<Class<?>> beanReaderClasses = new ArrayList<Class<?>>();
+
+            for (Class<?> adapterClass : adapterClasses) {
+                if (BeanReaderAdapter.class.isAssignableFrom(adapterClass))
+                    beanReaderClasses.add(adapterClass);
+            }
+
+            beanReaderClasses.sort((cl1, cl2) -> cl1.getAnnotation(Adapter.class).weight() - cl1.getAnnotation(Adapter.class).weight());
+
+            for (Class<?> beanReaderClass : beanReaderClasses) {
+                Type[] inferfaces = beanReaderClass.getGenericInterfaces();
+
+                for (Type type : inferfaces) {
+                    if (type instanceof ParameterizedType) {
+                        Type rawClass = ((ParameterizedType) type).getRawType();
+
+                        if (rawClass == BeanReaderAdapter.class) {
+                            List<Class<?>> genericType = getGenericType(type);
+
+                            if (genericType.size() == 1) {
+                                beanReaders.put(injector.getInstance(ReaderAdapterKey.class).build(genericType.get(0)).weight(beanReaderClass.getAnnotation(Adapter.class).weight()),
+                                        (BeanReaderAdapter<?>) injector.getInstance(beanReaderClass));
+                            } else if (genericType.size() > 1) {
+                                beanReaders.put(injector.getInstance(ReaderAdapterKey.class).build(genericType.get(0), genericType.subList(1, genericType.size())).weight(beanReaderClass.getAnnotation(Adapter.class).weight()),
+                                        (BeanReaderAdapter<?>) injector.getInstance(beanReaderClass));
+                            }
+                        }
+                    }
+                }
+            }
+
+            Map<ReaderAdapterKey, BeanReaderAdapter<?>> sortedReaders = beanReaders.entrySet().stream().sorted((e1, e2) -> e2.getKey().weight() - e1.getKey().weight())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+            return sortedReaders;
+        });
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<ParamAdapterKey, ParamAdapter<?>> locateParamAdapters() {
@@ -543,11 +591,34 @@ public class DefaultReflectionProvider implements ReflectionProvider {
 
             validatorClasses.sort((cl1, cl2) -> cl1.getAnnotation(CheckBean.class).weight() - cl2.getAnnotation(CheckBean.class).weight());
 
+            // First try and find exact match.
             for (Class<?> validatorClass : validatorClasses) {
                 CheckBean checkBean = validatorClass.getAnnotation(CheckBean.class);
 
                 if (((checkBean.value() != Object.class && checkBean.value() == forType) || (checkBean.type() != Object.class && checkBean.type() == forType)) && Validator.class.isAssignableFrom(validatorClass)) {
                     validators.add((Validator) injector.getInstance(validatorClass));
+                }
+            }
+
+            // If no exact match could be found, we'll try finding close matches (assignable by super type etc).
+            if (validators.size() == 0) {
+                for (Class<?> validatorClass : validatorClasses) {
+                    CheckBean checkBean = validatorClass.getAnnotation(CheckBean.class);
+
+                    if (((checkBean.value() != Object.class && checkBean.value().isAssignableFrom(forType)) || (checkBean.type() != Object.class && checkBean.value().isAssignableFrom(forType))) && Validator.class.isAssignableFrom(validatorClass)) {
+                        validators.add((Validator) injector.getInstance(validatorClass));
+                    }
+                }
+            }
+
+            // If no close match could be found, we'll try including the object class.
+            if (validators.size() == 0) {
+                for (Class<?> validatorClass : validatorClasses) {
+                    CheckBean checkBean = validatorClass.getAnnotation(CheckBean.class);
+
+                    if ((checkBean.value().isAssignableFrom(forType) || checkBean.value().isAssignableFrom(forType)) && Validator.class.isAssignableFrom(validatorClass)) {
+                        validators.add((Validator) injector.getInstance(validatorClass));
+                    }
                 }
             }
 
@@ -602,25 +673,6 @@ public class DefaultReflectionProvider implements ReflectionProvider {
             }
 
             return dataAdapters;
-        });
-    }
-
-    @Override
-    public List<Class<?>> getGenericType(Type[] inferfaces) {
-        String cacheKey = String.format(CACHE_KEY_GENERIC_TYPE1, Arrays.toString(inferfaces));
-
-        return (List<Class<?>>) cache.get(DefaultReflectionProvider.class, cacheKey, () -> {
-            for (Type type : inferfaces) {
-                if (type instanceof ParameterizedType) {
-                    Type rawClass = ((ParameterizedType) type).getRawType();
-
-                    if (rawClass == ConverterAdapter.class) {
-                        return getGenericType(type);
-                    }
-                }
-            }
-
-            return null;
         });
     }
 

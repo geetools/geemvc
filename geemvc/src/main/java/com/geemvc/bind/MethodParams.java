@@ -23,13 +23,15 @@ import java.util.Map;
 import com.geemvc.RequestContext;
 import com.geemvc.bind.param.ParamAdapter;
 import com.geemvc.handler.RequestHandler;
+import com.geemvc.i18n.notice.Notices;
+import com.geemvc.validation.Errors;
 
 public interface MethodParams {
     List<MethodParam> get(RequestHandler requestHandler, RequestContext requestContext);
 
-    Map<String, List<String>> values(List<MethodParam> methodParams, RequestContext requestContext);
+    Map<String, List<String>> values(List<MethodParam> methodParams, RequestContext requestContex, Errors errors, Notices noticest);
 
-    Map<String, Object> typedValues(Map<String, List<String>> requestValues, List<MethodParam> methodParams, RequestContext requestCtx);
+    Map<String, Object> typedValues(Map<String, List<String>> requestValues, List<MethodParam> methodParams, RequestContext requestCtx, Errors errors, Notices notices);
 
     String name(ParamAdapter<Annotation> paramAdapter, Annotation paramAnnotation, MethodParam methodParam);
 }

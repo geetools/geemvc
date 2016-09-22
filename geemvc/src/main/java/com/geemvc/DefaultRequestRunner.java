@@ -391,10 +391,10 @@ public class DefaultRequestRunner implements RequestRunner {
         List<MethodParam> methodParameters = methodParams.get(requestHandler, requestCtx);
 
         // Fetch the String request values for the fetched method parameters.
-        Map<String, List<String>> requestValues = methodParams.values(methodParameters, requestCtx);
+        Map<String, List<String>> requestValues = methodParams.values(methodParameters, requestCtx, errors, notices);
 
         // Now we convert the string parameters to the appropriate types.
-        Map<String, Object> typedValues = methodParams.typedValues(requestValues, methodParameters, requestCtx);
+        Map<String, Object> typedValues = methodParams.typedValues(requestValues, methodParameters, requestCtx, errors, notices);
 
         return injector.getInstance(Bindings.class).build(requestValues, typedValues, errors, notices);
     }
