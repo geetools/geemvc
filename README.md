@@ -40,7 +40,7 @@ Check out our [motivation](https://github.com/commerceboard/geeMVC-Java-MVC-Fram
 <dependency>
     <groupId>com.geetools.geemvc</groupId>
     <artifactId>geemvc</artifactId>
-    <version>0.9.1-rc10</version>
+    <version>0.9.1</version>
 </dependency>
 ```
 
