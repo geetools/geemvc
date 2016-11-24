@@ -190,7 +190,7 @@ public class HelloWorldController {
 ```
 
 ## Validating a Parameter
-The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by geeMVC (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells geeMVC where to go incase of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
+The simplest way of validating your parameters is to use the javax.validation annotations or two additional ones provided by geeMVC (@Required and @Check). Notice in the example below the @Required annotation and the onError attribute that we have passed to the @Request annotation. The latter tells geeMVC where to go in case of a validation error. @Required obviously means that the id parameter must not be empty. Note that we are talking of "none-empty". This is useful for strings which are usually never null as empty form-fields get sent to the controller as an empty string. If you simply need to to check for "not null", you can use the javax.validation annotation @NotNull.
 
 ```java
 import static com.geemvc.Results.*;
