@@ -25,7 +25,7 @@ Check out our [motivation](https://github.com/commerceboard/geeMVC-Java-MVC-Fram
 
 * Write us an [issue via GitHub](https://github.com/commerceboard/geemvc/issues).
 * Write to us in our [Google Group](https://groups.google.com/d/forum/geemvc).
-* Write an email to our [mailing list](geemvc@googlegroups.com).
+* Write an email to our [mailing list](mailto:geemvc@googlegroups.com).
 * Ask questions via [Stackoverflow](http://stackoverflow.com/questions/ask?tags=geemvc) (Do not forget to tag your question with _geemvc_!).
 
 ## Prerequisites
