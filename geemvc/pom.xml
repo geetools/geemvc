@@ -17,8 +17,8 @@
     </parent>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -27,19 +27,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                     <encoding>UTF-8</encoding>
                     <executable>${env.JAVA_HOME}/bin/javac</executable>
+                    <showWarnings>false</showWarnings>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>2.22.0</version>
                 <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
@@ -119,6 +122,11 @@
             <version>1.1.0.Final</version>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.0</version>
@@ -140,14 +148,20 @@
         </dependency>
         <dependency>
             <groupId>org.jodd</groupId>
-            <artifactId>jodd</artifactId>
-            <version>3.3.8</version>
+            <artifactId>jodd-bean</artifactId>
+            <version>5.0.13</version>
         </dependency>
         <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-proxetta</artifactId>
-            <version>3.7</version>
+            <version>5.0.13</version>
         </dependency>
+<!--
+        <dependency>
+            <groupId>org.jodd</groupId>
+            <artifactId>jodd-proxetta</artifactId>
+            <version>3.7</version>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>

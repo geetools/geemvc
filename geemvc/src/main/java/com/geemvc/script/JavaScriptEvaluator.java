@@ -25,6 +25,7 @@ import javax.script.ScriptEngineManager;
 
 import com.geemvc.annotation.Evaluator;
 
+@SuppressWarnings("deprecation")
 @Evaluator("js:")
 public class JavaScriptEvaluator extends AbstractEvaluator implements ScriptEvaluator {
     protected String mappedExpression = null;
@@ -46,6 +47,7 @@ public class JavaScriptEvaluator extends AbstractEvaluator implements ScriptEval
         return mappedExpression != null && mappedExpression.startsWith("js:");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean matches(EvaluatorContext ctx) {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");

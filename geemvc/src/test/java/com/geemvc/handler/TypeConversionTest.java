@@ -90,9 +90,9 @@ public class TypeConversionTest extends BaseTest {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         // Date #1
-        assertNotNull(converter.fromString("2016-01-01", Date.class, "yyyy-MM-dd"));
-        assertEquals(Date.class, converter.fromString("2016-01-01", Date.class, "yyyy-MM-dd").getClass());
-        assertEquals("2016-01-01", sdf.format(converter.fromString("2016-01-01", Date.class, "yyyy-MM-dd")));
+        assertNotNull(converter.fromString("2016-01-01T00:00:00", Date.class));
+        assertEquals(Date.class, converter.fromString("2016-01-01T00:00:00", Date.class).getClass());
+        assertEquals("2016-01-01", sdf.format(converter.fromString("2016-01-01T00:00:00", Date.class)));
 
         sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

@@ -56,7 +56,7 @@ public class TestPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedCustomObject() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootBean rootBean = instance(RootBean.class);
 
@@ -144,7 +144,7 @@ public class TestPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedMultipleCollections2() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootBean rootBean = instance(RootBean.class);
 
@@ -257,7 +257,7 @@ public class TestPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedArray2() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootBean rootBean = instance(RootBean.class);
 
@@ -280,7 +280,7 @@ public class TestPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingSimpleValues() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootBean rootBean = instance(RootBean.class);
 

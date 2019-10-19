@@ -596,7 +596,7 @@ public class ParamBindingTest extends BaseTest {
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         Map<String, String[]> requestParams = new HashMap<>();
         requestParams.put("myMap[12345]", new String[] { "String value for id 12345." });

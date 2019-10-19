@@ -198,12 +198,12 @@ public class DefaultPropertyNode implements PropertyNode {
         Object currentBean = bean;
 
         while (!currentNode.isLeafNode() && currentNode.next() != null) {
-            currentBean = BeanUtil.getProperty(currentBean, currentNode.name());
+            currentBean = BeanUtil.declared.getProperty(currentBean, currentNode.name());
             currentNode = currentNode.next();
         }
 
         if (currentNode.isLeafNode() && currentBean != null) {
-            return BeanUtil.getProperty(currentBean, currentNode.name());
+            return BeanUtil.declared.getProperty(currentBean, currentNode.name());
         } else {
             return null;
         }
@@ -212,16 +212,16 @@ public class DefaultPropertyNode implements PropertyNode {
     @Override
     public void set(Object bean, Object value) {
         if (!isLeaf) {
-            Object nodeBean = BeanUtil.getProperty(bean, name);
+            Object nodeBean = BeanUtil.declared.getProperty(bean, name);
 
             if (nodeBean == null) {
                 nodeBean = injector.getInstance(type);
-                BeanUtil.setProperty(bean, name, nodeBean);
+                BeanUtil.declared.setProperty(bean, name, nodeBean);
             }
 
             next.set(nodeBean, value);
         } else {
-            BeanUtil.setProperty(bean, name, validValue(value, type));
+            BeanUtil.declared.setProperty(bean, name, validValue(value, type));
         }
     }
 
@@ -236,12 +236,12 @@ public class DefaultPropertyNode implements PropertyNode {
                 if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
                     extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
-                Object nodeBean = BeanUtil.getPropertySilently(bean, extendedName);
+                Object nodeBean = BeanUtil.declaredSilent.getProperty(bean, extendedName);
 
                 if (nodeBean == null)
                     nodeBean = injector.getInstance(type.getComponentType());
 
-                BeanUtil.setPropertyForced(bean, extendedName, nodeBean);
+                BeanUtil.forced.setProperty(bean, extendedName, nodeBean);
 
                 next.set(nodeBean, value, expression);
             } else if (Collection.class.isAssignableFrom(type)) {
@@ -252,24 +252,24 @@ public class DefaultPropertyNode implements PropertyNode {
                 if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
                     extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
-                Object nodeBean = BeanUtil.getPropertySilently(bean, extendedName);
+                Object nodeBean = BeanUtil.silent.getProperty(bean, extendedName);
 
                 if (nodeBean == null)
                     nodeBean = injector.getInstance(genericType.get(0));
 
-                BeanUtil.setPropertyForced(bean, extendedName, nodeBean);
+                BeanUtil.forced.setProperty(bean, extendedName, nodeBean);
 
                 next.set(nodeBean, value, expression);
             } else if (Map.class.isAssignableFrom(type)) {
                 // Object map = ensureExists(bean, name, type);
 
                 String extendedName = extendedName(expression);
-                Object nodeBean = BeanUtil.getPropertySilently(bean, extendedName);
+                Object nodeBean = BeanUtil.silent.getProperty(bean, extendedName);
 
                 if (nodeBean == null)
                     nodeBean = injector.getInstance(genericType.get(1));
 
-                BeanUtil.setPropertyForced(bean, extendedName, nodeBean);
+                BeanUtil.forced.setProperty(bean, extendedName, nodeBean);
 
                 next.set(nodeBean, value, expression);
             } else {
@@ -286,7 +286,7 @@ public class DefaultPropertyNode implements PropertyNode {
                 if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
                     extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(Array.getLength(array)).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
-                BeanUtil.setPropertyForced(bean, extendedName, validValue(value, type));
+                BeanUtil.forced.setProperty(bean, extendedName, validValue(value, type));
             } else if (Collection.class.isAssignableFrom(type)) {
                 Object list = ensureExists(bean, name, type);
 
@@ -295,9 +295,9 @@ public class DefaultPropertyNode implements PropertyNode {
                 if (extendedName.endsWith(Str.SQUARE_BRACKET_OPEN_CLOSE))
                     extendedName = extendedName.replace(Str.SQUARE_BRACKET_OPEN_CLOSE, new StringBuilder(Str.SQUARE_BRACKET_OPEN).append(((Collection<?>) list).size()).append(Char.SQUARE_BRACKET_CLOSE).toString());
 
-                BeanUtil.setPropertyForced(bean, extendedName, validValue(value, type));
+                BeanUtil.forced.setProperty(bean, extendedName, validValue(value, type));
             } else {
-                BeanUtil.setProperty(bean, name, validValue(value, type));
+                BeanUtil.declared.setProperty(bean, name, validValue(value, type));
             }
         }
     }
@@ -386,7 +386,7 @@ public class DefaultPropertyNode implements PropertyNode {
     }
 
     protected Object ensureExists(Object bean, String propertyName, Class<?> targetType) {
-        Object propertyValue = BeanUtil.getProperty(bean, propertyName);
+        Object propertyValue = BeanUtil.declared.getProperty(bean, propertyName);
 
         if (propertyValue != null)
             return propertyValue;
@@ -428,7 +428,7 @@ public class DefaultPropertyNode implements PropertyNode {
             propertyValue = injector.getInstance(type);
         }
 
-        BeanUtil.setProperty(bean, propertyName, propertyValue);
+        BeanUtil.declared.setProperty(bean, propertyName, propertyValue);
 
         return propertyValue;
     }

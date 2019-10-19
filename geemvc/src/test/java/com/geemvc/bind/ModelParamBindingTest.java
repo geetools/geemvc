@@ -105,7 +105,7 @@ public class ModelParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController18b() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -114,7 +114,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("person.forename", new String[] { "Michael" });
         requestParams.put("person.surname", new String[] { "Delamere" });
         requestParams.put("person.age", new String[] { "10" });
-        requestParams.put("person.locale", new String[] { "en_US" });
+        requestParams.put("person.locale", new String[] { "en-US" });
         requestParams.put("person.addresses[0].id", new String[] { "234567890" });
         requestParams.put("person.addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("person.addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -191,7 +191,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18c() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -199,7 +199,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[0].forename", new String[] { "Michael" });
         requestParams.put("persons[0].surname", new String[] { "Delamere" });
         requestParams.put("persons[0].age", new String[] { "10" });
-        requestParams.put("persons[0].locale", new String[] { "en_US" });
+        requestParams.put("persons[0].locale", new String[] { "en-US" });
         requestParams.put("persons[0].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -210,7 +210,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[1].forename", new String[] { "Tom" });
         requestParams.put("persons[1].surname", new String[] { "Checker" });
         requestParams.put("persons[1].age", new String[] { "1" });
-        requestParams.put("persons[1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1].locale", new String[] { "de-DE" });
         requestParams.put("persons[1].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -285,7 +285,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18d() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -293,7 +293,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[customerA].forename", new String[] { "Michael" });
         requestParams.put("persons[customerA].surname", new String[] { "Delamere" });
         requestParams.put("persons[customerA].age", new String[] { "10" });
-        requestParams.put("persons[customerA].locale", new String[] { "en_US" });
+        requestParams.put("persons[customerA].locale", new String[] { "en-US" });
         requestParams.put("persons[customerA].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[customerA].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[customerA].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -304,7 +304,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[customerB].forename", new String[] { "Tom" });
         requestParams.put("persons[customerB].surname", new String[] { "Checker" });
         requestParams.put("persons[customerB].age", new String[] { "1" });
-        requestParams.put("persons[customerB].locale", new String[] { "de_DE" });
+        requestParams.put("persons[customerB].locale", new String[] { "de-DE" });
         requestParams.put("persons[customerB].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[customerB].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[customerB].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -379,7 +379,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18e() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -387,7 +387,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[1234567890].forename", new String[] { "Michael" });
         requestParams.put("persons[1234567890].surname", new String[] { "Delamere" });
         requestParams.put("persons[1234567890].age", new String[] { "10" });
-        requestParams.put("persons[1234567890].locale", new String[] { "en_US" });
+        requestParams.put("persons[1234567890].locale", new String[] { "en-US" });
         requestParams.put("persons[1234567890].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[1234567890].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[1234567890].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -398,7 +398,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[987654321].forename", new String[] { "Tom" });
         requestParams.put("persons[987654321].surname", new String[] { "Checker" });
         requestParams.put("persons[987654321].age", new String[] { "1" });
-        requestParams.put("persons[987654321].locale", new String[] { "de_DE" });
+        requestParams.put("persons[987654321].locale", new String[] { "de-DE" });
         requestParams.put("persons[987654321].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[987654321].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[987654321].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -473,7 +473,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18f() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -481,7 +481,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
         requestParams.put("persons[groupA][0].surname", new String[] { "Delamere" });
         requestParams.put("persons[groupA][0].age", new String[] { "10" });
-        requestParams.put("persons[groupA][0].locale", new String[] { "en_US" });
+        requestParams.put("persons[groupA][0].locale", new String[] { "en-US" });
         requestParams.put("persons[groupA][0].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -492,7 +492,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupA][1].forename", new String[] { "Tom" });
         requestParams.put("persons[groupA][1].surname", new String[] { "Checker" });
         requestParams.put("persons[groupA][1].age", new String[] { "1" });
-        requestParams.put("persons[groupA][1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupA][1].locale", new String[] { "de-DE" });
         requestParams.put("persons[groupA][1].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -503,7 +503,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupB][0].forename", new String[] { "Lea" });
         requestParams.put("persons[groupB][0].surname", new String[] { "Cool" });
         requestParams.put("persons[groupB][0].age", new String[] { "8" });
-        requestParams.put("persons[groupB][0].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupB][0].locale", new String[] { "de-DE" });
         requestParams.put("persons[groupB][0].addresses[0].id", new String[] { "88888888" });
         requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
         requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -514,7 +514,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupB][1].forename", new String[] { "Marc" });
         requestParams.put("persons[groupB][1].surname", new String[] { "Dude" });
         requestParams.put("persons[groupB][1].age", new String[] { "4" });
-        requestParams.put("persons[groupB][1].locale", new String[] { "en_GB" });
+        requestParams.put("persons[groupB][1].locale", new String[] { "en-GB" });
         requestParams.put("persons[groupB][1].addresses[0].id", new String[] { "4444" });
         requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
         requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -626,7 +626,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18g() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -634,7 +634,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupA][0].forename", new String[] { "Michael" });
         requestParams.put("persons[groupA][0].surname", new String[] { "Delamere" });
         requestParams.put("persons[groupA][0].age", new String[] { "10" });
-        requestParams.put("persons[groupA][0].locale", new String[] { "en_US" });
+        requestParams.put("persons[groupA][0].locale", new String[] { "en-US" });
         requestParams.put("persons[groupA][0].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[groupA][0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[groupA][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -645,7 +645,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupA][1].forename", new String[] { "Tom" });
         requestParams.put("persons[groupA][1].surname", new String[] { "Checker" });
         requestParams.put("persons[groupA][1].age", new String[] { "1" });
-        requestParams.put("persons[groupA][1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupA][1].locale", new String[] { "de-DE" });
         requestParams.put("persons[groupA][1].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[groupA][1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[groupA][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -656,7 +656,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupB][0].forename", new String[] { "Lea" });
         requestParams.put("persons[groupB][0].surname", new String[] { "Cool" });
         requestParams.put("persons[groupB][0].age", new String[] { "8" });
-        requestParams.put("persons[groupB][0].locale", new String[] { "de_DE" });
+        requestParams.put("persons[groupB][0].locale", new String[] { "de-DE" });
         requestParams.put("persons[groupB][0].addresses[0].id", new String[] { "88888888" });
         requestParams.put("persons[groupB][0].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
         requestParams.put("persons[groupB][0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -667,7 +667,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[groupB][1].forename", new String[] { "Marc" });
         requestParams.put("persons[groupB][1].surname", new String[] { "Dude" });
         requestParams.put("persons[groupB][1].age", new String[] { "4" });
-        requestParams.put("persons[groupB][1].locale", new String[] { "en_GB" });
+        requestParams.put("persons[groupB][1].locale", new String[] { "en-GB" });
         requestParams.put("persons[groupB][1].addresses[0].id", new String[] { "4444" });
         requestParams.put("persons[groupB][1].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
         requestParams.put("persons[groupB][1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -778,7 +778,7 @@ public class ModelParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController18h() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -786,7 +786,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[0].forename", new String[] { "Michael" });
         requestParams.put("persons[0].surname", new String[] { "Delamere" });
         requestParams.put("persons[0].age", new String[] { "10" });
-        requestParams.put("persons[0].locale", new String[] { "en_US" });
+        requestParams.put("persons[0].locale", new String[] { "en-US" });
         requestParams.put("persons[0].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[0].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[0].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -797,7 +797,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[1].forename", new String[] { "Tom" });
         requestParams.put("persons[1].surname", new String[] { "Checker" });
         requestParams.put("persons[1].age", new String[] { "1" });
-        requestParams.put("persons[1].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1].locale", new String[] { "de-DE" });
         requestParams.put("persons[1].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[1].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[1].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -873,7 +873,7 @@ public class ModelParamBindingTest extends BaseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindController18i() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -881,7 +881,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[0][groupA].forename", new String[] { "Michael" });
         requestParams.put("persons[0][groupA].surname", new String[] { "Delamere" });
         requestParams.put("persons[0][groupA].age", new String[] { "10" });
-        requestParams.put("persons[0][groupA].locale", new String[] { "en_US" });
+        requestParams.put("persons[0][groupA].locale", new String[] { "en-US" });
         requestParams.put("persons[0][groupA].addresses[0].id", new String[] { "234567890" });
         requestParams.put("persons[0][groupA].addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("persons[0][groupA].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -892,7 +892,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[1][groupA].forename", new String[] { "Tom" });
         requestParams.put("persons[1][groupA].surname", new String[] { "Checker" });
         requestParams.put("persons[1][groupA].age", new String[] { "1" });
-        requestParams.put("persons[1][groupA].locale", new String[] { "de_DE" });
+        requestParams.put("persons[1][groupA].locale", new String[] { "de-DE" });
         requestParams.put("persons[1][groupA].addresses[0].id", new String[] { "34567890" });
         requestParams.put("persons[1][groupA].addresses[0].streetLines[]", new String[] { "Test Street 2", "c/o Marc Checker" });
         requestParams.put("persons[1][groupA].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -903,7 +903,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[0][groupB].forename", new String[] { "Lea" });
         requestParams.put("persons[0][groupB].surname", new String[] { "Cool" });
         requestParams.put("persons[0][groupB].age", new String[] { "8" });
-        requestParams.put("persons[0][groupB].locale", new String[] { "de_DE" });
+        requestParams.put("persons[0][groupB].locale", new String[] { "de-DE" });
         requestParams.put("persons[0][groupB].addresses[0].id", new String[] { "88888888" });
         requestParams.put("persons[0][groupB].addresses[0].streetLines[]", new String[] { "Test Straße 8", "c/o Marc Dude" });
         requestParams.put("persons[0][groupB].addresses[0].addressTypes[]", new String[] { "SHIPPING" });
@@ -914,7 +914,7 @@ public class ModelParamBindingTest extends BaseTest {
         requestParams.put("persons[1][groupB].forename", new String[] { "Marc" });
         requestParams.put("persons[1][groupB].surname", new String[] { "Dude" });
         requestParams.put("persons[1][groupB].age", new String[] { "4" });
-        requestParams.put("persons[1][groupB].locale", new String[] { "en_GB" });
+        requestParams.put("persons[1][groupB].locale", new String[] { "en-GB" });
         requestParams.put("persons[1][groupB].addresses[0].id", new String[] { "4444" });
         requestParams.put("persons[1][groupB].addresses[0].streetLines[]", new String[] { "Test Avenue 4", "c/o Lea Cool" });
         requestParams.put("persons[1][groupB].addresses[0].addressTypes[]", new String[] { "INVOICE" });
@@ -1025,7 +1025,7 @@ public class ModelParamBindingTest extends BaseTest {
 
     @Test
     public void testFindController18j() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
         Errors e = instance(Errors.class);
         Notices n = instance(Notices.class);
 
@@ -1069,7 +1069,7 @@ public class ModelParamBindingTest extends BaseTest {
         // ----------------------------------------------------------------------------
 
         requestParams = new HashMap<>();
-        requestParams.put("person.locale", new String[] { "en_US" });
+        requestParams.put("person.locale", new String[] { "en-US" });
         requestParams.put("person.addresses[0].id", new String[] { "234567890" });
         requestParams.put("person.addresses[0].streetLines[]", new String[] { "Test Street 1", "c/o Tom Checker" });
         requestParams.put("person.addresses[0].addressTypes[]", new String[] { "SHIPPING" });

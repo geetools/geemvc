@@ -84,8 +84,8 @@ public class InputCheckboxesTagSupport extends OptionsTagSupport {
                 if (value == null)
                     throw new JspException("When creating select-options from a collection of beans you must specifiy the attribute of that bean to use for the value. Please check your checobox-values for '" + name + "'");
 
-                optionValue = BeanUtil.getProperty(obj, value);
-                optionLabel = String.valueOf(BeanUtil.getProperty(obj, label == null ? value : label));
+                optionValue = BeanUtil.declared.getProperty(obj, value);
+                optionLabel = String.valueOf(BeanUtil.declared.getProperty(obj, label == null ? value : label));
             }
 
             writer.write("<div class=\"");

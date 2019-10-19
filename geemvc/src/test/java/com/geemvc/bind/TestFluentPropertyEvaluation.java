@@ -56,7 +56,7 @@ public class TestFluentPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedCustomObject() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootFluentBean rootBean = instance(RootFluentBean.class);
 
@@ -144,7 +144,7 @@ public class TestFluentPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedMultipleCollections2() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootFluentBean rootBean = instance(RootFluentBean.class);
 
@@ -257,7 +257,7 @@ public class TestFluentPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingNestedArray2() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootFluentBean rootBean = instance(RootFluentBean.class);
 
@@ -280,7 +280,7 @@ public class TestFluentPropertyEvaluation extends BaseTest {
 
     @Test
     public void testSettingSimpleValues() {
-        TypeConverterManager.register(Id.class, new IdConverter());
+        TypeConverterManager.get().register(Id.class, new IdConverter());
 
         RootFluentBean rootBean = instance(RootFluentBean.class);
 

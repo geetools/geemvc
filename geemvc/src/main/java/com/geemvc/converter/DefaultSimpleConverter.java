@@ -34,7 +34,7 @@ public class DefaultSimpleConverter implements SimpleConverter {
     public Object fromString(String value, Class<?> toClass, Object... options) {
         Object o = null;
 
-        TypeConverter<?> typeConverter = TypeConverterManager.lookup(toClass);
+        TypeConverter<?> typeConverter = TypeConverterManager.get().lookup(toClass);
 
         if (typeConverter != null) {
             o = typeConverter.convert(value);
@@ -76,7 +76,7 @@ public class DefaultSimpleConverter implements SimpleConverter {
 
     @Override
     public boolean canConvert(Class<?> toClass) {
-        return TypeConverterManager.lookup(toClass) != null || hasValueOfMethod(toClass) || hasFromString(toClass) || hasAsString(toClass) || hasSingleStringConstructor(toClass);
+        return TypeConverterManager.get().lookup(toClass) != null || hasValueOfMethod(toClass) || hasFromString(toClass) || hasAsString(toClass) || hasSingleStringConstructor(toClass);
     }
 
     protected boolean hasValueOfMethod(Class<?> clazz) {

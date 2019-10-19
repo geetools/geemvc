@@ -108,8 +108,8 @@ public class OptionsTagSupport extends OptionTagSupport {
                 if (value == null)
                     throw new JspException("When creating select-options from a collection of beans you must specifiy the attribute of that bean to use for the value. Please check you select-options for '" + parentName() + "'");
 
-                optionValue = BeanUtil.getProperty(obj, value);
-                optionLabel = BeanUtil.getProperty(obj, label == null ? value : label);
+                optionValue = BeanUtil.declared.getProperty(obj, value);
+                optionLabel = BeanUtil.declared.getProperty(obj, label == null ? value : label);
             }
 
             writeTag(jspContext.getOut(), "option", false, false);
@@ -231,7 +231,7 @@ public class OptionsTagSupport extends OptionTagSupport {
             mapKey = mapEntry.getKey();
         } else {
             if (properyName != null)
-                mapKey = BeanUtil.getProperty(mapEntry.getKey(), properyName);
+                mapKey = BeanUtil.declared.getProperty(mapEntry.getKey(), properyName);
         }
 
         return mapKey;
@@ -245,7 +245,7 @@ public class OptionsTagSupport extends OptionTagSupport {
             mapValue = mapEntry.getValue();
         } else {
             if (properyName != null)
-                mapValue = BeanUtil.getProperty(mapEntry.getValue(), properyName);
+                mapValue = BeanUtil.declared.getProperty(mapEntry.getValue(), properyName);
         }
 
         return mapValue;

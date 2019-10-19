@@ -63,7 +63,7 @@ public class DispatcherServlet extends HttpServlet {
         config.getServletContext().setAttribute(Configuration.class.getName(), configuration);
 
         // Register the Jodd type converter.
-        TypeConverterManager.register(Date.class, new DateConverterAdapter());
+        TypeConverterManager.get().register(Date.class, new DateConverterAdapter());
     }
 
     @Override
