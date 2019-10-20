@@ -58,7 +58,6 @@ public class TestReflectionsWrapper extends DefaultReflectionsWrapper {
 
             cb = cb.addUrls(classLocations).addClassLoader(Thread.currentThread().getContextClassLoader());
             cb = cb.setScanners(new ResourcesScanner(), new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
-            cb = cb.build();
             reflections = new Reflections(cb);
 
 //            Reflections cachedReflections = (Reflections)
