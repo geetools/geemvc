@@ -60,11 +60,9 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
 
     @Override
     public Reflections provide() {
-        Reflections reflections = null;
+        ConfigurationBuilder cb = new ConfigurationBuilder();
 
         try {
-            ConfigurationBuilder cb = new ConfigurationBuilder();
-
             URL webappClassesPath = webappClassesPath();
             URL geemvcLibPath = geemvcLibPath();
 
@@ -103,13 +101,13 @@ public class DefaultReflectionsProvider implements ReflectionsProvider {
             extend(cb);
 
             // Finally build the reflections.
-            reflections = cb.build();
+            cb = cb.build();
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
-        return reflections;
+        return new Reflections(cb);
     }
 
     protected ConfigurationBuilder addConfiguredIncludes(ConfigurationBuilder cb) {

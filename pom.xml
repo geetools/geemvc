@@ -7,38 +7,27 @@
     <packaging>pom</packaging>
 
     <name>geeMVC Parent</name>
-    <url>http://geetools.com/geemvc</url>
+    <url>https://github.com/geetools/geemvc</url>
     <description>geeMVC framework parent project.</description>
 
     <organization>
         <name>geeTools</name>
-        <url>http://geetools.com/geemvc</url>
+        <url>https://github.com/geetools</url>
     </organization>
 
     <developers>
         <developer>
             <name>Michael Delamere</name>
-            <email>md@geetools.com</email>
-            <url>https://github.com/orgs/commerceboard/people/mdelamere</url>
+            <email>m@delamere.io</email>
+            <url>https://github.com/mdelamere</url>
             <id>mdelamere</id>
-        </developer>
-        <developer>
-            <name>Dmitriy Paramoshkin</name>
-            <email>dp@geetools.com</email>
-            <url>https://github.com/orgs/commerceboard/people/HostClubKea</url>
-            <id>HostClubKea</id>
-        </developer>
-        <developer>
-            <name>Sergey Zavarzin</name>
-            <email>sz@geetools.com</email>
-            <url>https://github.com/orgs/commerceboard/people/szavarzin</url>
-            <id>szavarzin</id>
         </developer>
     </developers>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -57,9 +46,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/commerceboard/geemvc</url>
-        <connection>scm:git:https://github.com/commerceboard/geemvc.git</connection>
-        <developerConnection>scm:git:https://github.com/commerceboard/geemvc.git</developerConnection>
+        <url>https://github.com/geetools/geemvc</url>
+        <connection>scm:git:https://github.com/geetools/geemvc.git</connection>
+        <developerConnection>scm:git:https://github.com/geetools/geemvc.git</developerConnection>
     </scm>
 
     <distributionManagement>
@@ -81,20 +70,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -107,7 +85,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <version>3.1.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -120,7 +98,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -134,7 +112,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
+                        <version>1.6.8</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -151,7 +129,7 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>4.1.0</version>
+            <version>4.2.2</version>
         </dependency>
     </dependencies>
 

@@ -108,11 +108,6 @@ public interface ReflectionsWrapper {
     public Set<Method> getMethodsReturn(Class returnType);
 
     /**
-     * get methods with parameter type match first parameter {@code from}, and return type match type {@code to}
-     */
-    public Set<Method> getConverters(Class<?> from, Class<?> to);
-
-    /**
      * get methods with any parameter annotated with given annotation
      */
     public Set<Method> getMethodsWithAnyParamAnnotated(Class<? extends Annotation> annotation);
