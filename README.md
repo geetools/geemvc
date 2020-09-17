@@ -7,7 +7,7 @@
 geeMVC is a fast lightweight **MVC framework** written for **Java 8+**. Its main focus is to be fast, simple to use and easy to extend. All classes within geeMVC have been injected by **Google Guice**, making it the most adaptable and flexible Java MVC framework. In order to simplify extending geeMVC we have ensured that no private or static fields and methods exist, therefore making it the No. 1 choice, not only for webapp developers, but also for framework developers that need a good starting point. 
 
 geeMVC allows you to create webapps quickly, ranging from simple CRUD websites to large dynamic multi tenancy SaaS applications.
-...
+
 Check out our [motivation](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Motivation-Behind-geeMVC) behind creating geeMVC or jump straight to the "[Getting Started](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Getting-Started)" section. If you want to generally learn more about what an MVC framework is, check out our wiki page [Java 8 MVC Framework](https://github.com/commerceboard/geeMVC-Java-MVC-Framework/wiki/Java-8-MVC-Framework).
 
 ## Why geeMVC?
